@@ -34,9 +34,8 @@ class BehovTest {
     fun `Startbehov returns the response from regelApi `() {
         withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer")  }) {
             handleRequest(HttpMethod.Post, "/behov") {
-                addHeader(HttpHeaders.SetCookie, "ID_Token 12345")
+                addHeader(HttpHeaders.SetCookie, "selvbetjening-idtoken=$token")
                 addHeader(HttpHeaders.ContentType, "application/json")
-                addHeader(HttpHeaders.Authorization, "Bearer $token")
                 setBody(
                     """
                         {
@@ -60,8 +59,7 @@ class BehovTest {
                     KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer")  }) {
             handleRequest(HttpMethod.Post, "/behov") {
                 addHeader(HttpHeaders.ContentType, "application/json")
-                addHeader(HttpHeaders.Authorization, "Bearer $token")
-                addHeader(HttpHeaders.Cookie, "ID_Token=$token")
+                addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
                 setBody(
                         """
                             {}

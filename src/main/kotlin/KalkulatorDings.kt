@@ -35,8 +35,8 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String) {
             verifier(jwkProvider, jwtIssuer)
             realm = "dp-regel-api-arena-adapter"
             authHeader {
-                val cookie = it.request.cookies["ID_Token"]
-                        ?: throw CookieNotSetException("Cookie with name ID_Token not found")
+                val cookie = it.request.cookies["selvbetjening-idtoken"]
+                        ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                 HttpAuthHeader.Single("Bearer", cookie)
             }
             validate { credentials ->
@@ -81,8 +81,8 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String) {
         authenticate {
             route("/behov") {
                 post {
-                    val idToken = call.request.cookies["ID_Token"]
-                            ?: throw CookieNotSetException("Cookie with name ID_Token not found")
+                    val idToken = call.request.cookies["selvbetjening-idtoken"]
+                            ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     val request = call.receive<BehovRequest>()
                     call.respond(HttpStatusCode.OK, BehovResponse("test"))
