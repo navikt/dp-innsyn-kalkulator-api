@@ -13,6 +13,10 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import io.kotlintest.shouldBe
 import io.ktor.config.MapApplicationConfig
+import no.nav.dagpenger.BehovResponse
+import no.nav.dagpenger.KalkulatorDings
+import no.nav.dagpenger.Problem
+import no.nav.dagpenger.moshiInstance
 import java.net.URI
 
 class BehovTest {

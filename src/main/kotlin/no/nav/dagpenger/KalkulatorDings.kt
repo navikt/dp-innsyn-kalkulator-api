@@ -1,4 +1,4 @@
-
+package no.nav.dagpenger
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwt.exceptions.JWTDecodeException
 import com.ryanharter.ktor.moshi.moshi
@@ -24,6 +24,9 @@ import java.net.URI
 import java.time.LocalDate
 
 private val LOGGER = KotlinLogging.logger {}
+
+
+fun main(args: Array<String>): Unit  = io.ktor.server.netty.EngineMain.main(args)
 
 fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String) {
     install(ContentNegotiation) {

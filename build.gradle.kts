@@ -16,7 +16,7 @@ repositories {
 
 application {
     applicationName = "dp-kalkulator-api"
-    mainClassName = "no.nav.dagpenger.kalkulatordings"
+    mainClassName = "no.nav.dagpenger.KalkulatorDingsKt"
 }
 
 java {
