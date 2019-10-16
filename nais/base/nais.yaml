@@ -1,0 +1,31 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: dp-kalkulator-api
+spec:
+  image: repo.adeo.no:5443/dp-kalkulator-api:latest
+  port: 8000
+  liveness:
+    path: /health/is-alive
+    initialDelay: 20
+    timeout: 1
+    periodSeconds: 5     # How often (in seconds) to perform the probe. Default to 10 seconds
+    failureThreshold: 10 # when a Pod starts and the probe fails,
+  readiness:
+    path: /health/is-alive
+    initialDelay: 20
+    timeout: 1
+  prometheus:
+    enabled: false
+  replicas:
+    min: 1
+    max: 2
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1024Mi
+    requests:
+      cpu: 200m
+      memory: 512Mi
+  vault:
+    enabled: true

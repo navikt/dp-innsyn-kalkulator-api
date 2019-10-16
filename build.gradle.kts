@@ -15,8 +15,8 @@ repositories {
 }
 
 application {
-    applicationName = "dp-innsyn-kalkulator-proxy"
-    mainClassName = "no.nav.dagpenger.SERVICENAME"
+    applicationName = "dp-kalkulator-api"
+    mainClassName = "no.nav.dagpenger.kalkulatordings"
 }
 
 java {

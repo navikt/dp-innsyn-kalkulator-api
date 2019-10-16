@@ -20,7 +20,6 @@ import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.util.pipeline.PipelineContext
 import mu.KotlinLogging
-import java.lang.RuntimeException
 import java.net.URI
 import java.time.LocalDate
 

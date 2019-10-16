@@ -1,0 +1,9 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: dp-kalkulator-api
+spec:
+  ingresses:
+    - "https://dp-kalkulator-api.nais.oera-q.local/"
+  sessionAffinity: ClientIP # Sticky Session for ingress controller to prevent 404 on rollout
+

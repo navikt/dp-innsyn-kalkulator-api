@@ -1,1 +1,1 @@
-rootProject.name = "dp-innsyn-kalkulator-proxy"
+rootProject.name = "dp-kalkulator-api"
