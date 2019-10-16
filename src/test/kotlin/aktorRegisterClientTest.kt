@@ -53,7 +53,7 @@ class AktorRegisterClientTest {
     }
 
     @Test
-    fun `Client returns aktorid from jwk` () {
+    fun `Client returns aktorid from jwk`() {
         val oppslagClient = no.nav.dagpenger.AktørIdOppslag(server.url(""), "", oidcClient)
         WireMock.stubFor(
                 WireMock.get(WireMock.urlEqualTo("//aktoer-ident"))

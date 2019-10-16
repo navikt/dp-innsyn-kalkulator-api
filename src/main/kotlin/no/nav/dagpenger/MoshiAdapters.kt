@@ -13,7 +13,6 @@ val moshiInstance: Moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()!!
 
-
 class LocalDateJsonAdapter {
     @ToJson
     fun toJson(localDate: LocalDate): String {

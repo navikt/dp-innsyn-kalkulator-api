@@ -37,8 +37,8 @@ fun main() = runBlocking {
             .cached(10, 24, TimeUnit.HOURS)
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
-    val application= embeddedServer(Netty, port=config.application.httpPort) {
-        KalkulatorDings(jwkProvider,  config.application.jwksIssuer)
+    val application = embeddedServer(Netty, port = config.application.httpPort) {
+        KalkulatorDings(jwkProvider, config.application.jwksIssuer)
     }.start()
 }
 
@@ -60,7 +60,6 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String) {
                 JWTPrincipal(credentials.payload)
             }
         }
-
     }
     install(StatusPages) {
         exception<Throwable> { cause ->

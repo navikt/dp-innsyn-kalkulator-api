@@ -43,7 +43,6 @@ dependencies {
         exclude(group = "junit")
     }
 
-
     implementation(Dagpenger.Biblioteker.stsKlient)
     implementation(Konfig.konfig)
 

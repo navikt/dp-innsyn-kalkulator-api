@@ -14,4 +14,3 @@ fun Routing.naischecks() {
         call.respondText("READY", ContentType.Text.Plain)
     }
 }
-

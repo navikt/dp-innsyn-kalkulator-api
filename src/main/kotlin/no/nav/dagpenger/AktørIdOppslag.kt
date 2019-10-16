@@ -1,9 +1,7 @@
 package no.nav.dagpenger
 import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.moshi.responseObject
-import io.ktor.http.HttpHeaders
 import mu.KotlinLogging
 import no.nav.dagpenger.oidc.OidcClient
 import no.nav.dagpenger.oidc.OidcToken
@@ -43,7 +41,6 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, private val apiKey: St
                 logger.warn("Feil ved henting av OIDC token", OppslagException(500, it.message ?: ""))
                 null
             })
-
 }
 
 data class AktørIdResponse(val aktørId: String)
