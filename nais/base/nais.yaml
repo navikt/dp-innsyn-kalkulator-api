@@ -6,13 +6,13 @@ spec:
   image: repo.adeo.no:5443/dp-kalkulator-api:latest
   port: 8000
   liveness:
-    path: https://dp-kalkulator-api.nais.oera-q.local/isAlive
+    path: /isAlive
     initialDelay: 20
     timeout: 1
     periodSeconds: 5     # How often (in seconds) to perform the probe. Default to 10 seconds
     failureThreshold: 10 # when a Pod starts and the probe fails,
   readiness:
-    path: https://dp-kalkulator-api.nais.oera-q.local/isReady
+    path: /isReady
     initialDelay: 20
     timeout: 1
   prometheus:
