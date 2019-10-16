@@ -49,7 +49,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String) {
     install(Authentication) {
         jwt {
             verifier(jwkProvider, jwtIssuer)
-            realm = "dp-regel-api-arena-adapter"
+            realm = "dp-kalkulator-api"
             authHeader {
                 val cookie = it.request.cookies["selvbetjening-idtoken"]
                         ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
@@ -105,6 +105,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String) {
                 }
             }
         }
+        naischecks()
     }
 }
 
