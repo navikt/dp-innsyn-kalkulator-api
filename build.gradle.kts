@@ -45,6 +45,7 @@ dependencies {
 
 
     implementation(Dagpenger.Biblioteker.stsKlient)
+    implementation(Konfig.konfig)
 
     implementation(Moshi.moshi)
     implementation(Moshi.moshiAdapters)
