@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment {
-    DEPLOYMENT = readYaml(file: './nais.yaml')
+    DEPLOYMENT = readYaml(file: './nais/base/kustomization.yaml')
     APPLICATION_NAME = "${DEPLOYMENT.metadata.name}"
     ZONE = "${DEPLOYMENT.metadata.annotations.zone}"
     NAMESPACE = "${DEPLOYMENT.metadata.namespace}"
