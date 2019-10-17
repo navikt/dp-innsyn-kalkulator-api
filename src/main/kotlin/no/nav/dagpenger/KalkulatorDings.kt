@@ -10,10 +10,12 @@ import io.ktor.auth.authenticate
 import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
+import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.auth.HttpAuthHeader
+import io.ktor.request.path
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.post
@@ -24,6 +26,7 @@ import io.ktor.server.netty.Netty
 import io.ktor.util.pipeline.PipelineContext
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import org.slf4j.event.Level
 import java.net.URI
 import java.net.URL
 import java.time.LocalDate
@@ -46,6 +49,15 @@ fun main() = runBlocking {
 fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String) {
     install(ContentNegotiation) {
         moshi(moshiInstance)
+    }
+    install(CallLogging) {
+        level = Level.INFO
+
+        filter { call ->
+            !call.request.path().startsWith("/isAlive") &&
+                !call.request.path().startsWith("/isReady") &&
+                !call.request.path().startsWith("/metrics")
+        }
     }
     install(Authentication) {
         jwt {
