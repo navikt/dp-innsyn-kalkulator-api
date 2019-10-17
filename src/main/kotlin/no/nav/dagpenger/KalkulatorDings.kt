@@ -39,6 +39,7 @@ fun main() = runBlocking {
             .build()
     val application = embeddedServer(Netty, port = config.application.httpPort) {
         KalkulatorDings(jwkProvider, config.application.jwksIssuer)
+        LOGGER.debug("Starting application")
     }.start()
 }
 
