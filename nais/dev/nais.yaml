@@ -6,4 +6,7 @@ spec:
   ingresses:
     - "https://dp-kalkulator-api.nais.oera-q.local/"
   sessionAffinity: ClientIP # Sticky Session for ingress controller to prevent 404 on rollout
+  env:
+    - name: API_GATEWAY_URL
+      value: https://api-gw-q1.oera.no/dp-reverse-proxy/
 

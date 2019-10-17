@@ -2,4 +2,7 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: dp-kalkulator-api
-
+spec:
+  env:
+    - name: API_GATEWAY_URL
+      value: https://api-gw.oera.no/dp-reverse-proxy/
