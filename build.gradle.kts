@@ -43,6 +43,12 @@ dependencies {
         exclude(group = "junit")
     }
 
+    implementation(Log4j2.api)
+    implementation(Log4j2.core)
+    implementation(Log4j2.slf4j)
+    implementation(Log4j2.Logstash.logstashLayout)
+    implementation(Kotlin.Logging.kotlinLogging)
+
     implementation(Dagpenger.Biblioteker.stsKlient)
     implementation(Konfig.konfig)
 
@@ -62,8 +68,6 @@ dependencies {
     testImplementation(Mockk.mockk)
 
     testImplementation(Wiremock.standalone)
-
-    implementation(Kotlin.Logging.kotlinLogging)
 }
 
 spotless {
