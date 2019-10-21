@@ -46,7 +46,7 @@ fun main() = runBlocking {
     val stsOidcClient =
             StsOidcClient(config.application.oicdStsUrl, config.application.username, config.application.password)
 
-    embeddedServer(Netty, port = config.application.httpPort) {
+    val application = embeddedServer(Netty, port = config.application.httpPort) {
         KalkulatorDings(jwkProvider, config.application.jwksIssuer, stsOidcClient)
         LOGGER.debug("Starting application")
     }.start()
