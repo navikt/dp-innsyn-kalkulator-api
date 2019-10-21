@@ -18,6 +18,7 @@ import io.ktor.http.auth.HttpAuthHeader
 import io.ktor.request.path
 import io.ktor.request.receive
 import io.ktor.response.respond
+import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.routing.routing
@@ -26,10 +27,14 @@ import io.ktor.server.netty.Netty
 import io.ktor.util.pipeline.PipelineContext
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import no.nav.dagpenger.oidc.OidcClient
+import no.nav.dagpenger.oidc.OidcToken
+import no.nav.dagpenger.oidc.StsOidcClient
 import org.slf4j.event.Level
 import java.net.URI
 import java.net.URL
 import java.time.LocalDate
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 private val LOGGER = KotlinLogging.logger {}
@@ -40,13 +45,16 @@ fun main() = runBlocking {
             .cached(10, 24, TimeUnit.HOURS)
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
-    val application = embeddedServer(Netty, port = config.application.httpPort) {
-        KalkulatorDings(jwkProvider, config.application.jwksIssuer)
+    val stsOidcClient =
+            StsOidcClient(config.application.oicdStsUrl, config.application.username, config.application.password)
+
+    embeddedServer(Netty, port = config.application.httpPort) {
+        KalkulatorDings(jwkProvider, config.application.jwksIssuer, stsOidcClient)
         LOGGER.debug("Starting application")
     }.start()
 }
 
-fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String) {
+fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, stsOidcClient: StsOidcClient) {
     install(ContentNegotiation) {
         moshi(moshiInstance)
     }
@@ -106,6 +114,12 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String) {
         }
     }
     routing {
+        route("/dummy") {
+            get {
+                // val dummy = AktørIdOppslag(config.application.oppslagBaseUrl, stsOidcClient).dummyFetch()
+                call.respond(HttpStatusCode.OK, "God stil")
+            }
+        }
         authenticate {
             route("/behov") {
                 post {
@@ -113,7 +127,14 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String) {
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     val request = call.receive<BehovRequest>()
-                    call.respond(HttpStatusCode.OK, BehovResponse("test"))
+                    val aktørid = AktørIdOppslag(config.application.oppslagBaseUrl, stsOidcClient)
+                            .fetchAktørId(fødselsnummer)
+                    call.respond(HttpStatusCode.OK, BehovResponse("aktørid: " + aktørid.toString()))
+                }
+            }
+            route("/auth") {
+                post {
+                    call.respond(HttpStatusCode.OK, "Gyldig token!")
                 }
             }
         }

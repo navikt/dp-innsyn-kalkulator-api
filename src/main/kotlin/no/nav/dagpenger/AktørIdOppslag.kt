@@ -9,7 +9,7 @@ import java.lang.RuntimeException
 
 private val logger = KotlinLogging.logger {}
 
-class AktørIdOppslag(private val oppslagBaseUrl: String, private val apiKey: String, val oidcClient: OidcClient) {
+class AktørIdOppslag(private val oppslagBaseUrl: String, val oidcClient: OidcClient) {
 
     fun fetchAktørId(fnr: String): String? {
         return withOidc { token ->
@@ -35,6 +35,10 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, private val apiKey: St
                 null
             })
         }
+    }
+
+    fun dummyFetch(): String {
+        return "ok!"
     }
     private fun <T> withOidc(function: (value: OidcToken) -> T?): T? =
             runCatching { oidcClient.oidcToken() }.fold(function, onFailure = {
