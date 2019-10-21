@@ -9,20 +9,25 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import io.kotlintest.shouldBe
-import no.nav.dagpenger.BehovResponse
-import no.nav.dagpenger.KalkulatorDings
-import no.nav.dagpenger.Problem
-import no.nav.dagpenger.moshiInstance
+import no.nav.dagpenger.*
+import no.nav.dagpenger.oidc.OidcClient
+import no.nav.dagpenger.oidc.OidcToken
 import java.net.URI
+import java.util.*
 
 class BehovTest {
     private val jwkStub = JwtStub()
     private val token = jwkStub.createTokenFor("brukerMcBrukerson")
     private val unauthorizedToken = "tull"
+    val oidcClient = object : OidcClient {
+        override fun oidcToken(): OidcToken {
+            return OidcToken(UUID.randomUUID().toString(), "openid", 3000)
+        }
+    }
 
     @Test
     fun `Startbehov returns a response`() {
-        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer") }) {
+        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oidcClient) }) {
             handleRequest(HttpMethod.Post, "/behov") {
             }.apply {
                 assertNotNull(response.status())
@@ -32,7 +37,7 @@ class BehovTest {
 
     @Test
     fun `Startbehov returns the response from regelApi `() {
-        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer") }) {
+        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oidcClient) }) {
             handleRequest(HttpMethod.Post, "/behov") {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
                 addHeader(HttpHeaders.ContentType, "application/json")
@@ -56,7 +61,7 @@ class BehovTest {
     fun `startBehov returns error if json is missing beregningsdato`() {
         withTestApplication(
                 {
-                    KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer") }) {
+                    KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oidcClient) }) {
             handleRequest(HttpMethod.Post, "/behov") {
                 addHeader(HttpHeaders.ContentType, "application/json")
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
@@ -76,7 +81,7 @@ class BehovTest {
 
     @Test
     fun `Api returns a 401 if user is unauthenticated`() {
-        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer") }) {
+        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oidcClient) }) {
             handleRequest(HttpMethod.Post, "/behov") {
                 addHeader(HttpHeaders.Authorization, "Bearer $unauthorizedToken")
             }.apply {

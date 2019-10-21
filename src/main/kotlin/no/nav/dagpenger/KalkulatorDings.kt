@@ -28,13 +28,11 @@ import io.ktor.util.pipeline.PipelineContext
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import no.nav.dagpenger.oidc.OidcClient
-import no.nav.dagpenger.oidc.OidcToken
 import no.nav.dagpenger.oidc.StsOidcClient
 import org.slf4j.event.Level
 import java.net.URI
 import java.net.URL
 import java.time.LocalDate
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 private val LOGGER = KotlinLogging.logger {}
@@ -54,7 +52,7 @@ fun main() = runBlocking {
     }.start()
 }
 
-fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, stsOidcClient: StsOidcClient) {
+fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oidcClient: OidcClient) {
     install(ContentNegotiation) {
         moshi(moshiInstance)
     }
@@ -116,7 +114,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, sts
     routing {
         route("/dummy") {
             get {
-                // val dummy = AktørIdOppslag(config.application.oppslagBaseUrl, stsOidcClient).dummyFetch()
+                // val dummy = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient).dummyFetch()
                 call.respond(HttpStatusCode.OK, "God stil")
             }
         }
@@ -127,9 +125,9 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, sts
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     val request = call.receive<BehovRequest>()
-                    val aktørid = AktørIdOppslag(config.application.oppslagBaseUrl, stsOidcClient)
-                            .fetchAktørId(fødselsnummer)
-                    call.respond(HttpStatusCode.OK, BehovResponse("aktørid: " + aktørid.toString()))
+                    /*val aktørid = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient)
+                            .fetchAktørId(fødselsnummer)*/
+                    call.respond(HttpStatusCode.OK, BehovResponse("test"))
                 }
             }
             route("/auth") {
