@@ -64,7 +64,7 @@ data class Configuration(
         val name: String = "dp-kalkulator-api",
         val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
         val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
-        val oppslagBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)]+"dagpenger-oppslag",
+        val oppslagBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dagpenger-oppslag",
         val password: String = config()[Key("oidcPassword", stringType)],
         val username: String = config()[Key("oidcUsername", stringType)],
         val oicdStsUrl: String = config()[Key("oidcStsUrl", stringType)]
