@@ -59,8 +59,9 @@ data class Configuration(
         val jwksUrl: String = config()[Key("jwks.url", stringType)],
         val jwksIssuer: String = config()[Key("jwks.issuer", stringType)],
         val name: String = "dp-kalkulator-api",
-        val gatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
-        val oppslagBaseUrl: String = config()[Key("oppslagBaseUrl", stringType)],
+        val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
+        val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
+        val oppslagBaseUrl: String = config()[Key("API_GATEWAY_URL"+"dagpenger-oppslag", stringType)],
         val password: String = config()[Key("oidcPassword", stringType)],
         val username: String = config()[Key("oidcUsername", stringType)],
         val oicdStsUrl: String = config()[Key("oidcStsUrl", stringType)]
