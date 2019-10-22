@@ -37,9 +37,6 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, val oidcClient: OidcCl
         }
     }
 
-    fun dummyFetch(): String {
-        return "ok!"
-    }
     private fun <T> withOidc(function: (value: OidcToken) -> T?): T? =
             runCatching { oidcClient.oidcToken() }.fold(function, onFailure = {
                 logger.warn("Feil ved henting av OIDC token", OppslagException(500, it.message ?: ""))

@@ -114,7 +114,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oid
     routing {
         route("/dummy") {
             get {
-                // val dummy = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient).dummyFetch()
+                //val dummy = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient).dummyFetch()
                 call.respond(HttpStatusCode.OK, "God stil")
             }
         }
@@ -125,9 +125,9 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oid
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     val request = call.receive<BehovRequest>()
-                    /*val aktørid = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient)
-                            .fetchAktørId(fødselsnummer)*/
-                    call.respond(HttpStatusCode.OK, BehovResponse("test"))
+                    val aktørid = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient)
+                            .fetchAktørId(fødselsnummer)
+                    call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
                 }
             }
             route("/auth") {

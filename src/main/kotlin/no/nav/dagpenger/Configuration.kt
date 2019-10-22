@@ -15,7 +15,7 @@ private val localProperties = ConfigurationMap(
         "jwks.url" to "https://localhost",
         "jwks.issuer" to "https://localhost",
             "API_GATEWAY_API_KEY" to "superhemmelig",
-            "oppslagBaseUrl" to "www.nrk.no",
+            "oppslagBaseUrl" to "http://www.nrk.no",
             "oidcPassword" to "hunter2",
             "oidcUsername" to "Fantomet",
             "oidcStsUrl" to "www.oidc.no"
@@ -23,12 +23,12 @@ private val localProperties = ConfigurationMap(
 )
 private val devProperties = ConfigurationMap(
     mapOf(
-        "jwks.url" to "https://isso-q.adeo.no:443/isso/oauth2/connect/jwk_uri",
-        "jwks.issuer" to "https://isso-q.adeo.no:443/isso/oauth2",
+        "jwks.url" to "https://login.microsoftonline.com/navnob2c.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_idporten",
+        "jwks.issuer" to "https://login.microsoftonline.com/8b7dfc8b-b52e-4741-bde4-d83ea366f94f/v2.0/",
         "application.profile" to "DEV",
         "application.httpPort" to "8099",
             "API_GATEWAY_API_KEY" to "hunter2",
-            "oppslagBaseUrl" to "www.nrk.no",
+            "oppslagBaseUrl" to "http://www.nrk.no",
             "oidcPassword" to "hunter2",
             "oidcUsername" to "Fantomet",
             "oidcStsUrl" to "www.oidc.no"
@@ -36,12 +36,12 @@ private val devProperties = ConfigurationMap(
 )
 private val prodProperties = ConfigurationMap(
     mapOf(
-        "jwks.url" to "https://isso.adeo.no:443/isso/oauth2/connect/jwk_uri",
-        "jwks.issuer" to "https://isso.adeo.no:443/isso/oauth2",
+        "jwks.url" to "https://login.microsoftonline.com/navnob2c.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_idporten",
+        "jwks.issuer" to "https://login.microsoftonline.com/8b7dfc8b-b52e-4741-bde4-d83ea366f94f/v2.0/",
         "application.profile" to "PROD",
         "application.httpPort" to "8099",
             "API_GATEWAY_API_KEY" to "hunter2",
-            "oppslagBaseUrl" to "www.nrk.no",
+            "oppslagBaseUrl" to "http://www.nrk.no",
             "oidcPassword" to "hunter2",
             "oidcUsername" to "Fantomet",
             "oidcStsUrl" to "www.oidc.no"
