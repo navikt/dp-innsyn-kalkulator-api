@@ -114,7 +114,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oid
     routing {
         route("/dummy") {
             get {
-                //val dummy = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient).dummyFetch()
+                // val dummy = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient).dummyFetch()
                 call.respond(HttpStatusCode.OK, "God stil")
             }
         }

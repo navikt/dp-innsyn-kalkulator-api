@@ -14,7 +14,6 @@ import no.nav.dagpenger.oidc.OidcClient
 import no.nav.dagpenger.oidc.OidcToken
 import java.net.URI
 import java.util.*
-import kotlin.test.assertNull
 
 class BehovTest {
     private val jwkStub = JwtStub()
@@ -63,8 +62,8 @@ class BehovTest {
                 assertNotNull(response.content, "Did not get a response")
                 val behovResponse = moshiInstance.adapter(BehovResponse::class.java).fromJson(response.content!!)
                 assertNotNull(behovResponse)
-                //todo, bytt ut når endepunktet faktisk er reachable
-                //assertNull(behovResponse.location)
+                // todo, bytt ut når endepunktet faktisk er reachable
+                // assertNull(behovResponse.location)
                 assertEquals("null", behovResponse.location)
             }
         }
