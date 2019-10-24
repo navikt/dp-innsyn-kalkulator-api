@@ -114,8 +114,8 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oid
     routing {
         route("/dummy") {
             get {
-                // val dummy = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient).dummyFetch()
-                call.respond(HttpStatusCode.OK, "God stil")
+                val dummy = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient, config.application.apiGatewayKey).fetchOrganisasjonsNavn()
+                call.respond(HttpStatusCode.OK, dummy.toString())
             }
         }
         authenticate {
