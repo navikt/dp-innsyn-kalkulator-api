@@ -20,7 +20,7 @@ private val localProperties = ConfigurationMap(
         "API_GATEWAY_URL" to "http://localhost/",
         "oidcStsUrl" to "http://localhost/",
             "oidcPassword" to "hai hai",
-            "oidcUser" to "kalkulator-api"
+            "oidcUsername" to "kalkulator-api"
     )
 )
 private val devProperties = ConfigurationMap(
@@ -30,9 +30,7 @@ private val devProperties = ConfigurationMap(
         "application.profile" to "DEV",
         "application.httpPort" to "8099",
         "API_GATEWAY_URL" to "https://api-gw-q1.oera.no/dp-reverse-proxy/",
-        "oidcStsUrl" to "https://security-token-service.nais.preprod.local",
-            "oidcPassword" to "hai hai",
-            "oidcUser" to "kalkulator-api"
+        "oidcStsUrl" to "https://security-token-service.nais.preprod.local"
     )
 )
 private val prodProperties = ConfigurationMap(
@@ -42,9 +40,7 @@ private val prodProperties = ConfigurationMap(
         "application.profile" to "PROD",
         "application.httpPort" to "8099",
         "API_GATEWAY_URL" to "https://api-gw.oera.no/dp-reverse-proxy/",
-        "oidcStsUrl" to "https://security-token-service.nais.adeo.no",
-            "oidcPassword" to "hai hai",
-            "oidcUser" to "kalkulator-api"
+        "oidcStsUrl" to "https://security-token-service.nais.adeo.no"
     )
 )
 
