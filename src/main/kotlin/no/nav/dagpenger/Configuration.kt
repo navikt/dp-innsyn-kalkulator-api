@@ -15,12 +15,9 @@ private val localProperties = ConfigurationMap(
         "application.httpPort" to "8099",
         "jwks.url" to "https://localhost",
         "jwks.issuer" to "https://localhost",
-            "API_GATEWAY_API_KEY" to "superhemmelig",
-            "API_GATEWAY_URL" to "http://www.nrk.no",
-            "oppslagBaseUrl" to "http://www.nrk.no",
-            "oidcPassword" to "hunter2",
-            "oidcUsername" to "Fantomet",
-            "oidcStsUrl" to "www.oidc.no"
+        "API_GATEWAY_API_KEY" to "hunter2",
+        "API_GATEWAY_URL" to "http://localhost/",
+        "oidcStsUrl" to "http://localhost/"
     )
 )
 private val devProperties = ConfigurationMap(
@@ -29,12 +26,8 @@ private val devProperties = ConfigurationMap(
         "jwks.issuer" to "https://login.microsoftonline.com/8b7dfc8b-b52e-4741-bde4-d83ea366f94f/v2.0/",
         "application.profile" to "DEV",
         "application.httpPort" to "8099",
-            "API_GATEWAY_API_KEY" to "hunter2",
-            "API_GATEWAY_URL" to "http://www.nrk.no",
-            "oppslagBaseUrl" to "http://www.nrk.no",
-            "oidcPassword" to "hunter2",
-            "oidcUsername" to "Fantomet",
-            "oidcStsUrl" to "www.oidc.no"
+        "API_GATEWAY_URL" to "https://api-gw-q1.oera.no/dp-reverse-proxy/",
+        "oidcStsUrl" to "https://security-token-service.nais.preprod.local"
     )
 )
 private val prodProperties = ConfigurationMap(
@@ -43,14 +36,11 @@ private val prodProperties = ConfigurationMap(
         "jwks.issuer" to "https://login.microsoftonline.com/8b7dfc8b-b52e-4741-bde4-d83ea366f94f/v2.0/",
         "application.profile" to "PROD",
         "application.httpPort" to "8099",
-            "API_GATEWAY_API_KEY" to "hunter2",
-            "API_GATEWAY_URL" to "http://www.nrk.no",
-            "oppslagBaseUrl" to "http://www.nrk.no",
-            "oidcPassword" to "hunter2",
-            "oidcUsername" to "Fantomet",
-            "oidcStsUrl" to "www.oidc.no"
+        "API_GATEWAY_URL" to "https://api-gw.oera.no/dp-reverse-proxy/",
+        "oidcStsUrl" to "https://security-token-service.nais.adeo.no"
     )
 )
+
 // Todo: Fjerne konfigurasjonsnøkler som ikke brukes
 data class Configuration(
 
