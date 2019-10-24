@@ -57,7 +57,8 @@ class AktorRegisterClientTest {
         val oppslagClient = no.nav.dagpenger.AktørIdOppslag(server.url(""), oidcClient, "key")
         WireMock.stubFor(
                 WireMock.get(WireMock.urlEqualTo("//aktoer-ident"))
-                        .withHeader("Authorization", RegexPattern("Bearer\\s[\\d|a-f]{8}-([\\d|a-f]{4}-){3}[\\d|a-f]{12}"))
+                        // todo: is this auth needed when we have gatewaykey?
+                        //.withHeader("Authorization", RegexPattern("Bearer\\s[\\d|a-f]{8}-([\\d|a-f]{4}-){3}[\\d|a-f]{12}"))
                         .withHeader("ident", AnythingPattern())
                         .willReturn(WireMock.aResponse().withBody(validResponse))
         )

@@ -16,6 +16,7 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, val oidcClient: OidcCl
             val url = "$oppslagBaseUrl/aktoer-ident"
             val (_, _, result) = with(
                     url.httpGet()
+                            // todo: why is this needed?
                             //.authentication().bearer(token.access_token)
                             .header(
                                     mapOf(
