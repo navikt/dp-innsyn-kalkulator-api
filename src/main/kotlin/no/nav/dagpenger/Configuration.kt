@@ -9,6 +9,7 @@ import com.natpryce.konfig.overriding
 import com.natpryce.konfig.stringType
 
 // Todo: Fjerne konfigurasjonsnøkler som ikke brukes
+// todo: rename oidc user and password to applicationuser and password
 private val localProperties = ConfigurationMap(
     mapOf(
         "application.profile" to "LOCAL",
@@ -17,7 +18,9 @@ private val localProperties = ConfigurationMap(
         "jwks.issuer" to "https://localhost",
         "API_GATEWAY_API_KEY" to "hunter2",
         "API_GATEWAY_URL" to "http://localhost/",
-        "oidcStsUrl" to "http://localhost/"
+        "oidcStsUrl" to "http://localhost/",
+            "oidcPassword" to "hai hai",
+            "oidcUser" to "kalkulator-api"
     )
 )
 private val devProperties = ConfigurationMap(
@@ -27,7 +30,9 @@ private val devProperties = ConfigurationMap(
         "application.profile" to "DEV",
         "application.httpPort" to "8099",
         "API_GATEWAY_URL" to "https://api-gw-q1.oera.no/dp-reverse-proxy/",
-        "oidcStsUrl" to "https://security-token-service.nais.preprod.local"
+        "oidcStsUrl" to "https://security-token-service.nais.preprod.local",
+            "oidcPassword" to "hai hai",
+            "oidcUser" to "kalkulator-api"
     )
 )
 private val prodProperties = ConfigurationMap(
@@ -37,7 +42,9 @@ private val prodProperties = ConfigurationMap(
         "application.profile" to "PROD",
         "application.httpPort" to "8099",
         "API_GATEWAY_URL" to "https://api-gw.oera.no/dp-reverse-proxy/",
-        "oidcStsUrl" to "https://security-token-service.nais.adeo.no"
+        "oidcStsUrl" to "https://security-token-service.nais.adeo.no",
+            "oidcPassword" to "hai hai",
+            "oidcUser" to "kalkulator-api"
     )
 )
 
