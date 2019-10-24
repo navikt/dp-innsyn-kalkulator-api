@@ -9,7 +9,7 @@ import java.lang.RuntimeException
 
 private val logger = KotlinLogging.logger {}
 
-class AktørIdOppslag(private val oppslagBaseUrl: String, val oidcClient: OidcClient) {
+class AktørIdOppslag(private val oppslagBaseUrl: String, val oidcClient: OidcClient, val apiGatewayKey: String) {
 
     fun fetchAktørId(fnr: String): String? {
         return withOidc { token ->
@@ -19,7 +19,8 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, val oidcClient: OidcCl
                             .authentication().bearer(token.access_token)
                             .header(
                                     mapOf(
-                                            "ident" to fnr
+                                            "ident" to fnr,
+                                            "x-nav-apiKey" to apiGatewayKey
                                     )
                             )
             ) {

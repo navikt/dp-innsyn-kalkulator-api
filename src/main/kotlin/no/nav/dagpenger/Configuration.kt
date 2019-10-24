@@ -8,6 +8,7 @@ import com.natpryce.konfig.intType
 import com.natpryce.konfig.overriding
 import com.natpryce.konfig.stringType
 
+// Todo: Fjerne konfigurasjonsnøkler som ikke brukes
 private val localProperties = ConfigurationMap(
     mapOf(
         "application.profile" to "LOCAL",
@@ -50,7 +51,7 @@ private val prodProperties = ConfigurationMap(
             "oidcStsUrl" to "www.oidc.no"
     )
 )
-
+// Todo: Fjerne konfigurasjonsnøkler som ikke brukes
 data class Configuration(
 
     val application: Application = Application()

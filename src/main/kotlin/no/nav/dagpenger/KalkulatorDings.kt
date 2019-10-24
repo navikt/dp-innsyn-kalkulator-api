@@ -125,7 +125,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oid
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     val request = call.receive<BehovRequest>()
-                    val aktørid = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient)
+                    val aktørid = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient, config.application.apiGatewayKey)
                             .fetchAktørId(fødselsnummer)
                     call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
                 }
