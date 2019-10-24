@@ -75,7 +75,6 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oid
                 HttpAuthHeader.Single("Bearer", cookie)
             }
             validate { credentials ->
-                log.info("'${credentials.payload.subject}' authenticated")
                 JWTPrincipal(credentials.payload)
             }
         }
