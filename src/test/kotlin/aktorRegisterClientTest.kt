@@ -2,7 +2,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.matching.AnythingPattern
-import com.github.tomakehurst.wiremock.matching.RegexPattern
 import no.nav.dagpenger.oidc.OidcClient
 import no.nav.dagpenger.oidc.OidcToken
 import no.nav.dagpenger.oidc.StsOidcClientException
@@ -58,7 +57,7 @@ class AktorRegisterClientTest {
         WireMock.stubFor(
                 WireMock.get(WireMock.urlEqualTo("//aktoer-ident"))
                         // todo: is this auth needed when we have gatewaykey?
-                        //.withHeader("Authorization", RegexPattern("Bearer\\s[\\d|a-f]{8}-([\\d|a-f]{4}-){3}[\\d|a-f]{12}"))
+                        // .withHeader("Authorization", RegexPattern("Bearer\\s[\\d|a-f]{8}-([\\d|a-f]{4}-){3}[\\d|a-f]{12}"))
                         .withHeader("ident", AnythingPattern())
                         .willReturn(WireMock.aResponse().withBody(validResponse))
         )
