@@ -41,13 +41,20 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, val oidcClient: OidcCl
     fun fetchOrganisasjonsNavn(): Any {
         val url = "$oppslagBaseUrl/organisasjon/123456789"
 
-        val res = url.httpGet().header(
-                mapOf(
-                        "x-nav-apiKey" to apiGatewayKey
-                )
-        )
+        val (_, _, result) = with(
+                url.httpGet()
+                        // todo: why is this needed?
+                        // .authentication().bearer(token.access_token)
+                        .header(
+                                mapOf(
+                                        "x-nav-apiKey" to apiGatewayKey
+                                )
+                        )
+        ) {
+            responseObject<BOB>()
+        }
 
-        return res
+        return result.get()
     }
 
     private fun <T> withOidc(function: (value: OidcToken) -> T?): T? =
@@ -56,6 +63,8 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, val oidcClient: OidcCl
                 null
             })
 }
+
+data class BOB(val orgNr: String, val navn: String)
 
 data class AktørIdResponse(val aktørId: String)
 
