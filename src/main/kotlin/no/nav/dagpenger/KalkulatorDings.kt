@@ -118,7 +118,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oid
             }
         }
         authenticate {
-            route("/arbeid/dagpenger/kalkulator-api/behov") {
+            route("/behov") {
                 post {
                     val idToken = call.request.cookies["selvbetjening-idtoken"]
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
