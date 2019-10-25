@@ -19,8 +19,8 @@ private val localProperties = ConfigurationMap(
         "API_GATEWAY_API_KEY" to "hunter2",
         "API_GATEWAY_URL" to "http://localhost/",
         "oidcStsUrl" to "http://localhost/",
-            "oidcPassword" to "hai hai",
-            "oidcUsername" to "kalkulator-api"
+            "STS_PASSWORD" to "hai hai",
+            "STS_USERNAME" to "kalkulator-api"
     )
 )
 private val devProperties = ConfigurationMap(
@@ -59,8 +59,8 @@ data class Configuration(
         val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
         val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
         val oppslagBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dagpenger-oppslag",
-        val password: String = config()[Key("oidcPassword", stringType)],
-        val username: String = config()[Key("oidcUsername", stringType)],
+        val password: String = config()[Key("STS_PASSWORD", stringType)],
+        val username: String = config()[Key("STS_USERNAME", stringType)],
         val oicdStsUrl: String = config()[Key("oidcStsUrl", stringType)]
     )
 }
