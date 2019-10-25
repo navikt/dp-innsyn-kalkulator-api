@@ -10,4 +10,10 @@ spec:
   env:
     - name: API_GATEWAY_URL
       value: https://api-gw-q1.oera.no/dp-reverse-proxy/
+  vault:
+    paths:
+      - kvPath: "serviceuser/data/dev/srvdp-kalkulator-api"
+        mountPath: "/secrets/serviceuser/srvdp-kalkulator-api/"
+      - kvPath: "kv/preprod/sbs/dp-kalkulator-api/default"
+        mountPath: "/var/run/secrets/nais.io/vault/"
 
