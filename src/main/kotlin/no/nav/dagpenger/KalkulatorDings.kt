@@ -46,13 +46,15 @@ fun main() = runBlocking {
     val stsOidcClient =
             StsOidcClient(config.application.oicdStsUrl, config.application.username, config.application.password)
 
+    val oppslagsKlient = AktørIdOppslag(config.application.oppslagBaseUrl, stsOidcClient, config.application.apiGatewayKey)
+
     val application = embeddedServer(Netty, port = config.application.httpPort) {
-        KalkulatorDings(jwkProvider, config.application.jwksIssuer, stsOidcClient)
+        KalkulatorDings(jwkProvider, config.application.jwksIssuer, oppslagsKlient)
         LOGGER.debug("Starting application")
     }.start()
 }
 
-fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oidcClient: OidcClient) {
+fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oppslagsKlient: AktørIdOppslag) {
     install(ContentNegotiation) {
         moshi(moshiInstance)
     }
@@ -113,7 +115,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oid
     routing {
         route("/arbeid/dagpenger/kalkulator-api/dummy") {
             get {
-                val dummy = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient, config.application.apiGatewayKey).fetchOrganisasjonsNavn()
+                val dummy = oppslagsKlient.fetchOrganisasjonsNavn()
                 call.respond(HttpStatusCode.OK, dummy.toString())
             }
         }
@@ -124,8 +126,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oid
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     val request = call.receive<BehovRequest>()
-                    val aktørid = AktørIdOppslag(config.application.oppslagBaseUrl, oidcClient, config.application.apiGatewayKey)
-                            .fetchAktørId(fødselsnummer)
+                    val aktørid = oppslagsKlient.fetchAktørId(fødselsnummer)
                     call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
                 }
             }
