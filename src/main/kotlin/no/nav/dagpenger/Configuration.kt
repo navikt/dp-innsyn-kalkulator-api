@@ -61,7 +61,7 @@ data class Configuration(
         val oppslagBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dagpenger-oppslag/api",
         val password: String = config()[Key("STS_PASSWORD", stringType)],
         val username: String = config()[Key("STS_USERNAME", stringType)],
-        val oicdStsUrl: String = config()[Key("oidcStsUrl", stringType)]
+        val oicdStsUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "security-token-service"
     )
 }
 
