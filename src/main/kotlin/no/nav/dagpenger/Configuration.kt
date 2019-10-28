@@ -17,7 +17,7 @@ private val localProperties = ConfigurationMap(
         "jwks.url" to "https://localhost",
         "jwks.issuer" to "https://localhost",
         "API_GATEWAY_API_KEY" to "hunter2",
-        "API_GATEWAY_URL" to "http://localhost",
+        "API_GATEWAY_URL" to "http://localhost/",
         "oidcStsUrl" to "http://localhost/",
             "STS_PASSWORD" to "hai hai",
             "STS_USERNAME" to "kalkulator-api"
