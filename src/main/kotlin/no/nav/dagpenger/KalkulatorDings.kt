@@ -130,7 +130,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
                 }
             }
             route("/arbeid/dagpenger/kalkulator-api/auth") {
-                post {
+                get {
                     call.respond(HttpStatusCode.OK, "Gyldig token!")
                 }
             }
