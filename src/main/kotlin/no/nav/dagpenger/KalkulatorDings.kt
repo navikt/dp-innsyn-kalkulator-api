@@ -118,7 +118,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oid
             }
         }
         authenticate {
-            route("/behov") {
+            route("/arbeid/dagpenger/kalkulator-api/behov") {
                 post {
                     val idToken = call.request.cookies["selvbetjening-idtoken"]
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
@@ -129,7 +129,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oid
                     call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
                 }
             }
-            route("/auth") {
+            route("/arbeid/dagpenger/kalkulator-api/auth") {
                 post {
                     call.respond(HttpStatusCode.OK, "Gyldig token!")
                 }

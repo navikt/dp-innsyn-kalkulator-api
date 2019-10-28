@@ -1,4 +1,5 @@
 package no.nav.dagpenger
+import com.github.kittinunf.fuel.core.extensions.authentication
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.responseObject
 import mu.KotlinLogging
@@ -15,8 +16,7 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, val oidcClient: OidcCl
             val url = "$oppslagBaseUrl/aktoer-ident"
             val (_, _, result) = with(
                     url.httpGet()
-                            // todo: why is this needed?
-                            // .authentication().bearer(token.access_token)
+                            .authentication().bearer(token.access_token)
                             .header(
                                     mapOf(
                                             "ident" to fnr,
@@ -43,8 +43,6 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, val oidcClient: OidcCl
 
         val (_, _, result) = with(
                 url.httpGet()
-                        // todo: why is this needed?
-                        // .authentication().bearer(token.access_token)
                         .header(
                                 mapOf(
                                         "x-nav-apiKey" to apiGatewayKey

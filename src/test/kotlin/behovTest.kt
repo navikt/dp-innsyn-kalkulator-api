@@ -28,7 +28,7 @@ class BehovTest {
     @Test
     fun `Startbehov returns a response`() {
         withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oidcClient) }) {
-            handleRequest(HttpMethod.Post, "/behov") {
+            handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov") {
             }.apply {
                 assertNotNull(response.status())
             }
@@ -38,7 +38,7 @@ class BehovTest {
     @Test
     fun `Startbehov returns a response with real token`() {
         withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oidcClient) }) {
-            handleRequest(HttpMethod.Post, "/behov") {
+            handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov") {
             }.apply {
                 assertNotNull(response.status())
             }
@@ -48,7 +48,7 @@ class BehovTest {
     @Test
     fun `Startbehov returns the response from regelApi `() {
         withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oidcClient) }) {
-            handleRequest(HttpMethod.Post, "/behov") {
+            handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov") {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
                 addHeader(HttpHeaders.ContentType, "application/json")
                 setBody(
@@ -74,7 +74,7 @@ class BehovTest {
         withTestApplication(
                 {
                     KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oidcClient) }) {
-            handleRequest(HttpMethod.Post, "/behov") {
+            handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov") {
                 addHeader(HttpHeaders.ContentType, "application/json")
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
                 setBody(
@@ -94,7 +94,7 @@ class BehovTest {
     @Test
     fun `Api returns a 401 if user is unauthenticated`() {
         withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oidcClient) }) {
-            handleRequest(HttpMethod.Post, "/behov") {
+            handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov") {
                 addHeader(HttpHeaders.Authorization, "Bearer $unauthorizedToken")
             }.apply {
                 assertEquals(HttpStatusCode.Unauthorized, response.status())
