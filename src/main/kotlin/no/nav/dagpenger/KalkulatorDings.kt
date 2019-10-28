@@ -27,7 +27,6 @@ import io.ktor.server.netty.Netty
 import io.ktor.util.pipeline.PipelineContext
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import no.nav.dagpenger.oidc.OidcClient
 import no.nav.dagpenger.oidc.StsOidcClient
 import org.slf4j.event.Level
 import java.net.URI
