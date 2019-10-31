@@ -47,7 +47,7 @@ class BehovTest {
         }
     }
 
-    //@Test
+    // @Test
     fun `Startbehov returns the response from regelApi `() {
         withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oppslagsKlient) }) {
             handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov") {
