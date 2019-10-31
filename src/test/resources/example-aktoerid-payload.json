@@ -1,8 +1,7 @@
 {
   "data": {
       "person": {
-        "type": "AKTOERID",
-        "id": "12345"
+        "aktoerId": "12345"
       }
   }
 }
