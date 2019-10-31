@@ -15,7 +15,8 @@ private val localProperties = ConfigurationMap(
         "jwks.url" to "https://localhost",
         "jwks.issuer" to "https://localhost",
         "API_GATEWAY_API_KEY" to "hunter2",
-        "API_GATEWAY_URL" to "http://localhost/"
+        "API_GATEWAY_URL" to "http://localhost/",
+            "TEST_USER_PNR_Q0" to "12345"
     )
 )
 private val devProperties = ConfigurationMap(
@@ -50,7 +51,8 @@ data class Configuration(
         val name: String = "dp-kalkulator-api",
         val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
         val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
-        val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/graphql/"
+        val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/graphql/",
+        val testUser: String = config()[Key("TEST_USER_PNR_Q0", stringType)]
     )
 }
 
