@@ -50,7 +50,7 @@ data class Configuration(
         val name: String = "dp-kalkulator-api",
         val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
         val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
-        val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/"
+        val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/graphql/"
     )
 }
 
