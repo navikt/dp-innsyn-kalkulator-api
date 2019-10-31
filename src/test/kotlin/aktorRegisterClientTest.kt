@@ -3,9 +3,6 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.matching.RegexPattern
 import no.nav.dagpenger.*
-import no.nav.dagpenger.oidc.OidcClient
-import no.nav.dagpenger.oidc.OidcToken
-import no.nav.dagpenger.oidc.StsOidcClientException
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
