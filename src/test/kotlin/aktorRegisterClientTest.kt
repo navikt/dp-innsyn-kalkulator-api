@@ -1,8 +1,8 @@
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
-import com.github.tomakehurst.wiremock.matching.AnythingPattern
 import com.github.tomakehurst.wiremock.matching.RegexPattern
+import no.nav.dagpenger.*
 import no.nav.dagpenger.oidc.OidcClient
 import no.nav.dagpenger.oidc.OidcToken
 import no.nav.dagpenger.oidc.StsOidcClientException
@@ -12,12 +12,11 @@ import org.junit.jupiter.api.BeforeEach
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class AktorRegisterClientTest {
 
-    val validResponse = """{
-        |"aktørId": "12345"
-        |}""".trimMargin()
+    val validResponse = Data(Bruker(BrukerType.AKTOERID, "12345"))
 
     val oidcClient = object : OidcClient {
         override fun oidcToken(): OidcToken {
@@ -54,15 +53,33 @@ class AktorRegisterClientTest {
 
     @Test
     fun `Client returns aktorid from jwk`() {
-        val oppslagClient = no.nav.dagpenger.AktørIdOppslag(server.url(""), oidcClient, "key")
+        val body = AktorRegisterClientTest::class.java.getResource("example-aktoerid-payload.json")
+                .readText()
+        val oppslagClient = no.nav.dagpenger.AktørIdOppslag(server.url(""), "key")
         WireMock.stubFor(
-                WireMock.get(WireMock.urlEqualTo("//aktoer-ident"))
-                        .withHeader("Authorization", RegexPattern("Bearer\\s[\\d|a-f]{8}-([\\d|a-f]{4}-){3}[\\d|a-f]{12}"))
-                        .withHeader("ident", AnythingPattern())
-                        .willReturn(WireMock.aResponse().withBody(validResponse))
+                WireMock.get(WireMock.urlEqualTo("/"))
+                        .willReturn(WireMock.aResponse().withBody(body))
         )
 
-        val aktorid = oppslagClient.fetchAktørId("12345678910")
-        assertEquals("12345", aktorid)
+        val responseBruker = oppslagClient.fetchAktørIdGraphql("12345678910", "tøken")
+        assertEquals(validResponse.bruker, responseBruker)
+    }
+
+    @org.junit.jupiter.api.Test
+    fun `håndterer 4xx-feil`() {
+
+        WireMock.stubFor(
+                WireMock.post(WireMock.urlEqualTo("/"))
+                        .withHeader("Authorization", RegexPattern("Bearer\\s[\\d|a-f]{8}-([\\d|a-f]{4}-){3}[\\d|a-f]{12}"))
+                        .willReturn(
+                                WireMock.notFound()
+                        )
+        )
+
+        val oppslagClient = no.nav.dagpenger.AktørIdOppslag(server.url(""), "key")
+
+        val result = runCatching { oppslagClient.fetchAktørIdGraphql("-1", "token") }
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is GraphQlAktørIdException)
     }
 }

@@ -42,10 +42,8 @@ fun main() = runBlocking {
             .cached(10, 24, TimeUnit.HOURS)
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
-    val stsOidcClient =
-            StsOidcClient(config.application.oicdStsUrl, config.application.username, config.application.password)
 
-    val oppslagsKlient = AktørIdOppslag(config.application.oppslagBaseUrl, stsOidcClient, config.application.apiGatewayKey)
+    val oppslagsKlient = AktørIdOppslag(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {
         KalkulatorDings(jwkProvider, config.application.jwksIssuer, oppslagsKlient)
@@ -114,7 +112,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
     routing {
         route("/arbeid/dagpenger/kalkulator-api/dummy") {
             get {
-                val dummy = oppslagsKlient.fetchOrganisasjonsNavn()
+                val dummy = oppslagsKlient.fetchAktørIdGraphql("1234", "token")
                 call.respond(HttpStatusCode.OK, dummy.toString())
             }
         }
@@ -125,7 +123,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     val request = call.receive<BehovRequest>()
-                    val aktørid = oppslagsKlient.fetchAktørId(fødselsnummer)
+                    val aktørid = oppslagsKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
                     call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
                 }
             }
