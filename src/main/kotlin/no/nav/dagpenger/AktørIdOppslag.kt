@@ -1,5 +1,6 @@
 package no.nav.dagpenger
 import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.moshi.responseObject
 import com.github.kittinunf.result.Result
 import mu.KotlinLogging
@@ -11,7 +12,7 @@ private val adapter = moshiInstance.adapter(GraphQlQuery::class.java).serializeN
 class AktørIdOppslag(private val oppslagBaseUrl: String, private val apiGatewayKey: String) {
 
     fun fetchAktørIdGraphql(fnr: String, idToken: String): Person? {
-        val (_, response, result) = with(oppslagBaseUrl.httpGet()) {
+        val (_, response, result) = with(oppslagBaseUrl.httpPost()) {
             header("Content-Type" to "application/json")
             header("x-nav-apiKey" to apiGatewayKey)
             header("ID_token" to idToken)
