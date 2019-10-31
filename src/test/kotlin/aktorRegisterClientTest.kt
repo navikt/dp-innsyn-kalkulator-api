@@ -42,7 +42,7 @@ class AktorRegisterClientTest {
                 .readText()
         val oppslagClient = no.nav.dagpenger.AktørIdOppslag(server.url(""), "key")
         WireMock.stubFor(
-                WireMock.get(WireMock.urlEqualTo("/"))
+                WireMock.post(WireMock.urlEqualTo("/"))
                         .willReturn(WireMock.aResponse().withBody(body))
         )
 
