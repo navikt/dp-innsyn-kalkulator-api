@@ -23,7 +23,7 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, private val apiGateway
         return when (result) {
             is Result.Failure -> throw GraphQlAktørIdException(
                     response.statusCode,
-                    "Failed to fetch aktoer-id for naturlig-id. Response message $response",
+                    "Failed to fetch aktoer-id for naturlig-id. Response message ${response.responseMessage}",
                     result.getException()
             )
             is Result.Success -> result.get().data.person
@@ -56,9 +56,9 @@ sealed class GraphQlQuery(val query: String, val variables: Any?)
 
 data class aktørIdQuery(val fnr: String) : GraphQlQuery(
         query = """ 
-            query PersonFromFnrQuery($fnr: ID!) {
-    person(id: $fnr, idType: NATURLIG_IDENT) {
-        aktoerId
+            query {
+                person(id: "$fnr", idType: NATURLIG_IDENT) {
+                aktoerId
     }
 }
             """.trimIndent(),
