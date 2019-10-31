@@ -16,19 +16,7 @@ import kotlin.test.assertTrue
 
 class AktorRegisterClientTest {
 
-    val validResponse = Data(Bruker(BrukerType.AKTOERID, "12345"))
-
-    val oidcClient = object : OidcClient {
-        override fun oidcToken(): OidcToken {
-            return OidcToken(UUID.randomUUID().toString(), "openid", 3000)
-        }
-    }
-
-    val failingOidcClient = object : OidcClient {
-        override fun oidcToken(): OidcToken {
-            throw StsOidcClientException("Failed!", RuntimeException("arrgg!"))
-        }
-    }
+    val validResponse = Data(Person(BrukerType.AKTOERID, "12345"))
 
     companion object {
         val server = WireMockServer(WireMockConfiguration.options().dynamicPort())
@@ -62,7 +50,7 @@ class AktorRegisterClientTest {
         )
 
         val responseBruker = oppslagClient.fetchAktørIdGraphql("12345678910", "tøken")
-        assertEquals(validResponse.bruker, responseBruker)
+        assertEquals(validResponse.person, responseBruker)
     }
 
     @org.junit.jupiter.api.Test

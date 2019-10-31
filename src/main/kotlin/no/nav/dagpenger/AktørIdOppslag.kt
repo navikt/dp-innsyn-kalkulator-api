@@ -10,7 +10,7 @@ private val adapter = moshiInstance.adapter(GraphQlQuery::class.java).serializeN
 
 class AktørIdOppslag(private val oppslagBaseUrl: String, private val apiGatewayKey: String) {
 
-    fun fetchAktørIdGraphql(fnr: String, idToken: String): Bruker? {
+    fun fetchAktørIdGraphql(fnr: String, idToken: String): Person? {
         val (_, response, result) = with(oppslagBaseUrl.httpGet()) {
             header("Content-Type" to "application/json")
             header("x-nav-apiKey" to apiGatewayKey)
@@ -25,7 +25,7 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, private val apiGateway
                     "Failed to fetch aktoer-id for naturlig-id. Response message $response",
                     result.getException()
             )
-            is Result.Success -> result.get().data.bruker
+            is Result.Success -> result.get().data.person
         }
     }
 
@@ -64,9 +64,9 @@ data class aktørIdQuery(val fnr: String) : GraphQlQuery(
         variables = null
 )
 
-data class Data(val bruker: Bruker)
+data class Data(val person: Person)
 
-data class Bruker(
+data class Person(
     val type: BrukerType,
     val id: String
 )
