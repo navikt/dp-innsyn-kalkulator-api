@@ -115,7 +115,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
                 call.respond(HttpStatusCode.OK, dummy.toString())
             }
         }
-        authenticate {
+        //authenticate {
             route("/arbeid/dagpenger/kalkulator-api/behov") {
                 post {
                     val idToken = call.request.cookies["selvbetjening-idtoken"]
@@ -131,7 +131,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
                     call.respond(HttpStatusCode.OK, "Gyldig token!")
                 }
             }
-        }
+       // }
         naischecks()
     }
 }
