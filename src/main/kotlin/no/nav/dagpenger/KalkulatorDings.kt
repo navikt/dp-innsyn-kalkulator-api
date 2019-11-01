@@ -7,6 +7,7 @@ import com.ryanharter.ktor.moshi.moshi
 import com.squareup.moshi.JsonDataException
 import io.ktor.application.*
 import io.ktor.auth.Authentication
+import io.ktor.auth.authenticate
 import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
@@ -114,23 +115,23 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
                 call.respond(HttpStatusCode.OK, dummy.toString())
             }
         }
-        // authenticate {
-        route("/arbeid/dagpenger/kalkulator-api/behov") {
-            post {
-                val idToken = call.request.cookies["selvbetjening-idtoken"]
-                        ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
-                val fødselsnummer = getSubject()
-                val request = call.receive<BehovRequest>()
-                val aktørid = oppslagsKlient.fetchAktørIdGraphql(config.application.testUser, idToken)
-                call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
+        authenticate {
+            route("/arbeid/dagpenger/kalkulator-api/behov") {
+                post {
+                    val idToken = call.request.cookies["selvbetjening-idtoken"]
+                            ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
+                    val fødselsnummer = getSubject()
+                    val request = call.receive<BehovRequest>()
+                    val aktørid = oppslagsKlient.fetchAktørIdGraphql(config.application.testUser, idToken)
+                    call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
+                }
+            }
+            route("/arbeid/dagpenger/kalkulator-api/auth") {
+                get {
+                    call.respond(HttpStatusCode.OK, "Gyldig token!")
+                }
             }
         }
-        route("/arbeid/dagpenger/kalkulator-api/auth") {
-            get {
-                call.respond(HttpStatusCode.OK, "Gyldig token!")
-            }
-        }
-        // }
         naischecks()
     }
 }
