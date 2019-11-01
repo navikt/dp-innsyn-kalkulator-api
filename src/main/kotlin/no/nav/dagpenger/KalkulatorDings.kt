@@ -1,4 +1,5 @@
 package no.nav.dagpenger
+
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwk.JwkProviderBuilder
 import com.auth0.jwt.exceptions.JWTDecodeException
@@ -6,7 +7,6 @@ import com.ryanharter.ktor.moshi.moshi
 import com.squareup.moshi.JsonDataException
 import io.ktor.application.*
 import io.ktor.auth.Authentication
-import io.ktor.auth.authenticate
 import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
@@ -59,8 +59,8 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
 
         filter { call ->
             !call.request.path().startsWith("/isAlive") &&
-                !call.request.path().startsWith("/isReady") &&
-                !call.request.path().startsWith("/metrics")
+                    !call.request.path().startsWith("/isReady") &&
+                    !call.request.path().startsWith("/metrics")
         }
     }
     install(Authentication) {
@@ -96,8 +96,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
             )
             call.respond(status, problem)
         }
-        exception<CookieNotSetException> {
-            cause ->
+        exception<CookieNotSetException> { cause ->
             LOGGER.warn(cause.message, cause)
             val status = HttpStatusCode.Unauthorized
             val problem = Problem(
@@ -115,23 +114,23 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
                 call.respond(HttpStatusCode.OK, dummy.toString())
             }
         }
-        //authenticate {
-            route("/arbeid/dagpenger/kalkulator-api/behov") {
-                post {
-                    val idToken = call.request.cookies["selvbetjening-idtoken"]
-                            ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
-                    val fødselsnummer = getSubject()
-                    val request = call.receive<BehovRequest>()
-                    val aktørid = oppslagsKlient.fetchAktørIdGraphql(config.application.testUser, idToken)
-                    call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
-                }
+        // authenticate {
+        route("/arbeid/dagpenger/kalkulator-api/behov") {
+            post {
+                val idToken = call.request.cookies["selvbetjening-idtoken"]
+                        ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
+                val fødselsnummer = getSubject()
+                val request = call.receive<BehovRequest>()
+                val aktørid = oppslagsKlient.fetchAktørIdGraphql(config.application.testUser, idToken)
+                call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
             }
-            route("/arbeid/dagpenger/kalkulator-api/auth") {
-                get {
-                    call.respond(HttpStatusCode.OK, "Gyldig token!")
-                }
+        }
+        route("/arbeid/dagpenger/kalkulator-api/auth") {
+            get {
+                call.respond(HttpStatusCode.OK, "Gyldig token!")
             }
-       // }
+        }
+        // }
         naischecks()
     }
 }
