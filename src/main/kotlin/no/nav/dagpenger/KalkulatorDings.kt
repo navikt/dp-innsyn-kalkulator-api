@@ -122,7 +122,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     val request = call.receive<BehovRequest>()
-                    val aktørid = oppslagsKlient.fetchAktørIdGraphql(config.application.testUser, idToken)
+                    val aktørid = oppslagsKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
                     call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
                 }
             }
