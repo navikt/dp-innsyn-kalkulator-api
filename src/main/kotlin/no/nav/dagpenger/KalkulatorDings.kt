@@ -1,4 +1,5 @@
 package no.nav.dagpenger
+
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwk.JwkProviderBuilder
 import com.auth0.jwt.exceptions.JWTDecodeException
@@ -27,7 +28,6 @@ import io.ktor.server.netty.Netty
 import io.ktor.util.pipeline.PipelineContext
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import no.nav.dagpenger.oidc.StsOidcClient
 import org.slf4j.event.Level
 import java.net.URI
 import java.net.URL
@@ -42,10 +42,8 @@ fun main() = runBlocking {
             .cached(10, 24, TimeUnit.HOURS)
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
-    val stsOidcClient =
-            StsOidcClient(config.application.oicdStsUrl, config.application.username, config.application.password)
 
-    val oppslagsKlient = AktørIdOppslag(config.application.oppslagBaseUrl, stsOidcClient, config.application.apiGatewayKey)
+    val oppslagsKlient = AktørIdOppslag(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {
         KalkulatorDings(jwkProvider, config.application.jwksIssuer, oppslagsKlient)
@@ -62,8 +60,8 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
 
         filter { call ->
             !call.request.path().startsWith("/isAlive") &&
-                !call.request.path().startsWith("/isReady") &&
-                !call.request.path().startsWith("/metrics")
+                    !call.request.path().startsWith("/isReady") &&
+                    !call.request.path().startsWith("/metrics")
         }
     }
     install(Authentication) {
@@ -99,8 +97,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
             )
             call.respond(status, problem)
         }
-        exception<CookieNotSetException> {
-            cause ->
+        exception<CookieNotSetException> { cause ->
             LOGGER.warn(cause.message, cause)
             val status = HttpStatusCode.Unauthorized
             val problem = Problem(
@@ -114,7 +111,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
     routing {
         route("/arbeid/dagpenger/kalkulator-api/dummy") {
             get {
-                val dummy = oppslagsKlient.fetchOrganisasjonsNavn()
+                val dummy = oppslagsKlient.fetchAktørIdGraphql("1234", "token")
                 call.respond(HttpStatusCode.OK, dummy.toString())
             }
         }
@@ -125,7 +122,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     val request = call.receive<BehovRequest>()
-                    val aktørid = oppslagsKlient.fetchAktørId(fødselsnummer)
+                    val aktørid = oppslagsKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
                     call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
                 }
             }

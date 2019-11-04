@@ -8,8 +8,6 @@ import com.natpryce.konfig.intType
 import com.natpryce.konfig.overriding
 import com.natpryce.konfig.stringType
 
-// Todo: Fjerne konfigurasjonsnøkler som ikke brukes
-// todo: rename oidc user and password to applicationuser and password
 private val localProperties = ConfigurationMap(
     mapOf(
         "application.profile" to "LOCAL",
@@ -18,19 +16,16 @@ private val localProperties = ConfigurationMap(
         "jwks.issuer" to "https://localhost",
         "API_GATEWAY_API_KEY" to "hunter2",
         "API_GATEWAY_URL" to "http://localhost/",
-        "oidcStsUrl" to "http://localhost/",
-            "STS_PASSWORD" to "hai hai",
-            "STS_USERNAME" to "kalkulator-api"
+            "TEST_USER_PNR_Q0" to "12345"
     )
 )
 private val devProperties = ConfigurationMap(
     mapOf(
-        "jwks.url" to "https://login.microsoftonline.com/navtestb2c.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_idporten",
-        "jwks.issuer" to "https://login.microsoftonline.com/d38f25aa-eab8-4c50-9f28-ebf92c1256f2/v2.0/",
+            "jwks.url" to "https://login.microsoftonline.com/navtestb2c.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_idporten_ver1",
+            "jwks.issuer" to "https://login.microsoftonline.com/d38f25aa-eab8-4c50-9f28-ebf92c1256f2/v2.0/",
         "application.profile" to "DEV",
         "application.httpPort" to "8099",
-        "API_GATEWAY_URL" to "https://api-gw-q1.oera.no/dp-reverse-proxy/",
-        "oidcStsUrl" to "https://security-token-service.nais.preprod.local"
+        "API_GATEWAY_URL" to "https://api-gw-q1.oera.no/dp-reverse-proxy/"
     )
 )
 private val prodProperties = ConfigurationMap(
@@ -39,12 +34,10 @@ private val prodProperties = ConfigurationMap(
         "jwks.issuer" to "https://login.microsoftonline.com/8b7dfc8b-b52e-4741-bde4-d83ea366f94f/v2.0/",
         "application.profile" to "PROD",
         "application.httpPort" to "8099",
-        "API_GATEWAY_URL" to "https://api-gw.oera.no/dp-reverse-proxy/",
-        "oidcStsUrl" to "https://security-token-service.nais.adeo.no"
+        "API_GATEWAY_URL" to "https://api-gw.oera.no/dp-reverse-proxy/"
     )
 )
 
-// Todo: Fjerne konfigurasjonsnøkler som ikke brukes
 data class Configuration(
 
     val application: Application = Application()
@@ -58,10 +51,8 @@ data class Configuration(
         val name: String = "dp-kalkulator-api",
         val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
         val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
-        val oppslagBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dagpenger-oppslag/api",
-        val password: String = config()[Key("STS_PASSWORD", stringType)],
-        val username: String = config()[Key("STS_USERNAME", stringType)],
-        val oicdStsUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "security-token-service"
+        val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/graphql/",
+        val testUser: String = config()[Key("TEST_USER_PNR_Q0", stringType)]
     )
 }
 
