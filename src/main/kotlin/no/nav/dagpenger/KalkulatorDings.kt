@@ -43,15 +43,16 @@ fun main() = runBlocking {
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
 
-    val oppslagsKlient = AktørIdOppslag(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
+    val aktørIdOppslag = AktørIdOppslagKlient(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
+    //val startBehov = startBehovKlient(url, config.auth.regelApiKey)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {
-        KalkulatorDings(jwkProvider, config.application.jwksIssuer, oppslagsKlient)
+        KalkulatorDings(jwkProvider, config.application.jwksIssuer, aktørIdOppslag)
         LOGGER.debug("Starting application")
     }.start()
 }
 
-fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, oppslagsKlient: AktørIdOppslag) {
+fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, aktørIdKlient: AktørIdOppslagKlient) {
     install(ContentNegotiation) {
         moshi(moshiInstance)
     }
@@ -109,12 +110,6 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
         }
     }
     routing {
-        route("/arbeid/dagpenger/kalkulator-api/dummy") {
-            get {
-                val dummy = oppslagsKlient.fetchAktørIdGraphql("1234", "token")
-                call.respond(HttpStatusCode.OK, dummy.toString())
-            }
-        }
         authenticate {
             route("/arbeid/dagpenger/kalkulator-api/behov") {
                 post {
@@ -122,7 +117,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, opp
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     val request = call.receive<BehovRequest>()
-                    val aktørid = oppslagsKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
+                    val aktørid = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
                     call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
                 }
             }

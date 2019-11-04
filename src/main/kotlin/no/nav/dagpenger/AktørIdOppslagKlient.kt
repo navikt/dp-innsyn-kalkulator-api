@@ -9,7 +9,7 @@ import java.lang.RuntimeException
 private val logger = KotlinLogging.logger {}
 private val adapter = moshiInstance.adapter(GraphQlQuery::class.java).serializeNulls()
 
-class AktørIdOppslag(private val oppslagBaseUrl: String, private val apiGatewayKey: String) {
+class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiGatewayKey: String) {
 
     fun fetchAktørIdGraphql(fnr: String, idToken: String): Person? {
         val (_, response, result) = with(oppslagBaseUrl.httpPost()) {
@@ -29,28 +29,6 @@ class AktørIdOppslag(private val oppslagBaseUrl: String, private val apiGateway
             is Result.Success -> result.get().data.person
         }
     }
-
-    // todo: remove everything related to dummy route
-    fun fetchOrganisasjonsNavn(): Any {
-        val url = "$oppslagBaseUrl/organisasjon/123456789"
-
-        val (_, _, result) = with(
-                url.httpGet()
-                        .header(
-                                mapOf(
-                                        "x-nav-apiKey" to apiGatewayKey
-                                )
-                        )
-        ) {
-            responseObject<BOB>()
-        }
-
-        return result.get()
-    }
-}
-
-// todo: remove everything related to dummy route
-data class BOB(val orgNr: String, val navn: String)
 
 sealed class GraphQlQuery(val query: String, val variables: Any?)
 

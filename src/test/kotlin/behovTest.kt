@@ -25,7 +25,7 @@ class BehovTest {
         }
     }
 
-    val oppslagsKlient = AktørIdOppslag(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
+    val oppslagsKlient = AktørIdOppslagKlient(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
 
     @Test
     fun `Startbehov returns a response`() {

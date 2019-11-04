@@ -50,6 +50,7 @@ dependencies {
     implementation(Kotlin.Logging.kotlinLogging)
 
     implementation(Dagpenger.Biblioteker.stsKlient)
+    implementation(Dagpenger.Biblioteker.ktorUtils)
     implementation(Konfig.konfig)
 
     implementation(Moshi.moshi)

@@ -7,6 +7,7 @@ import com.natpryce.konfig.Key
 import com.natpryce.konfig.intType
 import com.natpryce.konfig.overriding
 import com.natpryce.konfig.stringType
+import no.nav.dagpenger.ktor.auth.ApiKeyVerifier
 
 private val localProperties = ConfigurationMap(
     mapOf(
@@ -40,9 +41,17 @@ private val prodProperties = ConfigurationMap(
 
 data class Configuration(
 
-    val application: Application = Application()
+    val application: Application = Application(),
+    val auth: Auth = Auth()
 
 ) {
+    class Auth(
+            regelApiSecret: String = config()[Key("auth.regelapi.secret", stringType)],
+            regelApiKeyPlain: String = config()[Key("auth.regelapi.key", stringType)]
+    ) {
+        val regelApiKey = ApiKeyVerifier(regelApiSecret).generate(regelApiKeyPlain)
+    }
+
     data class Application(
         val profile: Profile = config()[Key("application.profile", stringType)].let { Profile.valueOf(it) },
         val httpPort: Int = config()[Key("application.httpPort", intType)],
