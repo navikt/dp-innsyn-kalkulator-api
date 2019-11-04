@@ -7,7 +7,8 @@ import mu.KotlinLogging
 import java.lang.RuntimeException
 
 private val logger = KotlinLogging.logger {}
-private val adapter = moshiInstance.adapter(GraphQlQuery::class.java).serializeNulls()
+internal val adapter = moshiInstance.adapter(GraphQlQuery::class.java).serializeNulls()
+internal open class GraphQlQuery(val query: String, val variables: Any?)
 
 class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiGatewayKey: String) {
 
@@ -29,10 +30,11 @@ class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiG
             is Result.Success -> result.get().data.person
         }
     }
+}
 
-sealed class GraphQlQuery(val query: String, val variables: Any?)
 
-data class aktørIdQuery(val fnr: String) : GraphQlQuery(
+
+internal data class aktørIdQuery(val fnr: String) : GraphQlQuery(
         query = """ 
             query {
                 person(id: "$fnr", idType: NATURLIG_IDENT) {
