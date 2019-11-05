@@ -44,7 +44,7 @@ fun main() = runBlocking {
             .build()
 
     val aktørIdOppslag = AktørIdOppslagKlient(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
-    //val startBehov = startBehovKlient(url, config.auth.regelApiKey)
+    val startBehovKlient = RegelApiBehovKlient("url", config.auth.regelApiKey)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {
         KalkulatorDings(jwkProvider, config.application.jwksIssuer, aktørIdOppslag)
@@ -116,7 +116,6 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
                     val idToken = call.request.cookies["selvbetjening-idtoken"]
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
-                    val request = call.receive<BehovRequest>()
                     val aktørid = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
                     call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
                 }
@@ -143,7 +142,5 @@ private fun PipelineContext<Unit, ApplicationCall>.getSubject(): String {
 }
 
 class CookieNotSetException(override val message: String?) : RuntimeException(message)
-
-data class BehovRequest(val beregningsdato: LocalDate)
 
 data class BehovResponse(val location: String)
