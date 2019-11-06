@@ -8,7 +8,7 @@ import no.nav.dagpenger.BehovStatusResponse
 class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiKey: String) {
     private val jsonAdapter = moshiInstance.adapter(BehovRequest::class.java)
 
-    fun run(behovRequest: BehovRequest): String {
+    fun StartBehov(behovRequest: BehovRequest): String {
         val behovUrl = "$regelApiUrl/behov"
 
         val json = jsonAdapter.toJson(behovRequest)
@@ -30,17 +30,5 @@ class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiK
         }
     }
 }
-
-data class BehovRequest(
-        val aktorId: String,
-        val vedtakId: Int,
-        val beregningsdato: LocalDate,
-        val harAvtjentVerneplikt: Boolean? = null,
-        val oppfyllerKravTilFangstOgFisk: Boolean? = null,
-        val bruktInntektsPeriode: LocalDate? = null,
-        val manueltGrunnlag: Int? = null,
-        val antallBarn: Int? = null,
-        val inntektsId: String? = null
-)
 
 class RegelApiBehovHttpClientException(override val message: String) : RuntimeException(message)

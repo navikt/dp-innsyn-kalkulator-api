@@ -32,6 +32,7 @@ import org.slf4j.event.Level
 import java.net.URI
 import java.net.URL
 import java.time.LocalDate
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 private val LOGGER = KotlinLogging.logger {}
@@ -44,15 +45,15 @@ fun main() = runBlocking {
             .build()
 
     val aktørIdOppslag = AktørIdOppslagKlient(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
-    val startBehovKlient = RegelApiBehovKlient("url", config.auth.regelApiKey)
+    val startBehovKlient = RegelApiBehovKlient(config.application.regelApiBaseUrl, config.auth.regelApiKey)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {
-        KalkulatorDings(jwkProvider, config.application.jwksIssuer, aktørIdOppslag)
+        KalkulatorDings(jwkProvider, config.application.jwksIssuer, aktørIdOppslag, startBehovKlient)
         LOGGER.debug("Starting application")
     }.start()
 }
 
-fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, aktørIdKlient: AktørIdOppslagKlient) {
+fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, aktørIdKlient: AktørIdOppslagKlient, startBehovKlient: RegelApiBehovKlient) {
     install(ContentNegotiation) {
         moshi(moshiInstance)
     }
@@ -108,6 +109,17 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
             )
             call.respond(status, problem)
         }
+        //todo: fix this errorhandling
+        exception<RegelApiBehovHttpClientException> { cause ->
+            LOGGER.warn(cause.message, cause)
+            val status = HttpStatusCode.BadRequest
+            val problem = Problem(
+                    title = "Ikke innlogget",
+                    detail = "${cause.message}",
+                    status = status.value
+            )
+            call.respond(status, problem)
+        }
     }
     routing {
         authenticate {
@@ -116,8 +128,10 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
                     val idToken = call.request.cookies["selvbetjening-idtoken"]
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
-                    val aktørid = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
-                    call.respond(HttpStatusCode.OK, BehovResponse(aktørid.toString()))
+                    val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
+                    val aktørId = person?.aktoerId ?:Person("ugyldig")
+                    val response = startBehovKlient.StartBehov(createBehovRequest(aktørId.toString()))
+                    call.respond(HttpStatusCode.OK, response)
                 }
             }
             route("/arbeid/dagpenger/kalkulator-api/auth") {
@@ -128,6 +142,10 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
         }
         naischecks()
     }
+}
+
+private fun createBehovRequest(aktørId: String): BehovRequest {
+    return BehovRequest(aktørId, 1, LocalDate.now())
 }
 
 private fun PipelineContext<Unit, ApplicationCall>.getSubject(): String {
