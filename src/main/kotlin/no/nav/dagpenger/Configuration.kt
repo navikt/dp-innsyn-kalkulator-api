@@ -63,7 +63,7 @@ data class Configuration(
         val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
         val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
         val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/graphql/",
-        val regelApiBaseUrl: String = config() [Key("API_GATEWAY_URL", stringType)] + "dp-regel-api/v2/",
+        val regelApiBaseUrl: String = config() [Key("API_GATEWAY_URL", stringType)] + "dp-regel-api/v2",
         val testUser: String = config()[Key("TEST_USER_PNR_Q0", stringType)]
     )
 }
