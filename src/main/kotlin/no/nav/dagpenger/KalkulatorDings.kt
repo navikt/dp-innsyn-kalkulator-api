@@ -43,7 +43,7 @@ fun main() = runBlocking {
             .build()
 
     val aktørIdOppslag = AktørIdOppslagKlient(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
-    val startBehovKlient = RegelApiBehovKlient(config.application.regelApiBaseUrl, config.auth.regelApiKey)
+    val startBehovKlient = RegelApiBehovKlient(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {
         KalkulatorDings(jwkProvider, config.application.jwksIssuer, aktørIdOppslag, startBehovKlient)
@@ -126,10 +126,10 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
                     val idToken = call.request.cookies["selvbetjening-idtoken"]
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
-                    LOGGER.info { "fetching aktør" }
+                    LOGGER.info { "fetching aktør from " + config.application.graphQlBaseUrl }
                     val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
                     val aktørId = person.aktoerId
-                    LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl }
+                    LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl + "/behov" }
                     val response = startBehovKlient.StartBehov(createBehovRequest(aktørId))
                     call.respond(HttpStatusCode.OK, response)
                 }

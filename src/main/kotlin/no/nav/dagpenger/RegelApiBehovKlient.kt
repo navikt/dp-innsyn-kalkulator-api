@@ -2,7 +2,7 @@ package no.nav.dagpenger
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 
-class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiKey: String) {
+class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiKey: String, private val apiGatewayKey: String) {
     private val jsonAdapter = moshiInstance.adapter(BehovRequest::class.java)
 
     fun StartBehov(behovRequest: BehovRequest): String {
@@ -13,6 +13,7 @@ class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiK
 
                         behovUrl.httpPost()
                                 .apiKey(regelApiKey)
+                                .header("x-nav-apiKey" to apiGatewayKey)
                                 // .header(mapOf("Content-Type" to "application/json"))
                                 // .body(json)
                                 .response()
