@@ -129,7 +129,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
                     LOGGER.info { "fetching aktør" }
                     val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
                     val aktørId = person.aktoerId
-                    LOGGER.info { "starting behov" }
+                    LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl }
                     val response = startBehovKlient.StartBehov(createBehovRequest(aktørId))
                     call.respond(HttpStatusCode.OK, response)
                 }
