@@ -48,8 +48,8 @@ data class Configuration(
 
 ) {
     class Auth(
-            regelApiSecret: String = config()[Key("auth.regelapi.secret", stringType)],
-            regelApiKeyPlain: String = config()[Key("auth.regelapi.key", stringType)]
+        regelApiSecret: String = config()[Key("auth.regelapi.secret", stringType)],
+        regelApiKeyPlain: String = config()[Key("auth.regelapi.key", stringType)]
     ) {
         val regelApiKey = ApiKeyVerifier(regelApiSecret).generate(regelApiKeyPlain)
     }

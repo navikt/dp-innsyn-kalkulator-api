@@ -17,10 +17,8 @@ import io.ktor.features.StatusPages
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.auth.HttpAuthHeader
 import io.ktor.request.path
-import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.get
-import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
@@ -109,7 +107,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
             )
             call.respond(status, problem)
         }
-        //todo: fix this errorhandling
+        // todo: fix this errorhandling
         exception<RegelApiBehovHttpClientException> { cause ->
             LOGGER.warn(cause.message, cause)
             val status = HttpStatusCode.BadRequest
@@ -129,7 +127,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
-                    val aktørId = person?.aktoerId ?:Person("ugyldig")
+                    val aktørId = person?.aktoerId ?: Person("ugyldig")
                     val response = startBehovKlient.StartBehov(createBehovRequest(aktørId.toString()))
                     call.respond(HttpStatusCode.OK, response)
                 }

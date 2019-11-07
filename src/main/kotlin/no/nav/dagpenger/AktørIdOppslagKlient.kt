@@ -1,5 +1,4 @@
 package no.nav.dagpenger
-import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.moshi.responseObject
 import com.github.kittinunf.result.Result
@@ -31,8 +30,6 @@ class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiG
         }
     }
 }
-
-
 
 internal data class aktørIdQuery(val fnr: String) : GraphQlQuery(
         query = """ 

@@ -8,11 +8,9 @@ import io.ktor.server.testing.withTestApplication
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import io.kotlintest.shouldBe
 import no.nav.dagpenger.*
 import no.nav.dagpenger.oidc.OidcClient
 import no.nav.dagpenger.oidc.OidcToken
-import java.net.URI
 import java.util.*
 
 class BehovTest {

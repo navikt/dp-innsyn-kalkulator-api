@@ -2,8 +2,6 @@ package no.nav.dagpenger
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.moshi.responseObject
 import com.github.kittinunf.result.Result
-import java.time.LocalDate
-import no.nav.dagpenger.BehovStatusResponse
 
 class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiKey: String) {
     private val jsonAdapter = moshiInstance.adapter(BehovRequest::class.java)
