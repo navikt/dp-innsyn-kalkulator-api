@@ -12,14 +12,13 @@ class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiK
         //val json = jsonAdapter.toJson(behovRequest)
 
         val (_, response, result) =
-                with(
+
                         behovUrl.httpPost()
                                 .apiKey(regelApiKey)
-                                .header(mapOf("Content-Type" to "application/json"))
+                                //.header(mapOf("Content-Type" to "application/json"))
                                 //.body(json)
-                ) {
-                    responseObject<BehovStatusResponse>()
-                }
+                                .response()
+
         return when (result) {
             is Result.Failure -> throw RegelApiBehovHttpClientException(
                     "Failed to run behov. Response message ${response.responseMessage}. Error message: ${result.error.message}")
