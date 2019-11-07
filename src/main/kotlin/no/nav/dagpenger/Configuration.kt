@@ -18,8 +18,8 @@ private val localProperties = ConfigurationMap(
         "API_GATEWAY_API_KEY" to "hunter2",
         "API_GATEWAY_URL" to "http://localhost/",
             "TEST_USER_PNR_Q0" to "12345",
-            "auth.regelapi.secret" to "supersecret",
-            "auth.regelapi.key" to "regelKey"
+            "regel.api.secret" to "supersecret",
+            "regel.api.key" to "regelKey"
     )
 )
 private val devProperties = ConfigurationMap(
@@ -48,8 +48,8 @@ data class Configuration(
 
 ) {
     class Auth(
-        regelApiSecret: String = config()[Key("auth.regelapi.secret", stringType)],
-        regelApiKeyPlain: String = config()[Key("auth.regelapi.key", stringType)]
+        regelApiSecret: String = config()[Key("regel.api.secret", stringType)],
+        regelApiKeyPlain: String = config()[Key("regel.api.key", stringType)]
     ) {
         val regelApiKey = ApiKeyVerifier(regelApiSecret).generate(regelApiKeyPlain)
     }

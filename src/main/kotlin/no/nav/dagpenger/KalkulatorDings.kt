@@ -11,6 +11,7 @@ import io.ktor.auth.authenticate
 import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
+import io.ktor.client.HttpClient
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
@@ -126,8 +127,10 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
                     val idToken = call.request.cookies["selvbetjening-idtoken"]
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
+                    LOGGER.info { "fetching aktør" }
                     val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
                     val aktørId = person?.aktoerId ?: Person("ugyldig")
+                    LOGGER.info { "starting behov" }
                     val response = startBehovKlient.StartBehov(createBehovRequest(aktørId.toString()))
                     call.respond(HttpStatusCode.OK, response)
                 }
