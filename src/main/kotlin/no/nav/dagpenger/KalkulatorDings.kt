@@ -112,7 +112,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
             LOGGER.warn(cause.message, cause)
             val status = HttpStatusCode.BadRequest
             val problem = Problem(
-                    title = "Ikke innlogget",
+                    title = "Feil fra regel-api",
                     detail = "${cause.message}",
                     status = status.value
             )
@@ -128,9 +128,9 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
                     val fødselsnummer = getSubject()
                     LOGGER.info { "fetching aktør" }
                     val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
-                    val aktørId = person?.aktoerId ?: Person("ugyldig")
+                    val aktørId = person.aktoerId
                     LOGGER.info { "starting behov" }
-                    val response = startBehovKlient.StartBehov(createBehovRequest(aktørId.toString()))
+                    val response = startBehovKlient.StartBehov(createBehovRequest(aktørId))
                     call.respond(HttpStatusCode.OK, response)
                 }
             }

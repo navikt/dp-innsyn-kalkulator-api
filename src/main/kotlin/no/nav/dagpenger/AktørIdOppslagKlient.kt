@@ -11,7 +11,7 @@ internal open class GraphQlQuery(val query: String, val variables: Any?)
 
 class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiGatewayKey: String) {
 
-    fun fetchAktørIdGraphql(fnr: String, idToken: String): Person? {
+    fun fetchAktørIdGraphql(fnr: String, idToken: String): Person {
         val (_, response, result) = with(oppslagBaseUrl.httpPost()) {
             header("Content-Type" to "application/json")
             header("x-nav-apiKey" to apiGatewayKey)
