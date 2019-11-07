@@ -6,7 +6,6 @@ import no.nav.dagpenger.*
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
-import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -40,7 +39,7 @@ class AktorRegisterClientTest {
     fun `Client returns aktorid from jwk`() {
         val body = AktorRegisterClientTest::class.java.getResource("example-aktoerid-payload.json")
                 .readText()
-        val oppslagClient = no.nav.dagpenger.AktørIdOppslag(server.url(""), "key")
+        val oppslagClient = no.nav.dagpenger.AktørIdOppslagKlient(server.url(""), "key")
         WireMock.stubFor(
                 WireMock.post(WireMock.urlEqualTo("/"))
                         .willReturn(WireMock.aResponse().withBody(body))
@@ -61,7 +60,7 @@ class AktorRegisterClientTest {
                         )
         )
 
-        val oppslagClient = no.nav.dagpenger.AktørIdOppslag(server.url(""), "key")
+        val oppslagClient = no.nav.dagpenger.AktørIdOppslagKlient(server.url(""), "key")
 
         val result = runCatching { oppslagClient.fetchAktørIdGraphql("-1", "token") }
         assertTrue(result.isFailure)
