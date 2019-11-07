@@ -1,6 +1,5 @@
 package no.nav.dagpenger
 import com.github.kittinunf.fuel.httpPost
-import com.github.kittinunf.fuel.moshi.responseObject
 import com.github.kittinunf.result.Result
 
 class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiKey: String) {
@@ -9,14 +8,14 @@ class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiK
     fun StartBehov(behovRequest: BehovRequest): String {
         val behovUrl = "$regelApiUrl/behov"
 
-        //val json = jsonAdapter.toJson(behovRequest)
+        // val json = jsonAdapter.toJson(behovRequest)
 
         val (_, response, result) =
 
                         behovUrl.httpPost()
                                 .apiKey(regelApiKey)
-                                //.header(mapOf("Content-Type" to "application/json"))
-                                //.body(json)
+                                // .header(mapOf("Content-Type" to "application/json"))
+                                // .body(json)
                                 .response()
 
         return when (result) {
