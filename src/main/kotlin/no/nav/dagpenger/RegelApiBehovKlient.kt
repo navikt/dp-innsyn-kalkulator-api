@@ -9,14 +9,14 @@ class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiK
     fun StartBehov(behovRequest: BehovRequest): String {
         val behovUrl = "$regelApiUrl/behov"
 
-        val json = jsonAdapter.toJson(behovRequest)
+        //val json = jsonAdapter.toJson(behovRequest)
 
         val (_, response, result) =
                 with(
                         behovUrl.httpPost()
                                 .apiKey(regelApiKey)
                                 .header(mapOf("Content-Type" to "application/json"))
-                                .body(json)
+                                //.body(json)
                 ) {
                     responseObject<BehovStatusResponse>()
                 }
