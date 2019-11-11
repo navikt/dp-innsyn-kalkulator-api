@@ -26,11 +26,11 @@ import io.ktor.server.netty.Netty
 import io.ktor.util.pipeline.PipelineContext
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import no.nav.dagpenger.regel.api.internal.BehovStatusPoller
+import no.nav.dagpenger.regel.api.internal.SubsumsjonFetcher
 import org.slf4j.event.Level
 import java.net.URI
 import java.net.URL
-import java.time.LocalDate
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 private val LOGGER = KotlinLogging.logger {}
@@ -43,15 +43,18 @@ fun main() = runBlocking {
             .build()
 
     val aktørIdOppslag = AktørIdOppslagKlient(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
-    val startBehovKlient = RegelApiBehovKlient(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val behovStarter = BehovStarter(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val behovStatusPoller = BehovStatusPoller(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val subsumsjonFetcher = SubsumsjonFetcher(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val dagpengeKalkulator = DagpengeKalkulator(behovStarter, behovStatusPoller, subsumsjonFetcher)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {
-        KalkulatorDings(jwkProvider, config.application.jwksIssuer, aktørIdOppslag, startBehovKlient)
+        KalkulatorDings(jwkProvider, config.application.jwksIssuer, aktørIdOppslag, dagpengeKalkulator)
         LOGGER.debug("Starting application")
     }.start()
 }
 
-fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, aktørIdKlient: AktørIdOppslagKlient, startBehovKlient: RegelApiBehovKlient) {
+fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, aktørIdKlient: AktørIdOppslagKlient, dagpengerKalkulator: DagpengeKalkulator) {
     install(ContentNegotiation) {
         moshi(moshiInstance)
     }
@@ -128,9 +131,9 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
                     val fødselsnummer = getSubject()
                     LOGGER.info { "fetching aktør from " + config.application.graphQlBaseUrl }
                     val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
-                    val aktørId = person.aktoerId
-                    LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl + "/behov" }
-                    val response = startBehovKlient.StartBehov(createBehovRequest(aktørId))
+
+                    val response = dagpengerKalkulator.kalkuler(person.aktoerId)
+
                     call.respond(HttpStatusCode.OK, response)
                 }
             }
@@ -144,9 +147,6 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
     }
 }
 
-private fun createBehovRequest(aktørId: String): BehovRequest {
-    return BehovRequest(aktørId, 1, LocalDate.now())
-}
 
 private fun PipelineContext<Unit, ApplicationCall>.getSubject(): String {
     return runCatching {

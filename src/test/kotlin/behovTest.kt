@@ -24,7 +24,7 @@ class BehovTest {
     }
 
     val oppslagsKlient = AktørIdOppslagKlient(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
-    val behovsKlient = RegelApiBehovKlient(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val behovsKlient = BehovStarter(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
 
     @Test
     fun `Startbehov returns a response`() {

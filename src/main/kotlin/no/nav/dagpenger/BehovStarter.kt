@@ -2,13 +2,14 @@ package no.nav.dagpenger
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.moshi.responseObject
 import com.github.kittinunf.result.Result
+import java.time.LocalDate
 
-class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiKey: String, private val apiGatewayKey: String) {
+class BehovStarter(private val regelApiUrl: String, private val regelApiKey: String, private val apiGatewayKey: String) {
     private val jsonAdapter = moshiInstance.adapter(BehovRequest::class.java)
 
-    fun StartBehov(behovRequest: BehovRequest): String {
+    fun startBehov(aktørId: String): String {
         val behovUrl = "$regelApiUrl/behov"
-        val json = jsonAdapter.toJson(behovRequest)
+        val json = jsonAdapter.toJson(createBehovRequest(aktørId))
 
         val (_, response, result) =
                 with(
@@ -30,3 +31,7 @@ class RegelApiBehovKlient(private val regelApiUrl: String, private val regelApiK
 }
 
 class RegelApiBehovHttpClientException(override val message: String) : RuntimeException(message)
+
+private fun createBehovRequest(aktørId: String): BehovRequest {
+    return BehovRequest(aktørId, -1337, LocalDate.now())
+}
