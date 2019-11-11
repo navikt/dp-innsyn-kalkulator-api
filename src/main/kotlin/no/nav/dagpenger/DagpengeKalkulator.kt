@@ -14,9 +14,10 @@ class DagpengeKalkulator(
     suspend fun kalkuler(aktørId: String): KalkulasjonsResult {
         LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl + "/behov" }
         val pollLocation = behovStarter.startBehov(aktørId)
+        LOGGER.info("Location: $pollLocation")
 
         val subsumsjonLocation = behovStatusPoller.pollStatus(pollLocation)
-        LOGGER.info("Location: $subsumsjonLocation")
+        LOGGER.info("Subsumsjon: $subsumsjonLocation")
 
         val subsumsjon = subsumsjonFetcher.getSubsumsjon(subsumsjonLocation)
 
