@@ -4,13 +4,13 @@ import no.nav.dagpenger.regel.api.internal.models.Faktum
 import java.math.BigDecimal
 
 data class Subsumsjon(
-        val behovId: String,
-        val faktum: Faktum,
-        val grunnlagResultat: GrunnlagResultat?,
-        val minsteinntektResultat: MinsteinntektResultat?,
-        val periodeResultat: PeriodeResultat?,
-        val satsResultat: SatsResultat?,
-        val problem: Problem?
+    val behovId: String,
+    val faktum: Faktum,
+    val grunnlagResultat: GrunnlagResultat?,
+    val minsteinntektResultat: MinsteinntektResultat?,
+    val periodeResultat: PeriodeResultat?,
+    val satsResultat: SatsResultat?,
+    val problem: Problem?
 )
 
 data class GrunnlagResultat(

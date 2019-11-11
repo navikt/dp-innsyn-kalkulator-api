@@ -5,7 +5,6 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.github.tomakehurst.wiremock.matching.EqualToPattern
-import no.nav.dagpenger.BehovRequest
 import no.nav.dagpenger.BehovStarter
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions
@@ -47,8 +46,8 @@ class BehovStarterTest {
                 .withRequestBody(EqualToJsonPattern("""
                     {
                         "aktorId": "001",
-                        "vedtakId": 123456,
-                        "beregningsdato": "2019-04-14"
+                        "vedtakId": -1337,
+                        "beregningsdato": "${LocalDate.now()}"
                     }
                 """.trimIndent(), true, true))
                 .willReturn(

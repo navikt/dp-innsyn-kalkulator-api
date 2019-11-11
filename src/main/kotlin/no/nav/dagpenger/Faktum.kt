@@ -1,5 +1,6 @@
 package no.nav.dagpenger.regel.api.internal.models
 
+import no.nav.dagpenger.InntektsPeriode
 import java.time.LocalDate
 
 data class Faktum(

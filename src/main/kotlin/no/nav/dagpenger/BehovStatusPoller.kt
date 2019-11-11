@@ -71,8 +71,8 @@ class BehovStatusPoller(
 }
 
 private data class BehovStatusPollResult(
-        val status: BehovStatus?,
-        val location: String?
+    val status: BehovStatus?,
+    val location: String?
 ) {
     fun isPending() = status == BehovStatus.PENDING
 }

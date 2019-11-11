@@ -8,9 +8,10 @@ import no.nav.dagpenger.apiKey
 import no.nav.dagpenger.moshiInstance
 
 class SubsumsjonFetcher(
-        private val regelApiUrl: String,
-        private val regelApiKey: String,
-        private val apiGatewayKey: String) {
+    private val regelApiUrl: String,
+    private val regelApiKey: String,
+    private val apiGatewayKey: String
+) {
 
     fun getSubsumsjon(subsumsjonLocation: String): Subsumsjon {
         val url = "$regelApiUrl$subsumsjonLocation"

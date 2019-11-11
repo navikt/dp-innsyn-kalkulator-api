@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.matching.EqualToPattern
+import no.nav.dagpenger.config
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
@@ -37,7 +38,7 @@ class SubsumsjonFetcherTest {
     fun `Should get subsumsjon`() {
 
         val responseBodyJson = SubsumsjonFetcherTest::class.java
-            .getResource("/test-data/example-subsumsjon-payload.json").readText()
+            .getResource("/example-subsumsjon-payload.json").readText()
 
         val equalToPattern = EqualToPattern("regelApiKey")
         WireMock.stubFor(
@@ -49,7 +50,7 @@ class SubsumsjonFetcherTest {
                 )
         )
 
-        val client = SubsumsjonFetcher(server.url(""), equalToPattern.value)
+        val client = SubsumsjonFetcher(server.url(""), equalToPattern.value, config.application.apiGatewayKey)
 
         val subsumsjon = client.getSubsumsjon("/subsumsjon/112233")
 

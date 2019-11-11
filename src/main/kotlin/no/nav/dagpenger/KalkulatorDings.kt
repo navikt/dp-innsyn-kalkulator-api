@@ -147,7 +147,6 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
     }
 }
 
-
 private fun PipelineContext<Unit, ApplicationCall>.getSubject(): String {
     return runCatching {
         call.authentication.principal?.let {

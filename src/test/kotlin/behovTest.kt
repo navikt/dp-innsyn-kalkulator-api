@@ -11,6 +11,8 @@ import kotlin.test.assertNotNull
 import no.nav.dagpenger.*
 import no.nav.dagpenger.oidc.OidcClient
 import no.nav.dagpenger.oidc.OidcToken
+import no.nav.dagpenger.regel.api.internal.BehovStatusPoller
+import no.nav.dagpenger.regel.api.internal.SubsumsjonFetcher
 import java.util.*
 
 class BehovTest {
@@ -24,11 +26,14 @@ class BehovTest {
     }
 
     val oppslagsKlient = AktørIdOppslagKlient(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
-    val behovsKlient = BehovStarter(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val behovStarter = BehovStarter(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val behovStatusPoller = BehovStatusPoller(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val subsumsjonFetcher = SubsumsjonFetcher(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val dagpengeKalkulator = DagpengeKalkulator(behovStarter, behovStatusPoller, subsumsjonFetcher)
 
     @Test
     fun `Startbehov returns a response`() {
-        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oppslagsKlient, behovsKlient) }) {
+        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oppslagsKlient, dagpengeKalkulator) }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
             }.apply {
                 assertNotNull(response.status())
@@ -38,7 +43,7 @@ class BehovTest {
 
     @Test
     fun `Startbehov returns a response with real token`() {
-        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oppslagsKlient, behovsKlient) }) {
+        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oppslagsKlient, dagpengeKalkulator) }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
             }.apply {
                 assertNotNull(response.status())
@@ -48,7 +53,7 @@ class BehovTest {
 
     // @Test
     fun `Startbehov returns the response from regelApi `() {
-        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oppslagsKlient, behovsKlient) }) {
+        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oppslagsKlient, dagpengeKalkulator) }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
                 addHeader(HttpHeaders.ContentType, "application/json")
@@ -72,7 +77,7 @@ class BehovTest {
 
     @Test
     fun `Api returns a 401 if user is unauthenticated`() {
-        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oppslagsKlient, behovsKlient) }) {
+        withTestApplication({ KalkulatorDings(jwkStub.stubbedJwkProvider(), "test issuer", oppslagsKlient, dagpengeKalkulator) }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
                 addHeader(HttpHeaders.Authorization, "Bearer $unauthorizedToken")
             }.apply {

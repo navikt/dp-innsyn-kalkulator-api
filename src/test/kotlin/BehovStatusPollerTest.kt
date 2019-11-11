@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.matching.EqualToPattern
 import com.github.tomakehurst.wiremock.stubbing.Scenario
 import kotlinx.coroutines.runBlocking
+import no.nav.dagpenger.config
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -42,6 +43,7 @@ internal class BehovStatusPollerTest {
         val client = BehovStatusPoller(
             regelApiUrl = server.url("/"),
             regelApiKey = "regelApiKey",
+                apiGatewayKey = config.application.apiGatewayKey,
             timeout = Duration.ZERO
         )
         assertThrows(
@@ -92,7 +94,7 @@ internal class BehovStatusPollerTest {
         )
 
         val client =
-                BehovStatusPoller(regelApiUrl = server.url(""), regelApiKey = pattern.value)
+                BehovStatusPoller(regelApiUrl = server.url(""), regelApiKey = pattern.value, apiGatewayKey = config.application.apiGatewayKey)
 
         val response = runBlocking { client.pollStatus("/behov/status/123") }
         assertEquals("54321", response)

@@ -4,12 +4,12 @@ import no.nav.dagpenger.regel.api.internal.BehovStatusPoller
 import no.nav.dagpenger.regel.api.internal.SubsumsjonFetcher
 
 class DagpengeKalkulator(
-        val behovStarter: BehovStarter,
-        val behovStatusPoller: BehovStatusPoller,
-        val subsumsjonFetcher: SubsumsjonFetcher
+    val behovStarter: BehovStarter,
+    val behovStatusPoller: BehovStatusPoller,
+    val subsumsjonFetcher: SubsumsjonFetcher
 ) {
     suspend fun kalkuler(aktørId: String): KalkulasjonsResult {
-        //LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl + "/behov" }
+        // LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl + "/behov" }
         val pollLocation = behovStarter.startBehov(aktørId)
 
         val subsumsjonLocation = behovStatusPoller.pollStatus(pollLocation)
@@ -27,7 +27,7 @@ class DagpengeKalkulator(
 class IncompleteResultException(override val message: String) : RuntimeException(message)
 
 data class KalkulasjonsResult(
-        val oppfyllerMinsteinntekt: Boolean,
-        val ukesats: Int,
-        val periodeAntallUker: Int
+    val oppfyllerMinsteinntekt: Boolean,
+    val ukesats: Int,
+    val periodeAntallUker: Int
 )
