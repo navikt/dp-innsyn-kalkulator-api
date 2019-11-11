@@ -25,7 +25,7 @@ class BehovStarter(private val regelApiUrl: String, private val regelApiKey: Str
             is Result.Failure -> throw RegelApiBehovHttpClientException(
                     "Failed to run behov. Response message ${response.responseMessage}. Error message: ${result.error.message}")
             is Result.Success ->
-                response.headers["Location"].first().toUpperCase()
+                response.headers["Location"].first()
         }
     }
 }

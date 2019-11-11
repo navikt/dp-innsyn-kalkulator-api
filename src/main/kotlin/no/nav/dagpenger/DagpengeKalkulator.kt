@@ -1,7 +1,10 @@
 package no.nav.dagpenger
 
+import mu.KotlinLogging
 import no.nav.dagpenger.regel.api.internal.BehovStatusPoller
 import no.nav.dagpenger.regel.api.internal.SubsumsjonFetcher
+
+private val LOGGER = KotlinLogging.logger {}
 
 class DagpengeKalkulator(
     val behovStarter: BehovStarter,
@@ -9,10 +12,11 @@ class DagpengeKalkulator(
     val subsumsjonFetcher: SubsumsjonFetcher
 ) {
     suspend fun kalkuler(aktørId: String): KalkulasjonsResult {
-        // LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl + "/behov" }
+        LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl + "/behov" }
         val pollLocation = behovStarter.startBehov(aktørId)
 
         val subsumsjonLocation = behovStatusPoller.pollStatus(pollLocation)
+        LOGGER.info("Location: $subsumsjonLocation")
 
         val subsumsjon = subsumsjonFetcher.getSubsumsjon(subsumsjonLocation)
 
