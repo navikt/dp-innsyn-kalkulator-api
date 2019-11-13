@@ -5,11 +5,12 @@ import com.github.kittinunf.fuel.moshi.responseObject
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.time.delay
 import kotlinx.coroutines.withTimeout
+import mu.KotlinLogging
 import no.nav.dagpenger.BehovStatus
 import no.nav.dagpenger.BehovStatusResponse
 import no.nav.dagpenger.apiKey
 import java.time.Duration
-
+private val LOGGER = KotlinLogging.logger {}
 class BehovStatusPoller(
     private val regelApiUrl: String,
     private val regelApiKey: String,
@@ -33,6 +34,7 @@ class BehovStatusPoller(
             BehovStatusPollResult(result.get().status, null)
         } catch (exception: Exception) {
             if (response.statusCode == 303) {
+                LOGGER.info("Caught 303: " + response.toString())
                 return BehovStatusPollResult(
                     null,
                     response.headers["Location"].first()
