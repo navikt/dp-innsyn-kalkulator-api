@@ -9,7 +9,6 @@ private val logger = KotlinLogging.logger {}
 internal val adapter = moshiInstance.adapter(GraphQlQuery::class.java).serializeNulls()
 internal open class GraphQlQuery(val query: String, val variables: Any?)
 
-
 // todo: add application x-api-key
 class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiGatewayKey: String, private val graphQlKey: String) {
 
