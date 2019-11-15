@@ -17,9 +17,9 @@ private val localProperties = ConfigurationMap(
         "jwks.issuer" to "https://localhost",
         "API_GATEWAY_API_KEY" to "hunter2",
         "API_GATEWAY_URL" to "http://localhost/",
-            "TEST_USER_PNR_Q0" to "12345",
             "regel.api.secret" to "supersecret",
-            "regel.api.key" to "regelKey"
+            "regel.api.key" to "regelKey",
+            "GRAPH_QL_KEY" to "hunter2"
     )
 )
 private val devProperties = ConfigurationMap(
@@ -64,7 +64,7 @@ data class Configuration(
         val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
         val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/graphql/",
         val regelApiBaseUrl: String = config() [Key("API_GATEWAY_URL", stringType)] + "dp-regel-api",
-        val testUser: String = config()[Key("TEST_USER_PNR_Q0", stringType)]
+        val graphQlKey: String = config() [Key("GRAPH_QL_KEY", stringType)]
     )
 }
 

@@ -25,7 +25,7 @@ class BehovTest {
         }
     }
 
-    val oppslagsKlient = AktørIdOppslagKlient(config.application.graphQlBaseUrl, config.application.apiGatewayKey)
+    val oppslagsKlient = AktørIdOppslagKlient(config.application.graphQlBaseUrl, config.application.apiGatewayKey, config.application.graphQlKey)
     val behovStarter = BehovStarter(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
     val behovStatusPoller = BehovStatusPoller(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
     val subsumsjonFetcher = SubsumsjonFetcher(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)

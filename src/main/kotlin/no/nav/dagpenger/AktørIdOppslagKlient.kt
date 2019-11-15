@@ -9,13 +9,15 @@ private val logger = KotlinLogging.logger {}
 internal val adapter = moshiInstance.adapter(GraphQlQuery::class.java).serializeNulls()
 internal open class GraphQlQuery(val query: String, val variables: Any?)
 
+
 // todo: add application x-api-key
-class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiGatewayKey: String) {
+class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiGatewayKey: String, private val graphQlKey: String) {
 
     fun fetchAktørIdGraphql(fnr: String, idToken: String): Person {
         val (_, response, result) = with(oppslagBaseUrl.httpPost()) {
             header("Content-Type" to "application/json")
             header("x-nav-apiKey" to apiGatewayKey)
+            header("X-API-KEY" to graphQlKey)
             header("ID_token" to idToken)
             body(adapter.toJson(aktørIdQuery(fnr)))
             responseObject<GraphQlAktørIdResponse>()

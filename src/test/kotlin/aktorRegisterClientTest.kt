@@ -39,7 +39,7 @@ class AktorRegisterClientTest {
     fun `Client returns aktorid from jwk`() {
         val body = AktorRegisterClientTest::class.java.getResource("example-aktoerid-payload.json")
                 .readText()
-        val oppslagClient = no.nav.dagpenger.AktørIdOppslagKlient(server.url(""), "key")
+        val oppslagClient = no.nav.dagpenger.AktørIdOppslagKlient(server.url(""), "key", "key")
         WireMock.stubFor(
                 WireMock.post(WireMock.urlEqualTo("/"))
                         .willReturn(WireMock.aResponse().withBody(body))
@@ -60,7 +60,7 @@ class AktorRegisterClientTest {
                         )
         )
 
-        val oppslagClient = no.nav.dagpenger.AktørIdOppslagKlient(server.url(""), "key")
+        val oppslagClient = no.nav.dagpenger.AktørIdOppslagKlient(server.url(""), "key", "key")
 
         val result = runCatching { oppslagClient.fetchAktørIdGraphql("-1", "token") }
         assertTrue(result.isFailure)
