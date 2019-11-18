@@ -16,7 +16,7 @@ class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiG
         val (_, response, result) = with(oppslagBaseUrl.httpPost()) {
             header("Content-Type" to "application/json")
             header("x-nav-apiKey" to apiGatewayKey)
-            header("X-API-KEY" to graphQlKey)
+            header("x-api-key" to graphQlKey)
             header("ID_token" to idToken)
             body(adapter.toJson(aktørIdQuery(fnr)))
             responseObject<GraphQlAktørIdResponse>()
