@@ -130,6 +130,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     LOGGER.info { "fetching aktør from " + config.application.graphQlBaseUrl }
+                    LOGGER.info { "graphql keylength: " + config.application.graphQlKey.length }
                     val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
 
                     val response = dagpengerKalkulator.kalkuler(person.aktoerId)
