@@ -5,7 +5,10 @@ import com.auth0.jwk.JwkProviderBuilder
 import com.auth0.jwt.exceptions.JWTDecodeException
 import com.ryanharter.ktor.moshi.moshi
 import com.squareup.moshi.JsonDataException
-import io.ktor.application.*
+import io.ktor.application.Application
+import io.ktor.application.ApplicationCall
+import io.ktor.application.call
+import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
 import io.ktor.auth.authentication
@@ -29,7 +32,6 @@ import io.micrometer.core.instrument.Clock
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.CollectorRegistry
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import no.nav.dagpenger.regel.api.internal.BehovStatusPoller
@@ -66,7 +68,12 @@ fun main() = runBlocking {
     })
 }
 
-fun Application.KalkulatorApp(jwkProvider: JwkProvider, jwtIssuer: String, aktørIdKlient: AktørIdOppslagKlient, dagpengerKalkulator: DagpengeKalkulator) {
+fun Application.KalkulatorApp(
+    jwkProvider: JwkProvider,
+    jwtIssuer: String,
+    aktørIdKlient: AktørIdOppslagKlient,
+    dagpengerKalkulator: DagpengeKalkulator
+) {
     install(ContentNegotiation) {
         moshi(moshiInstance)
     }
