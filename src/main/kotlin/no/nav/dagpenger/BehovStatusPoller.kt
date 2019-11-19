@@ -34,7 +34,7 @@ class BehovStatusPoller(
             BehovStatusPollResult(result.get().status, null)
         } catch (exception: Exception) {
             if (response.statusCode == 303) {
-                LOGGER.info("Caught 303: " + response.toString())
+                LOGGER.info("Caught 303: $response")
                 return BehovStatusPollResult(
                     null,
                     response.headers["Location"].first()

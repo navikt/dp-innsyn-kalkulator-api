@@ -17,15 +17,15 @@ private val localProperties = ConfigurationMap(
         "jwks.issuer" to "https://localhost",
         "API_GATEWAY_API_KEY" to "hunter2",
         "API_GATEWAY_URL" to "http://localhost/",
-            "regel.api.secret" to "supersecret",
-            "regel.api.key" to "regelKey",
-            "GRAPH_QL_KEY" to "hunter2"
+        "regel.api.secret" to "supersecret",
+        "regel.api.key" to "regelKey",
+        "GRAPH_QL_KEY" to "hunter2"
     )
 )
 private val devProperties = ConfigurationMap(
     mapOf(
-            "jwks.url" to "https://login.microsoftonline.com/navtestb2c.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_idporten_ver1",
-            "jwks.issuer" to "https://login.microsoftonline.com/d38f25aa-eab8-4c50-9f28-ebf92c1256f2/v2.0/",
+        "jwks.url" to "https://login.microsoftonline.com/navtestb2c.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_idporten_ver1",
+        "jwks.issuer" to "https://login.microsoftonline.com/d38f25aa-eab8-4c50-9f28-ebf92c1256f2/v2.0/",
         "application.profile" to "DEV",
         "application.httpPort" to "8099",
         "API_GATEWAY_URL" to "https://api-gw-q1.oera.no/dp-reverse-proxy/"
@@ -63,8 +63,8 @@ data class Configuration(
         val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
         val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
         val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/graphql/",
-        val regelApiBaseUrl: String = config() [Key("API_GATEWAY_URL", stringType)] + "dp-regel-api",
-        val graphQlKey: String = config() [Key("GRAPH_QL_KEY", stringType)]
+        val regelApiBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-regel-api",
+        val graphQlKey: String = config()[Key("GRAPH_QL_KEY", stringType)]
     )
 }
 
