@@ -11,7 +11,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.dagpenger.AktørIdOppslagKlient
 import no.nav.dagpenger.BehovStarter
 import no.nav.dagpenger.DagpengeKalkulator
-import no.nav.dagpenger.KalkulatorApp
+import no.nav.dagpenger.KalkulatorApi
 import no.nav.dagpenger.MinsteinntektResultat
 import no.nav.dagpenger.PeriodeResultat
 import no.nav.dagpenger.Person
@@ -40,7 +40,7 @@ class KalkulatorApiTest {
     @Test
     fun `Startbehov returns a response`() {
         withTestApplication({
-            KalkulatorApp(
+            KalkulatorApi(
                 jwkStub.stubbedJwkProvider(),
                 "test issuer",
                 aktørIdOppslagKlient,
@@ -57,7 +57,7 @@ class KalkulatorApiTest {
     @Test
     fun `Startbehov returns a response with real token`() {
         withTestApplication({
-            KalkulatorApp(
+            KalkulatorApi(
                 jwkStub.stubbedJwkProvider(),
                 "test issuer",
                 aktørIdOppslagKlient,
@@ -121,7 +121,7 @@ class KalkulatorApiTest {
         )
 
         withTestApplication({
-            KalkulatorApp(
+            KalkulatorApi(
                 jwkStub.stubbedJwkProvider(),
                 "test issuer",
                 aktørIdOppslagKlient,
@@ -151,7 +151,7 @@ class KalkulatorApiTest {
     @Test
     fun `Api returns a 401 if user is unauthenticated`() {
         withTestApplication({
-            KalkulatorApp(
+            KalkulatorApi(
                 jwkStub.stubbedJwkProvider(),
                 "test issuer",
                 aktørIdOppslagKlient,
@@ -169,7 +169,7 @@ class KalkulatorApiTest {
     @Test
     fun `Apiet burde har metrics endepunkt`() {
         withTestApplication({
-            KalkulatorApp(
+            KalkulatorApi(
                 jwkStub.stubbedJwkProvider(),
                 "test issuer",
                 aktørIdOppslagKlient,

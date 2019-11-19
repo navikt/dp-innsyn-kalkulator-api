@@ -57,7 +57,7 @@ fun main() = runBlocking {
     val dagpengeKalkulator = DagpengeKalkulator(behovStarter, behovStatusPoller, subsumsjonFetcher)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {
-        KalkulatorApp(jwkProvider, config.application.jwksIssuer, aktørIdOppslag, dagpengeKalkulator)
+        KalkulatorApi(jwkProvider, config.application.jwksIssuer, aktørIdOppslag, dagpengeKalkulator)
         LOGGER.debug("Starting application")
     }.also {
         it.start(wait = false)
@@ -68,7 +68,7 @@ fun main() = runBlocking {
     })
 }
 
-fun Application.KalkulatorApp(
+fun Application.KalkulatorApi(
     jwkProvider: JwkProvider,
     jwtIssuer: String,
     aktørIdKlient: AktørIdOppslagKlient,
