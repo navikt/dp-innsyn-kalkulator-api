@@ -58,6 +58,12 @@ dependencies {
     implementation(Moshi.moshiKotlin)
     implementation(Moshi.moshiKtor)
 
+    implementation(Ktor.micrometerMetrics)
+    implementation(Micrometer.prometheusRegistry)
+    implementation(Prometheus.common)
+    implementation(Prometheus.hotspot)
+    implementation(Prometheus.log4j2)
+
     implementation(Fuel.fuel)
     implementation(Fuel.fuelMoshi)
 

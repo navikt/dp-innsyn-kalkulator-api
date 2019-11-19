@@ -16,6 +16,7 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.auth.HttpAuthHeader
+import io.ktor.metrics.micrometer.MicrometerMetrics
 import io.ktor.request.path
 import io.ktor.response.respond
 import io.ktor.routing.get
@@ -24,6 +25,11 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.util.pipeline.PipelineContext
+import io.micrometer.core.instrument.Clock
+import io.micrometer.prometheus.PrometheusConfig
+import io.micrometer.prometheus.PrometheusMeterRegistry
+import io.prometheus.client.CollectorRegistry
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import no.nav.dagpenger.regel.api.internal.BehovStatusPoller
@@ -49,12 +55,18 @@ fun main() = runBlocking {
     val dagpengeKalkulator = DagpengeKalkulator(behovStarter, behovStatusPoller, subsumsjonFetcher)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {
-        KalkulatorDings(jwkProvider, config.application.jwksIssuer, aktørIdOppslag, dagpengeKalkulator)
+        KalkulatorApp(jwkProvider, config.application.jwksIssuer, aktørIdOppslag, dagpengeKalkulator)
         LOGGER.debug("Starting application")
-    }.start()
+    }.also {
+        it.start(wait = false)
+    }
+
+    Runtime.getRuntime().addShutdownHook(Thread {
+        application.stop(10, 60, TimeUnit.SECONDS)
+    })
 }
 
-fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, aktørIdKlient: AktørIdOppslagKlient, dagpengerKalkulator: DagpengeKalkulator) {
+fun Application.KalkulatorApp(jwkProvider: JwkProvider, jwtIssuer: String, aktørIdKlient: AktørIdOppslagKlient, dagpengerKalkulator: DagpengeKalkulator) {
     install(ContentNegotiation) {
         moshi(moshiInstance)
     }
@@ -67,6 +79,11 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
                     !call.request.path().startsWith("/metrics")
         }
     }
+
+    install(MicrometerMetrics) {
+        registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT, CollectorRegistry.defaultRegistry, Clock.SYSTEM)
+    }
+
     install(Authentication) {
         jwt {
             verifier(jwkProvider, jwtIssuer)
@@ -116,7 +133,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
             val status = HttpStatusCode.BadRequest
             val problem = Problem(
                     title = "Feil fra regel-api",
-                    detail = "${cause.message}",
+                    detail = cause.message,
                     status = status.value
             )
             call.respond(status, problem)
@@ -145,6 +162,7 @@ fun Application.KalkulatorDings(jwkProvider: JwkProvider, jwtIssuer: String, akt
             }
         }
         naischecks()
+        metrics()
     }
 }
 
