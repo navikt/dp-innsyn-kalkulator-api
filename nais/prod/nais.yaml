@@ -8,8 +8,6 @@ spec:
       value: https://api-gw.oera.no/dp-reverse-proxy/
   vault:
     paths:
-      - kvPath: "serviceuser/data/prod/srvdp-kalkulator-api"
-        mountPath: "/secrets/serviceuser/srvdp-kalkulator-api/"
       - kvPath: "kv/prod/sbs/dp-kalkulator-api/default"
         mountPath: "/var/run/secrets/nais.io/vault/"
 
