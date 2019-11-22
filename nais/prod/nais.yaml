@@ -5,6 +5,7 @@ metadata:
 spec:
   ingresses:
     - "https://www.nav.no/arbeid/dagpenger/kalkulator-api/"
+    - "https://dp-kalkulator-api.nais.oera.no/"
   sessionAffinity: ClientIP # Sticky Session for ingress controller to prevent 404 on rollout
   env:
     - name: API_GATEWAY_URL
