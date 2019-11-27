@@ -29,7 +29,7 @@ class DagpengeKalkulator(
 
         val subsumsjon = subsumsjonFetcher.getSubsumsjon(subsumsjonLocation)
 
-        if(subsumsjon.problem != null){
+        if (subsumsjon.problem != null) {
             throw IncompleteResultException("Problem med subsumsjon: ${subsumsjon.problem.title}")
         }
 
