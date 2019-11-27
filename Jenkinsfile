@@ -70,7 +70,7 @@ pipeline {
     stage('Acceptance testing') {
       stages {
         stage('Deploy to pre-production') {
-          when { branch 'bugfix/problemhandling' }
+          when { branch 'master' }
           steps {
 
 
