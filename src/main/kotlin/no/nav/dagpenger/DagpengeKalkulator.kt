@@ -29,6 +29,10 @@ class DagpengeKalkulator(
 
         val subsumsjon = subsumsjonFetcher.getSubsumsjon(subsumsjonLocation)
 
+        if(subsumsjon.problem != null){
+            throw IncompleteResultException("Problem med subsumsjon: ${subsumsjon.problem.title}")
+        }
+
         val oppfyllerMinsteinntekt = subsumsjon.minsteinntektResultat?.oppfyllerMinsteinntekt
             ?: throw IncompleteResultException("Missing minsteinntektResultat")
 
