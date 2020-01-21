@@ -1,4 +1,5 @@
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -162,6 +163,74 @@ class KalkulatorApiTest {
                 addHeader(HttpHeaders.Authorization, "Bearer $unauthorizedToken")
             }.apply {
                 assertEquals(HttpStatusCode.Unauthorized, response.status())
+            }
+        }
+    }
+
+    @Test
+    fun `Returnerer 504 hvis Subsumsjonen ikke er komplett`() {
+        every {
+            aktørIdOppslagKlient.fetchAktørIdGraphql(any(), any())
+        } returns Person("1234")
+
+        every {
+            behovStarter.startBehov("1234")
+        } returns "htto://localhost/1234"
+
+        every {
+            runBlocking { behovStatusPoller.pollStatus("htto://localhost/1234") }
+        } returns "htto://localhost/1234"
+
+        every {
+            subsumsjonFetcher.getSubsumsjon("htto://localhost/1234")
+        } returns Subsumsjon(
+                behovId = "1234",
+                faktum = Faktum(
+                        aktorId = "123",
+                        vedtakId = -1337,
+                        beregningsdato = LocalDate.now()
+                ),
+                grunnlagResultat = null,
+                satsResultat = SatsResultat(
+                        subsumsjonsId = "12",
+                        sporingsId = "",
+                        dagsats = 12,
+                        ukesats = 123,
+                        regelIdentifikator = "",
+                        benyttet90ProsentRegel = false
+                ),
+                minsteinntektResultat = null,
+
+                periodeResultat = PeriodeResultat(
+                        subsumsjonsId = "12",
+                        sporingsId = "",
+                        periodeAntallUker = 52,
+                        regelIdentifikator = ""
+                ),
+                problem = null
+        )
+
+        withTestApplication({
+            KalkulatorApi(
+                    jwkStub.stubbedJwkProvider(),
+                    "test issuer",
+                    aktørIdOppslagKlient,
+                    dagpengeKalkulator
+            )
+        }) {
+            handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
+                addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
+                addHeader(HttpHeaders.ContentType, "application/json")
+                setBody(
+                        """
+                        {
+                            "beregningsdato": "2019-06-05"
+                        }
+                    """.trimIndent()
+                )
+            }.apply {
+                assertNotNull(response.content, "Did not get a response")
+                assertEquals(HttpStatusCode.GatewayTimeout, response.status())
             }
         }
     }

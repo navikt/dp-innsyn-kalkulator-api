@@ -134,12 +134,22 @@ fun Application.KalkulatorApi(
             )
             call.respond(status, problem)
         }
-        // todo: fix this errorhandling
+        // todo: fix this errorhandling?
         exception<RegelApiBehovHttpClientException> { cause ->
             LOGGER.warn(cause.message, cause)
             val status = HttpStatusCode.BadRequest
             val problem = Problem(
                     title = "Feil fra regel-api",
+                    detail = cause.message,
+                    status = status.value
+            )
+            call.respond(status, problem)
+        }
+        exception<IncompleteResultException> { cause ->
+            LOGGER.warn(cause.message, cause)
+            val status = HttpStatusCode.GatewayTimeout
+            val problem = Problem(
+                    title = "Feil fra API, fikk ikke beregnet inntekt",
                     detail = cause.message,
                     status = status.value
             )
