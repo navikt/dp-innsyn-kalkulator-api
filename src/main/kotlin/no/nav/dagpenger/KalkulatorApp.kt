@@ -107,7 +107,7 @@ fun Application.KalkulatorApi(
     }
     install(StatusPages) {
         exception<Throwable> { cause ->
-            LOGGER.info("Generic exception!", cause)
+            LOGGER.info("Generic exception! - ¯\\_(ツ)_/¯", cause)
             LOGGER.error("Unhåndtert feil ved beregning av regel", cause)
             val problem = Problem(
                     title = "Uhåndtert feil",
@@ -116,7 +116,7 @@ fun Application.KalkulatorApi(
             call.respond(HttpStatusCode.InternalServerError, problem)
         }
         exception<JsonDataException> { cause ->
-            LOGGER.info("JsonDataException!", cause)
+            LOGGER.info("JsonDataException! - RegelApi godtok ikke parametrene våre", cause)
             LOGGER.warn(cause.message, cause)
             val status = HttpStatusCode.BadRequest
             val problem = Problem(
@@ -127,8 +127,7 @@ fun Application.KalkulatorApi(
             call.respond(status, problem)
         }
         exception<CookieNotSetException> { cause ->
-            LOGGER.info("CookieNotSetException!", cause)
-            LOGGER.warn("CookieNotSet: " + cause.message, cause)
+            LOGGER.info("CookieNotSetException! (ikke innlogget)", cause)
             val status = HttpStatusCode.Unauthorized
             val problem = Problem(
                     title = "Ikke innlogget",
@@ -139,9 +138,9 @@ fun Application.KalkulatorApi(
         }
         // todo: fix this errorhandling?
         exception<RegelApiBehovHttpClientException> { cause ->
-            LOGGER.info("RegelApiBehovClientException!", cause)
+            LOGGER.info("RegelApiBehovClientException! - Har ikke fått subsumsjonslokalsjon tross startet behov", cause)
             LOGGER.warn("Couldn't get Subsumsjon: " + cause.message, cause)
-            val status = HttpStatusCode.BadRequest
+            val status = HttpStatusCode.BadGateway
             val problem = Problem(
                     title = "Feil fra regel-api",
                     detail = cause.message,
@@ -150,7 +149,7 @@ fun Application.KalkulatorApi(
             call.respond(status, problem)
         }
         exception<IncompleteResultException> { cause ->
-            LOGGER.info("IncompleteResultException!", cause)
+            LOGGER.info("IncompleteResultException! - Ikke kontakt med skatt?", cause)
             LOGGER.warn("IncompleteResultException: " + cause.message, cause)
             val status = HttpStatusCode.GatewayTimeout
             val problem = Problem(
