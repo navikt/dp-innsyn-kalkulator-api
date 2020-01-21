@@ -1,5 +1,4 @@
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
