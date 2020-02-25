@@ -5,9 +5,9 @@ import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.github.kittinunf.result.Result
 
 class SubsumsjonFetcher(
-        private val regelApiUrl: String,
-        private val regelApiKey: String,
-        private val apiGatewayKey: String
+    private val regelApiUrl: String,
+    private val regelApiKey: String,
+    private val apiGatewayKey: String
 ) {
 
     fun getSubsumsjon(subsumsjonLocation: String): Subsumsjon {

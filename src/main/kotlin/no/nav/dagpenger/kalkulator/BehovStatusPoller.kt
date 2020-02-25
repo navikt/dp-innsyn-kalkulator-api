@@ -11,10 +11,10 @@ import java.time.Duration
 private val LOGGER = KotlinLogging.logger {}
 
 class BehovStatusPoller(
-        private val regelApiUrl: String,
-        private val regelApiKey: String,
-        private val apiGatewayKey: String,
-        private val timeout: Duration = Duration.ofSeconds(20)
+    private val regelApiUrl: String,
+    private val regelApiKey: String,
+    private val apiGatewayKey: String,
+    private val timeout: Duration = Duration.ofSeconds(20)
 ) {
     private val delayDuration = Duration.ofMillis(100)
 
@@ -72,15 +72,15 @@ class BehovStatusPoller(
 }
 
 private data class BehovStatusPollResult(
-        val status: BehovStatus?,
-        val location: String?
+    val status: BehovStatus?,
+    val location: String?
 ) {
     fun isPending() = status == BehovStatus.PENDING
 }
 
 class PollSubsumsjonStatusException(
-        override val message: String,
-        override val cause: Throwable? = null
+    override val message: String,
+    override val cause: Throwable? = null
 ) : RuntimeException(message, cause)
 
 class RegelApiTimeoutException(override val message: String) : RuntimeException(message)

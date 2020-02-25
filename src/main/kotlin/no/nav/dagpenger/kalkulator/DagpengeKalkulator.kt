@@ -13,9 +13,9 @@ private val resultatCounter = Counter
         .register()
 
 class DagpengeKalkulator(
-        private val behovStarter: BehovStarter,
-        private val behovStatusPoller: BehovStatusPoller,
-        private val subsumsjonFetcher: SubsumsjonFetcher
+    private val behovStarter: BehovStarter,
+    private val behovStatusPoller: BehovStatusPoller,
+    private val subsumsjonFetcher: SubsumsjonFetcher
 ) {
     suspend fun kalkuler(aktørId: String): KalkulasjonsResult {
         LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl + "/behov" }
@@ -51,7 +51,7 @@ class DagpengeKalkulator(
 class IncompleteResultException(override val message: String) : RuntimeException(message)
 
 data class KalkulasjonsResult(
-        val oppfyllerMinsteinntekt: Boolean,
-        val ukesats: Int,
-        val periodeAntallUker: Int
+    val oppfyllerMinsteinntekt: Boolean,
+    val ukesats: Int,
+    val periodeAntallUker: Int
 )

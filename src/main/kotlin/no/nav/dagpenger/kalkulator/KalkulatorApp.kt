@@ -67,10 +67,10 @@ fun main() = runBlocking {
 }
 
 fun Application.KalkulatorApi(
-        jwkProvider: JwkProvider,
-        jwtIssuer: String,
-        aktørIdKlient: AktørIdOppslagKlient,
-        dagpengerKalkulator: DagpengeKalkulator
+    jwkProvider: JwkProvider,
+    jwtIssuer: String,
+    aktørIdKlient: AktørIdOppslagKlient,
+    dagpengerKalkulator: DagpengeKalkulator
 ) {
     install(ContentNegotiation) {
         moshi(moshiInstance)

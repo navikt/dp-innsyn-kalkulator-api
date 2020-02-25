@@ -37,28 +37,28 @@ private val prodProperties = ConfigurationMap(
 
 data class Configuration(
 
-        val application: Application = Application(),
-        val auth: Auth = Auth()
+    val application: Application = Application(),
+    val auth: Auth = Auth()
 
 ) {
     class Auth(
-            regelApiSecret: String = config()[Key("regel.api.secret", stringType)],
-            regelApiKeyPlain: String = config()[Key("regel.api.key", stringType)]
+        regelApiSecret: String = config()[Key("regel.api.secret", stringType)],
+        regelApiKeyPlain: String = config()[Key("regel.api.key", stringType)]
     ) {
         val regelApiKey = ApiKeyVerifier(regelApiSecret).generate(regelApiKeyPlain)
     }
 
     data class Application(
-            val profile: Profile = config()[Key("application.profile", stringType)].let { Profile.valueOf(it) },
-            val httpPort: Int = config()[Key("application.httpPort", intType)],
-            val jwksUrl: String = config()[Key("jwks.url", stringType)],
-            val jwksIssuer: String = config()[Key("jwks.issuer", stringType)],
-            val name: String = "dp-kalkulator-api",
-            val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
-            val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
-            val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/graphql/",
-            val regelApiBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-regel-api",
-            val graphQlKey: String = config()[Key("GRAPH_QL_KEY", stringType)]
+        val profile: Profile = config()[Key("application.profile", stringType)].let { Profile.valueOf(it) },
+        val httpPort: Int = config()[Key("application.httpPort", intType)],
+        val jwksUrl: String = config()[Key("jwks.url", stringType)],
+        val jwksIssuer: String = config()[Key("jwks.issuer", stringType)],
+        val name: String = "dp-kalkulator-api",
+        val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
+        val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
+        val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/graphql/",
+        val regelApiBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-regel-api",
+        val graphQlKey: String = config()[Key("GRAPH_QL_KEY", stringType)]
     )
 }
 

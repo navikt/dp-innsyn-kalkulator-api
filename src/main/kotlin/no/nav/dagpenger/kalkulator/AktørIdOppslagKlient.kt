@@ -47,7 +47,7 @@ internal data class aktørIdQuery(val fnr: String) : GraphQlQuery(
 data class Data(val person: Person)
 
 data class Person(
-        val aktoerId: String
+    val aktoerId: String
 )
 
 data class GraphQlAktørIdResponse(val data: Data, val errors: List<String>?)
