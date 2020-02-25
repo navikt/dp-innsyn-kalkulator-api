@@ -2,8 +2,6 @@ package no.nav.dagpenger.kalkulator
 
 import io.prometheus.client.Counter
 import mu.KotlinLogging
-import no.nav.dagpenger.regel.api.internal.BehovStatusPoller
-import no.nav.dagpenger.regel.api.internal.SubsumsjonFetcher
 
 private val LOGGER = KotlinLogging.logger {}
 

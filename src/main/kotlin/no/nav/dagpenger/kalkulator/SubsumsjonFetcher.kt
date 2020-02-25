@@ -3,9 +3,6 @@ package no.nav.dagpenger.kalkulator
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.github.kittinunf.result.Result
-import no.nav.dagpenger.Subsumsjon
-import no.nav.dagpenger.apiKey
-import no.nav.dagpenger.moshiInstance
 
 class SubsumsjonFetcher(
     private val regelApiUrl: String,

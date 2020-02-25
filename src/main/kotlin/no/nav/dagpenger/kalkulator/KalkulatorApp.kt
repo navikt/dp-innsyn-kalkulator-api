@@ -34,8 +34,6 @@ import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.CollectorRegistry
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
-import no.nav.dagpenger.regel.api.internal.BehovStatusPoller
-import no.nav.dagpenger.regel.api.internal.SubsumsjonFetcher
 import org.slf4j.event.Level
 import java.net.URI
 import java.net.URL

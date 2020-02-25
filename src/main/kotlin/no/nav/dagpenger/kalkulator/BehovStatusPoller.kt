@@ -6,9 +6,6 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.time.delay
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
-import no.nav.dagpenger.BehovStatus
-import no.nav.dagpenger.BehovStatusResponse
-import no.nav.dagpenger.apiKey
 import java.time.Duration
 private val LOGGER = KotlinLogging.logger {}
 class BehovStatusPoller(

@@ -1,6 +1,5 @@
 package no.nav.dagpenger.kalkulator
 
-import no.nav.dagpenger.InntektsPeriode
 import java.time.LocalDate
 
 data class Faktum(

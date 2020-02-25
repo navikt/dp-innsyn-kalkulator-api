@@ -7,7 +7,7 @@ import com.github.tomakehurst.wiremock.matching.RegexPattern
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
-import kotlin.test.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -38,7 +38,7 @@ class AktorRegisterClientTest {
 
     @Test
     fun `Client returns aktorid from jwk`() {
-        val body = AktorRegisterClientTest::class.java.getResource("example-aktoerid-payload.json")
+        val body = AktorRegisterClientTest::class.java.getResource("/example-aktoerid-payload.json")
                 .readText()
         val oppslagClient = AktørIdOppslagKlient(server.url(""), "key", "key")
         WireMock.stubFor(
