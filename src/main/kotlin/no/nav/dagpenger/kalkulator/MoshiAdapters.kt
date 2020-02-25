@@ -1,4 +1,5 @@
 package no.nav.dagpenger.kalkulator
+
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson

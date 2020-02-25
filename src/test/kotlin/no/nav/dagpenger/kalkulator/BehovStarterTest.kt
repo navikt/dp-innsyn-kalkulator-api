@@ -5,11 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.github.tomakehurst.wiremock.matching.EqualToPattern
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import java.time.LocalDate
 
 class BehovStarterTest {
@@ -40,20 +36,20 @@ class BehovStarterTest {
 
         val equalToPattern = EqualToPattern("regelApiKey")
         WireMock.stubFor(
-            WireMock.post(WireMock.urlEqualTo("//behov"))
-                .withHeader("X-API-KEY", equalToPattern)
-                .withRequestBody(EqualToJsonPattern("""
+                WireMock.post(WireMock.urlEqualTo("//behov"))
+                        .withHeader("X-API-KEY", equalToPattern)
+                        .withRequestBody(EqualToJsonPattern("""
                     {
                         "aktorId": "001",
                         "vedtakId": -1337,
                         "beregningsdato": "${LocalDate.now()}"
                     }
                 """.trimIndent(), true, true))
-                .willReturn(
-                    WireMock.aResponse()
-                        .withBody(responseBody)
-                        .withHeader("Location", "/behov/status/123")
-                )
+                        .willReturn(
+                                WireMock.aResponse()
+                                        .withBody(responseBody)
+                                        .withHeader("Location", "/behov/status/123")
+                        )
         )
 
         val client = BehovStarter(server.url(""), equalToPattern.value, "test")

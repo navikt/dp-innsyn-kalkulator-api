@@ -40,13 +40,13 @@ internal class BehovStatusPollerTest {
     @Test
     fun `Should honor timeout `() {
         val client = BehovStatusPoller(
-            regelApiUrl = server.url("/"),
-            regelApiKey = "regelApiKey",
+                regelApiUrl = server.url("/"),
+                regelApiKey = "regelApiKey",
                 apiGatewayKey = config.application.apiGatewayKey,
-            timeout = Duration.ZERO
+                timeout = Duration.ZERO
         )
         assertThrows(
-            RegelApiTimeoutException::class.java
+                RegelApiTimeoutException::class.java
         ) {
             runBlocking { client.pollStatus("/") }
         }
@@ -57,39 +57,39 @@ internal class BehovStatusPollerTest {
         val pattern = EqualToPattern("regelApiKey")
 
         WireMock.stubFor(
-            WireMock.get(WireMock.urlEqualTo("//behov/status/123"))
-                .withHeader("X-API-KEY", pattern)
-                .inScenario("Retry Scenario")
-                .whenScenarioStateIs(Scenario.STARTED)
-                .willReturn(
-                    WireMock.aResponse()
-                        .withBody(responseBody)
-                )
-                .willSetStateTo("First pending")
+                WireMock.get(WireMock.urlEqualTo("//behov/status/123"))
+                        .withHeader("X-API-KEY", pattern)
+                        .inScenario("Retry Scenario")
+                        .whenScenarioStateIs(Scenario.STARTED)
+                        .willReturn(
+                                WireMock.aResponse()
+                                        .withBody(responseBody)
+                        )
+                        .willSetStateTo("First pending")
         )
 
         WireMock.stubFor(
-            WireMock.get(WireMock.urlEqualTo("//behov/status/123"))
-                .withHeader("X-API-KEY", pattern)
-                .inScenario("Retry Scenario")
-                .whenScenarioStateIs("First pending")
-                .willReturn(
-                    WireMock.aResponse()
-                        .withBody(responseBody)
-                )
-                .willSetStateTo("Second pending")
+                WireMock.get(WireMock.urlEqualTo("//behov/status/123"))
+                        .withHeader("X-API-KEY", pattern)
+                        .inScenario("Retry Scenario")
+                        .whenScenarioStateIs("First pending")
+                        .willReturn(
+                                WireMock.aResponse()
+                                        .withBody(responseBody)
+                        )
+                        .willSetStateTo("Second pending")
         )
 
         WireMock.stubFor(
-            WireMock.get(WireMock.urlEqualTo("//behov/status/123"))
-                .withHeader("X-API-KEY", pattern)
-                .inScenario("Retry Scenario")
-                .whenScenarioStateIs("Second pending")
-                .willReturn(
-                    WireMock.aResponse()
-                        .withStatus(303)
-                        .withHeader("Location", "54321")
-                )
+                WireMock.get(WireMock.urlEqualTo("//behov/status/123"))
+                        .withHeader("X-API-KEY", pattern)
+                        .inScenario("Retry Scenario")
+                        .whenScenarioStateIs("Second pending")
+                        .willReturn(
+                                WireMock.aResponse()
+                                        .withStatus(303)
+                                        .withHeader("Location", "54321")
+                        )
         )
 
         val client =
@@ -99,7 +99,7 @@ internal class BehovStatusPollerTest {
         assertEquals("54321", response)
     }
 
-    val responseBody = """
+    private val responseBody = """
                 {
                         "status" : "PENDING"
                 }

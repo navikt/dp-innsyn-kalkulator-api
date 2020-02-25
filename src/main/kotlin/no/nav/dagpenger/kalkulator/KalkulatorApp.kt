@@ -67,10 +67,10 @@ fun main() = runBlocking {
 }
 
 fun Application.KalkulatorApi(
-    jwkProvider: JwkProvider,
-    jwtIssuer: String,
-    aktørIdKlient: AktørIdOppslagKlient,
-    dagpengerKalkulator: DagpengeKalkulator
+        jwkProvider: JwkProvider,
+        jwtIssuer: String,
+        aktørIdKlient: AktørIdOppslagKlient,
+        dagpengerKalkulator: DagpengeKalkulator
 ) {
     install(ContentNegotiation) {
         moshi(moshiInstance)
@@ -197,5 +197,3 @@ private fun PipelineContext<Unit, ApplicationCall>.getSubject(): String {
 }
 
 class CookieNotSetException(override val message: String?) : RuntimeException(message)
-
-data class BehovResponse(val location: String)

@@ -7,25 +7,27 @@ import kotlinx.coroutines.time.delay
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
 import java.time.Duration
+
 private val LOGGER = KotlinLogging.logger {}
+
 class BehovStatusPoller(
-    private val regelApiUrl: String,
-    private val regelApiKey: String,
-    private val apiGatewayKey: String,
-    private val timeout: Duration = Duration.ofSeconds(20)
+        private val regelApiUrl: String,
+        private val regelApiKey: String,
+        private val apiGatewayKey: String,
+        private val timeout: Duration = Duration.ofSeconds(20)
 ) {
     private val delayDuration = Duration.ofMillis(100)
 
     private fun pollInternal(statusUrl: String): BehovStatusPollResult {
 
         val (_, response, result) =
-            with(
-                statusUrl
-                    .httpGet()
-                    .header("x-nav-apiKey" to apiGatewayKey)
-                    .apiKey(regelApiKey)
-                    .allowRedirects(false)
-            ) { responseObject<BehovStatusResponse>() }
+                with(
+                        statusUrl
+                                .httpGet()
+                                .header("x-nav-apiKey" to apiGatewayKey)
+                                .apiKey(regelApiKey)
+                                .allowRedirects(false)
+                ) { responseObject<BehovStatusResponse>() }
 
         return try {
             BehovStatusPollResult(result.get().status, null)
@@ -33,12 +35,12 @@ class BehovStatusPoller(
             if (response.statusCode == 303) {
                 LOGGER.info("Caught 303: $response")
                 return BehovStatusPollResult(
-                    null,
-                    response.headers["Location"].first()
+                        null,
+                        response.headers["Location"].first()
                 )
             } else {
                 throw PollSubsumsjonStatusException(
-                    response.responseMessage, exception
+                        response.responseMessage, exception
                 )
             }
         }
@@ -70,15 +72,15 @@ class BehovStatusPoller(
 }
 
 private data class BehovStatusPollResult(
-    val status: BehovStatus?,
-    val location: String?
+        val status: BehovStatus?,
+        val location: String?
 ) {
     fun isPending() = status == BehovStatus.PENDING
 }
 
 class PollSubsumsjonStatusException(
-    override val message: String,
-    override val cause: Throwable? = null
+        override val message: String,
+        override val cause: Throwable? = null
 ) : RuntimeException(message, cause)
 
 class RegelApiTimeoutException(override val message: String) : RuntimeException(message)

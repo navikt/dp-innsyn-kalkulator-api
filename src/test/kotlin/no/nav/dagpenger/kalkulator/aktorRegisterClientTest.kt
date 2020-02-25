@@ -13,7 +13,7 @@ import kotlin.test.assertTrue
 
 class AktorRegisterClientTest {
 
-    val validResponse = Data(Person("12345"))
+    private val validResponse = Data(Person("12345"))
 
     companion object {
         val server = WireMockServer(WireMockConfiguration.options().dynamicPort())

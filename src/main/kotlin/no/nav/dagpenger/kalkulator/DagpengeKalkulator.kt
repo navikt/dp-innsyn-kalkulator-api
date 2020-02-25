@@ -6,16 +6,16 @@ import mu.KotlinLogging
 private val LOGGER = KotlinLogging.logger {}
 
 private val resultatCounter = Counter
-    .build()
-    .name("kalkulator_minsteinntekt")
-    .help("Oppfyller krav til minsteinntekt fra kalkulator")
-    .labelNames("resultat")
-    .register()
+        .build()
+        .name("kalkulator_minsteinntekt")
+        .help("Oppfyller krav til minsteinntekt fra kalkulator")
+        .labelNames("resultat")
+        .register()
 
 class DagpengeKalkulator(
-    val behovStarter: BehovStarter,
-    val behovStatusPoller: BehovStatusPoller,
-    val subsumsjonFetcher: SubsumsjonFetcher
+        private val behovStarter: BehovStarter,
+        private val behovStatusPoller: BehovStatusPoller,
+        private val subsumsjonFetcher: SubsumsjonFetcher
 ) {
     suspend fun kalkuler(aktørId: String): KalkulasjonsResult {
         LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl + "/behov" }
@@ -28,10 +28,11 @@ class DagpengeKalkulator(
         val subsumsjon = subsumsjonFetcher.getSubsumsjon(subsumsjonLocation)
 
         val oppfyllerMinsteinntekt = subsumsjon.minsteinntektResultat?.oppfyllerMinsteinntekt
-            ?: throw IncompleteResultException("Missing minsteinntektResultat")
+                ?: throw IncompleteResultException("Missing minsteinntektResultat")
 
         val periode =
-            subsumsjon.periodeResultat?.periodeAntallUker ?: throw IncompleteResultException("Missing periodeResultat")
+                subsumsjon.periodeResultat?.periodeAntallUker
+                        ?: throw IncompleteResultException("Missing periodeResultat")
 
         if (oppfyllerMinsteinntekt) {
             resultatCounter.labels("true").inc()
@@ -40,9 +41,9 @@ class DagpengeKalkulator(
         }
 
         return KalkulasjonsResult(
-            oppfyllerMinsteinntekt,
-            subsumsjon.satsResultat?.ukesats ?: throw IncompleteResultException("Missing satsResultat"),
-            periode
+                oppfyllerMinsteinntekt,
+                subsumsjon.satsResultat?.ukesats ?: throw IncompleteResultException("Missing satsResultat"),
+                periode
         )
     }
 }
@@ -50,7 +51,7 @@ class DagpengeKalkulator(
 class IncompleteResultException(override val message: String) : RuntimeException(message)
 
 data class KalkulasjonsResult(
-    val oppfyllerMinsteinntekt: Boolean,
-    val ukesats: Int,
-    val periodeAntallUker: Int
+        val oppfyllerMinsteinntekt: Boolean,
+        val ukesats: Int,
+        val periodeAntallUker: Int
 )

@@ -1,4 +1,5 @@
 package no.nav.dagpenger.kalkulator
+
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.moshi.responseObject
 import com.github.kittinunf.result.Result

@@ -10,8 +10,8 @@ import io.ktor.server.testing.withTestApplication
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import java.time.LocalDate
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -20,11 +20,11 @@ class KalkulatorApiTest {
     private val token = jwkStub.createTokenFor("brukerMcBrukerson")
     private val unauthorizedToken = "tull"
 
-    val aktørIdOppslagKlient: AktørIdOppslagKlient = mockk()
-    val behovStarter: BehovStarter = mockk()
-    val behovStatusPoller: BehovStatusPoller = mockk()
-    val subsumsjonFetcher: SubsumsjonFetcher = mockk()
-    val dagpengeKalkulator = DagpengeKalkulator(behovStarter, behovStatusPoller, subsumsjonFetcher)
+    private val aktørIdOppslagKlient: AktørIdOppslagKlient = mockk()
+    private val behovStarter: BehovStarter = mockk()
+    private val behovStatusPoller: BehovStatusPoller = mockk()
+    private val subsumsjonFetcher: SubsumsjonFetcher = mockk()
+    private val dagpengeKalkulator = DagpengeKalkulator(behovStarter, behovStatusPoller, subsumsjonFetcher)
 
     @Test
     fun `Startbehov returns a response`() {

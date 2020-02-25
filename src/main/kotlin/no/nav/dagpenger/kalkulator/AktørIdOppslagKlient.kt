@@ -1,12 +1,13 @@
 package no.nav.dagpenger.kalkulator
+
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.moshi.responseObject
 import com.github.kittinunf.result.Result
 import mu.KotlinLogging
-import java.lang.RuntimeException
 
 private val logger = KotlinLogging.logger {}
 internal val adapter = moshiInstance.adapter(GraphQlQuery::class.java).serializeNulls()
+
 internal open class GraphQlQuery(val query: String, val variables: Any?)
 
 class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiGatewayKey: String, private val graphQlKey: String) {
@@ -46,7 +47,7 @@ internal data class aktørIdQuery(val fnr: String) : GraphQlQuery(
 data class Data(val person: Person)
 
 data class Person(
-    val aktoerId: String
+        val aktoerId: String
 )
 
 data class GraphQlAktørIdResponse(val data: Data, val errors: List<String>?)

@@ -11,7 +11,7 @@ import io.prometheus.client.exporter.common.TextFormat
 import io.prometheus.client.hotspot.DefaultExports
 
 fun Routing.metrics(
-    collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
+        collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
 ) {
     DefaultExports.initialize()
 

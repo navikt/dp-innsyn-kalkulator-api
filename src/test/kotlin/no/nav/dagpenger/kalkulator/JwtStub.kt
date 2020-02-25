@@ -7,7 +7,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import java.security.KeyPairGenerator
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
-import java.util.Base64
+import java.util.*
 
 class JwtStub(private val issuer: String = "test issuer") {
 
@@ -27,9 +27,9 @@ class JwtStub(private val issuer: String = "test issuer") {
         val algorithm = Algorithm.RSA256(publicKey, privateKey)
 
         return JWT.create()
-            .withIssuer(issuer)
-            .withSubject(subject)
-            .sign(algorithm)
+                .withIssuer(issuer)
+                .withSubject(subject)
+                .sign(algorithm)
     }
 
     fun stubbedJwkProvider(): StubbedJwkProvider {
@@ -39,10 +39,10 @@ class JwtStub(private val issuer: String = "test issuer") {
     class StubbedJwkProvider(private val publicKey: RSAPublicKey) : JwkProvider {
         override fun get(keyId: String?): Jwk {
             return Jwk(
-                keyId, "RSA", "RS256", "sig", listOf(), null, null, null, mapOf(
+                    keyId, "RSA", "RS256", "sig", listOf(), null, null, null, mapOf(
                     "e" to kotlinx.io.core.String(Base64.getEncoder().encode(publicKey.publicExponent.toByteArray())),
                     "n" to kotlinx.io.core.String(Base64.getEncoder().encode(publicKey.modulus.toByteArray()))
-                )
+            )
             )
         }
     }
