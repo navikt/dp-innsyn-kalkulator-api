@@ -1,4 +1,4 @@
-package no.nav.dagpenger
+package no.nav.dagpenger.kalkulator
 
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwk.JwkProviderBuilder

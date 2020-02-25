@@ -1,4 +1,4 @@
-package no.nav.dagpenger
+package no.nav.dagpenger.kalkulator
 import java.net.URI
 
 data class Problem(

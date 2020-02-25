@@ -1,4 +1,4 @@
-package no.nav.dagpenger
+package no.nav.dagpenger.kalkulator
 
 import io.prometheus.client.Counter
 import mu.KotlinLogging

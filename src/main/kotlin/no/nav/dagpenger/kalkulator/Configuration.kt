@@ -1,4 +1,4 @@
-package no.nav.dagpenger
+package no.nav.dagpenger.kalkulator
 
 import com.natpryce.konfig.ConfigurationMap
 import com.natpryce.konfig.ConfigurationProperties

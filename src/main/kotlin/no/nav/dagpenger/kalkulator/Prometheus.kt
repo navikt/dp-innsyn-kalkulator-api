@@ -1,4 +1,4 @@
-package no.nav.dagpenger
+package no.nav.dagpenger.kalkulator
 
 import io.ktor.application.call
 import io.ktor.http.ContentType

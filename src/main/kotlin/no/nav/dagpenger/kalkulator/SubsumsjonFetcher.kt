@@ -1,4 +1,4 @@
-package no.nav.dagpenger.regel.api.internal
+package no.nav.dagpenger.kalkulator
 
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf

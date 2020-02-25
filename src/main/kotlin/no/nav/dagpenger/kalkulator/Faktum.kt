@@ -1,4 +1,4 @@
-package no.nav.dagpenger.regel.api.internal.models
+package no.nav.dagpenger.kalkulator
 
 import no.nav.dagpenger.InntektsPeriode
 import java.time.LocalDate

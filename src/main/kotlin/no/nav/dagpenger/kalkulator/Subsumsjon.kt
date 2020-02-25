@@ -1,4 +1,4 @@
-package no.nav.dagpenger
+package no.nav.dagpenger.kalkulator
 
 import no.nav.dagpenger.regel.api.internal.models.Faktum
 import java.math.BigDecimal

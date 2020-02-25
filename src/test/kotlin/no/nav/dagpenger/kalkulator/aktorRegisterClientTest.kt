@@ -1,8 +1,9 @@
+package no.nav.dagpenger.kalkulator
+
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.matching.RegexPattern
-import no.nav.dagpenger.*
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -39,7 +40,7 @@ class AktorRegisterClientTest {
     fun `Client returns aktorid from jwk`() {
         val body = AktorRegisterClientTest::class.java.getResource("example-aktoerid-payload.json")
                 .readText()
-        val oppslagClient = no.nav.dagpenger.AktørIdOppslagKlient(server.url(""), "key", "key")
+        val oppslagClient = AktørIdOppslagKlient(server.url(""), "key", "key")
         WireMock.stubFor(
                 WireMock.post(WireMock.urlEqualTo("/"))
                         .willReturn(WireMock.aResponse().withBody(body))
@@ -60,7 +61,7 @@ class AktorRegisterClientTest {
                         )
         )
 
-        val oppslagClient = no.nav.dagpenger.AktørIdOppslagKlient(server.url(""), "key", "key")
+        val oppslagClient = AktørIdOppslagKlient(server.url(""), "key", "key")
 
         val result = runCatching { oppslagClient.fetchAktørIdGraphql("-1", "token") }
         assertTrue(result.isFailure)
