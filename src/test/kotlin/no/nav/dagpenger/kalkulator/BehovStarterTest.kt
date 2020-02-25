@@ -41,7 +41,7 @@ class BehovStarterTest {
                         .withRequestBody(EqualToJsonPattern("""
                     {
                         "aktorId": "001",
-                        "vedtakId": -1337,
+                        "kontekst": "veiledning",
                         "beregningsdato": "${LocalDate.now()}"
                     }
                 """.trimIndent(), true, true))
