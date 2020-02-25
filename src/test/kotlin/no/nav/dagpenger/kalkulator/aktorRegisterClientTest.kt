@@ -50,7 +50,7 @@ class AktorRegisterClientTest {
         assertEquals(validResponse.person, responseBruker)
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     fun `håndterer 4xx-feil`() {
 
         WireMock.stubFor(
