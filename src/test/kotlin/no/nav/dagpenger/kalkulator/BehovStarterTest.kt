@@ -41,7 +41,7 @@ class BehovStarterTest {
                 WireMock.post(WireMock.urlEqualTo("//behov"))
                         .withHeader("X-API-KEY", equalToPattern)
                         .withRequestBody(EqualToJsonPattern("""
-                            ${json}
+                            $json
                 """.trimIndent(), true, true))
                         .willReturn(
                                 WireMock.aResponse()
