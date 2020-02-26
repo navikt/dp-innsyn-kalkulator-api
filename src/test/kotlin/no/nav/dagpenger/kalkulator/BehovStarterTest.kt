@@ -33,17 +33,15 @@ class BehovStarterTest {
 
     @Test
     fun ` Should get url to behov status `() {
-
+        val jsonAdapter = moshiInstance.adapter(BehovRequest::class.java)
+        val json = jsonAdapter.toJson(BehovRequest(aktorId = "001", regelkontekst = RegelKontekst("-1337", Kontekst.VEILEDNING), beregningsdato = LocalDate.now(), vedtakId = -1337))
+        print(json)
         val equalToPattern = EqualToPattern("regelApiKey")
         WireMock.stubFor(
                 WireMock.post(WireMock.urlEqualTo("//behov"))
                         .withHeader("X-API-KEY", equalToPattern)
                         .withRequestBody(EqualToJsonPattern("""
-                    {
-                        "aktorId": "001",
-                        "kontekst": "veiledning",
-                        "beregningsdato": "${LocalDate.now()}"
-                    }
+                            ${json}
                 """.trimIndent(), true, true))
                         .willReturn(
                                 WireMock.aResponse()
