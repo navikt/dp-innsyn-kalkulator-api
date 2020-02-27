@@ -3,7 +3,7 @@ package no.nav.dagpenger.kalkulator
 import java.time.LocalDate
 import com.squareup.moshi.Json
 
-//vedtakId er fortsatt required frem til alle er over på regelkontekst
+// vedtakId er fortsatt required frem til alle er over på regelkontekst
 data class BehovRequest(
     val aktorId: String,
     val regelkontekst: RegelKontekst,
