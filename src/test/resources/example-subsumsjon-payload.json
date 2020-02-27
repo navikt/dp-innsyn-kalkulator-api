@@ -3,7 +3,7 @@
   "behovId": "01DBFXH33AAB6MAEK3SRQE5820",
   "faktum": {
     "aktorId": "0304060708090",
-    "kontekst": "noe",
+    "vedtakId": 123456,
     "beregningsdato": "2019-05-08",
     "inntektsId": "01DBFXH3KBYX5YRV18CRM2NFHY",
     "inntektAvvik": false,

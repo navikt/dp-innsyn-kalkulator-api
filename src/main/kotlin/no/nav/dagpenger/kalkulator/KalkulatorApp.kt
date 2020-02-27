@@ -165,8 +165,7 @@ fun Application.KalkulatorApi(
                     val idToken = call.request.cookies["selvbetjening-idtoken"]
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
-                    LOGGER.info { "fetching aktør from " + config.application.graphQlBaseUrl }
-                    LOGGER.info { "graphql keylength: " + config.application.graphQlKey.length }
+                    LOGGER.debug { "fetching aktør from " + config.application.graphQlBaseUrl }
                     val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
 
                     val response = dagpengerKalkulator.kalkuler(person.aktoerId)
