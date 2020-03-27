@@ -2,15 +2,16 @@ package no.nav.dagpenger.kalkulator
 
 import io.prometheus.client.Counter
 import mu.KotlinLogging
+import java.math.BigDecimal
 
 private val LOGGER = KotlinLogging.logger {}
 
 private val resultatCounter = Counter
-        .build()
-        .name("kalkulator_minsteinntekt")
-        .help("Oppfyller krav til minsteinntekt fra kalkulator")
-        .labelNames("resultat")
-        .register()
+    .build()
+    .name("kalkulator_minsteinntekt")
+    .help("Oppfyller krav til minsteinntekt fra kalkulator")
+    .labelNames("resultat")
+    .register()
 
 class DagpengeKalkulator(
     private val behovStarter: BehovStarter,
@@ -28,11 +29,14 @@ class DagpengeKalkulator(
         val subsumsjon = subsumsjonFetcher.getSubsumsjon(subsumsjonLocation)
 
         val oppfyllerMinsteinntekt = subsumsjon.minsteinntektResultat?.oppfyllerMinsteinntekt
-                ?: throw IncompleteResultException("Missing minsteinntektResultat")
+            ?: throw IncompleteResultException("Missing minsteinntektResultat")
 
         val periode =
-                subsumsjon.periodeResultat?.periodeAntallUker
-                        ?: throw IncompleteResultException("Missing periodeResultat")
+            subsumsjon.periodeResultat?.periodeAntallUker
+                ?: throw IncompleteResultException("Missing periodeResultat")
+
+        val avkortetGrunnlag =
+            subsumsjon.grunnlagResultat?.avkortet ?: throw IncompleteResultException("Missing avkortetGrunnlag")
 
         if (oppfyllerMinsteinntekt) {
             resultatCounter.labels("true").inc()
@@ -41,9 +45,11 @@ class DagpengeKalkulator(
         }
 
         return KalkulasjonsResult(
-                oppfyllerMinsteinntekt,
-                subsumsjon.satsResultat?.ukesats ?: throw IncompleteResultException("Missing satsResultat"),
-                periode
+            oppfyllerMinsteinntekt,
+            subsumsjon.satsResultat?.ukesats ?: throw IncompleteResultException("Missing satsResultat"),
+            periode,
+            avkortetGrunnlag
+
         )
     }
 }
@@ -53,5 +59,6 @@ class IncompleteResultException(override val message: String) : RuntimeException
 data class KalkulasjonsResult(
     val oppfyllerMinsteinntekt: Boolean,
     val ukesats: Int,
-    val periodeAntallUker: Int
+    val periodeAntallUker: Int,
+    val avkortetGrunnlag: BigDecimal
 )
