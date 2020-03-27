@@ -11,6 +11,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -30,10 +31,10 @@ class KalkulatorApiTest {
     fun `Startbehov returns a response`() {
         withTestApplication({
             KalkulatorApi(
-                    jwkStub.stubbedJwkProvider(),
-                    "test issuer",
-                    aktørIdOppslagKlient,
-                    dagpengeKalkulator
+                jwkStub.stubbedJwkProvider(),
+                "test issuer",
+                aktørIdOppslagKlient,
+                dagpengeKalkulator
             )
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
@@ -47,10 +48,10 @@ class KalkulatorApiTest {
     fun `Startbehov returns a response with real token`() {
         withTestApplication({
             KalkulatorApi(
-                    jwkStub.stubbedJwkProvider(),
-                    "test issuer",
-                    aktørIdOppslagKlient,
-                    dagpengeKalkulator
+                jwkStub.stubbedJwkProvider(),
+                "test issuer",
+                aktørIdOppslagKlient,
+                dagpengeKalkulator
             )
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
@@ -61,7 +62,7 @@ class KalkulatorApiTest {
     }
 
     @Test
-    fun `Skal kunne kalkulere dagpenge sats og periode, samt inngangsvilkår minste arbeidsinntekt `() {
+    fun `Skal kunne kalkulere dagpenge sats og periode, samt inngangsvilkår minste arbeidsinntekt og grunnlag avkortet`() {
         every {
             aktørIdOppslagKlient.fetchAktørIdGraphql(any(), any())
         } returns Person("1234")
@@ -77,51 +78,60 @@ class KalkulatorApiTest {
         every {
             subsumsjonFetcher.getSubsumsjon("htto://localhost/1234")
         } returns Subsumsjon(
-                behovId = "1234",
-                faktum = Faktum(
-                        aktorId = "123",
-                        vedtakId = -1337,
-                        beregningsdato = LocalDate.now()
+            behovId = "1234",
+            faktum = Faktum(
+                aktorId = "123",
+                vedtakId = -1337,
+                beregningsdato = LocalDate.now()
+            ),
+            grunnlagResultat = GrunnlagResultat(
+                subsumsjonsId = "12",
+                sporingsId = "",
+                regelIdentifikator = "",
+                avkortet = BigDecimal(20.5),
+                uavkortet = BigDecimal(10),
+                harAvkortet = true,
+                beregningsregel = "",
+                grunnlagInntektsPerioder = listOf()
                 ),
-                grunnlagResultat = null,
-                satsResultat = SatsResultat(
-                        subsumsjonsId = "12",
-                        sporingsId = "",
-                        dagsats = 12,
-                        ukesats = 123,
-                        regelIdentifikator = "",
-                        benyttet90ProsentRegel = false
-                ),
-                minsteinntektResultat = MinsteinntektResultat(
-                        subsumsjonsId = "12",
-                        sporingsId = "",
-                        oppfyllerMinsteinntekt = true,
-                        minsteinntektInntektsPerioder = emptyList(),
-                        regelIdentifikator = ""
-                ),
+            satsResultat = SatsResultat(
+                subsumsjonsId = "12",
+                sporingsId = "",
+                dagsats = 12,
+                ukesats = 123,
+                regelIdentifikator = "",
+                benyttet90ProsentRegel = false
+            ),
+            minsteinntektResultat = MinsteinntektResultat(
+                subsumsjonsId = "12",
+                sporingsId = "",
+                oppfyllerMinsteinntekt = true,
+                minsteinntektInntektsPerioder = emptyList(),
+                regelIdentifikator = ""
+            ),
 
-                periodeResultat = PeriodeResultat(
-                        subsumsjonsId = "12",
-                        sporingsId = "",
-                        periodeAntallUker = 52,
-                        regelIdentifikator = ""
-                ),
-                problem = null
+            periodeResultat = PeriodeResultat(
+                subsumsjonsId = "12",
+                sporingsId = "",
+                periodeAntallUker = 52,
+                regelIdentifikator = ""
+            ),
+            problem = null
         )
 
         withTestApplication({
             KalkulatorApi(
-                    jwkStub.stubbedJwkProvider(),
-                    "test issuer",
-                    aktørIdOppslagKlient,
-                    dagpengeKalkulator
+                jwkStub.stubbedJwkProvider(),
+                "test issuer",
+                aktørIdOppslagKlient,
+                dagpengeKalkulator
             )
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
                 addHeader(HttpHeaders.ContentType, "application/json")
                 setBody(
-                        """
+                    """
                         {
                             "beregningsdato": "2019-06-05"
                         }
@@ -133,6 +143,7 @@ class KalkulatorApiTest {
                 behovResponse["oppfyllerMinsteinntekt"] shouldBe true
                 behovResponse["ukesats"] shouldBe 123.0
                 behovResponse["periodeAntallUker"] shouldBe 52.0
+                behovResponse["avKortetGrunnlag"] shouldBe "20.5"
             }
         }
     }
@@ -141,10 +152,10 @@ class KalkulatorApiTest {
     fun `Api returns a 401 if user is unauthenticated`() {
         withTestApplication({
             KalkulatorApi(
-                    jwkStub.stubbedJwkProvider(),
-                    "test issuer",
-                    aktørIdOppslagKlient,
-                    dagpengeKalkulator
+                jwkStub.stubbedJwkProvider(),
+                "test issuer",
+                aktørIdOppslagKlient,
+                dagpengeKalkulator
             )
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
@@ -172,45 +183,45 @@ class KalkulatorApiTest {
         every {
             subsumsjonFetcher.getSubsumsjon("htto://localhost/1234")
         } returns Subsumsjon(
-                behovId = "1234",
-                faktum = Faktum(
-                        aktorId = "123",
-                        vedtakId = -1337,
-                        beregningsdato = LocalDate.now()
-                ),
-                grunnlagResultat = null,
-                satsResultat = SatsResultat(
-                        subsumsjonsId = "12",
-                        sporingsId = "",
-                        dagsats = 12,
-                        ukesats = 123,
-                        regelIdentifikator = "",
-                        benyttet90ProsentRegel = false
-                ),
-                minsteinntektResultat = null,
+            behovId = "1234",
+            faktum = Faktum(
+                aktorId = "123",
+                vedtakId = -1337,
+                beregningsdato = LocalDate.now()
+            ),
+            grunnlagResultat = null,
+            satsResultat = SatsResultat(
+                subsumsjonsId = "12",
+                sporingsId = "",
+                dagsats = 12,
+                ukesats = 123,
+                regelIdentifikator = "",
+                benyttet90ProsentRegel = false
+            ),
+            minsteinntektResultat = null,
 
-                periodeResultat = PeriodeResultat(
-                        subsumsjonsId = "12",
-                        sporingsId = "",
-                        periodeAntallUker = 52,
-                        regelIdentifikator = ""
-                ),
-                problem = null
+            periodeResultat = PeriodeResultat(
+                subsumsjonsId = "12",
+                sporingsId = "",
+                periodeAntallUker = 52,
+                regelIdentifikator = ""
+            ),
+            problem = null
         )
 
         withTestApplication({
             KalkulatorApi(
-                    jwkStub.stubbedJwkProvider(),
-                    "test issuer",
-                    aktørIdOppslagKlient,
-                    dagpengeKalkulator
+                jwkStub.stubbedJwkProvider(),
+                "test issuer",
+                aktørIdOppslagKlient,
+                dagpengeKalkulator
             )
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
                 addHeader(HttpHeaders.ContentType, "application/json")
                 setBody(
-                        """
+                    """
                         {
                             "beregningsdato": "2019-06-05"
                         }
@@ -227,10 +238,10 @@ class KalkulatorApiTest {
     fun `Apiet burde har metrics endepunkt`() {
         withTestApplication({
             KalkulatorApi(
-                    jwkStub.stubbedJwkProvider(),
-                    "test issuer",
-                    aktørIdOppslagKlient,
-                    dagpengeKalkulator
+                jwkStub.stubbedJwkProvider(),
+                "test issuer",
+                aktørIdOppslagKlient,
+                dagpengeKalkulator
             )
         }) {
             handleRequest(HttpMethod.Get, "/metrics") {
