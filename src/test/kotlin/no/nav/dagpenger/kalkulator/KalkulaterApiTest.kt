@@ -143,7 +143,7 @@ class KalkulatorApiTest {
                 behovResponse["oppfyllerMinsteinntekt"] shouldBe true
                 behovResponse["ukesats"] shouldBe 123.0
                 behovResponse["periodeAntallUker"] shouldBe 52.0
-                behovResponse["avKortetGrunnlag"] shouldBe "20.5"
+                behovResponse["avkortetGrunnlag"] shouldBe "20.5"
             }
         }
     }
