@@ -85,7 +85,7 @@ class KalkulatorApiTest {
                 beregningsdato = LocalDate.now()
             ),
             grunnlagResultat = GrunnlagResultat(
-                subsumsjonsId = "12",
+                subsumsjonsId = "grunnlagSubsumsjonId",
                 sporingsId = "",
                 regelIdentifikator = "",
                 avkortet = BigDecimal(20.5),
@@ -144,6 +144,7 @@ class KalkulatorApiTest {
                 behovResponse["ukesats"] shouldBe 123.0
                 behovResponse["periodeAntallUker"] shouldBe 52.0
                 behovResponse["avkortetGrunnlag"] shouldBe "20.5"
+                behovResponse["subsumsjonId"] shouldBe "grunnlagSubsumsjonId"
             }
         }
     }
