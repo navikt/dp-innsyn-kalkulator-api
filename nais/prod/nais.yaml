@@ -11,8 +11,8 @@ spec:
     - name: API_GATEWAY_URL
       value: https://api-gw.oera.no/dp-reverse-proxy/
   replicas:
-    min: 5
-    max: 10
+    min: 10
+    max: 15
     cpuThresholdPercentage: 75
   resources:
     limits:
