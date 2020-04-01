@@ -42,16 +42,23 @@ import java.util.concurrent.TimeUnit
 private val LOGGER = KotlinLogging.logger {}
 val config = Configuration()
 
-fun main() = runBlocking {
+fun main() {
     val jwkProvider = JwkProviderBuilder(URL(config.application.jwksUrl))
-            .cached(10, 24, TimeUnit.HOURS)
-            .rateLimited(10, 1, TimeUnit.MINUTES)
-            .build()
+        .cached(10, 24, TimeUnit.HOURS)
+        .rateLimited(10, 1, TimeUnit.MINUTES)
+        .build()
 
-    val aktørIdOppslag = AktørIdOppslagKlient(config.application.graphQlBaseUrl, config.application.apiGatewayKey, config.application.graphQlKey)
-    val behovStarter = BehovStarter(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
-    val behovStatusPoller = BehovStatusPoller(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
-    val subsumsjonFetcher = SubsumsjonFetcher(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val aktørIdOppslag = AktørIdOppslagKlient(
+        config.application.graphQlBaseUrl,
+        config.application.apiGatewayKey,
+        config.application.graphQlKey
+    )
+    val behovStarter =
+        BehovStarter(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val behovStatusPoller =
+        BehovStatusPoller(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+    val subsumsjonFetcher =
+        SubsumsjonFetcher(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
     val dagpengeKalkulator = DagpengeKalkulator(behovStarter, behovStatusPoller, subsumsjonFetcher)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {
@@ -80,8 +87,8 @@ fun Application.KalkulatorApi(
 
         filter { call ->
             !call.request.path().startsWith("/isAlive") &&
-                    !call.request.path().startsWith("/isReady") &&
-                    !call.request.path().startsWith("/metrics")
+                !call.request.path().startsWith("/isReady") &&
+                !call.request.path().startsWith("/metrics")
         }
     }
 
@@ -95,7 +102,7 @@ fun Application.KalkulatorApi(
             realm = "dp-kalkulator-api"
             authHeader {
                 val cookie = it.request.cookies["selvbetjening-idtoken"]
-                        ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
+                    ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                 HttpAuthHeader.Single("Bearer", cookie)
             }
             validate { credentials ->
@@ -108,8 +115,8 @@ fun Application.KalkulatorApi(
             LOGGER.info("Generic exception! - ¯\\_(ツ)_/¯", cause)
             LOGGER.error("Unhåndtert feil ved beregning av regel", cause)
             val problem = Problem(
-                    title = "Uhåndtert feil",
-                    detail = cause.message
+                title = "Uhåndtert feil",
+                detail = cause.message
             )
             call.respond(HttpStatusCode.InternalServerError, problem)
         }
@@ -118,9 +125,9 @@ fun Application.KalkulatorApi(
             LOGGER.warn(cause.message, cause)
             val status = HttpStatusCode.BadRequest
             val problem = Problem(
-                    type = URI.create("urn:dp:error:parameter"),
-                    title = "Parameteret er ikke gyldig, mangler obligatorisk felt: '${cause.message}'",
-                    status = status.value
+                type = URI.create("urn:dp:error:parameter"),
+                title = "Parameteret er ikke gyldig, mangler obligatorisk felt: '${cause.message}'",
+                status = status.value
             )
             call.respond(status, problem)
         }
@@ -128,9 +135,9 @@ fun Application.KalkulatorApi(
             LOGGER.info("CookieNotSetException! (ikke innlogget)", cause)
             val status = HttpStatusCode.Unauthorized
             val problem = Problem(
-                    title = "Ikke innlogget",
-                    detail = "${cause.message}",
-                    status = status.value
+                title = "Ikke innlogget",
+                detail = "${cause.message}",
+                status = status.value
             )
             call.respond(status, problem)
         }
@@ -140,9 +147,9 @@ fun Application.KalkulatorApi(
             LOGGER.warn("Couldn't get Subsumsjon: " + cause.message, cause)
             val status = HttpStatusCode.BadGateway
             val problem = Problem(
-                    title = "Feil fra regel-api",
-                    detail = cause.message,
-                    status = status.value
+                title = "Feil fra regel-api",
+                detail = cause.message,
+                status = status.value
             )
             call.respond(status, problem)
         }
@@ -151,9 +158,9 @@ fun Application.KalkulatorApi(
             LOGGER.warn("IncompleteResultException: " + cause.message, cause)
             val status = HttpStatusCode.GatewayTimeout
             val problem = Problem(
-                    title = "Feil fra API, fikk ikke beregnet inntekt",
-                    detail = cause.message,
-                    status = status.value
+                title = "Feil fra API, fikk ikke beregnet inntekt",
+                detail = cause.message,
+                status = status.value
             )
             call.respond(status, problem)
         }
@@ -163,7 +170,7 @@ fun Application.KalkulatorApi(
             route("/arbeid/dagpenger/kalkulator-api/behov") {
                 get {
                     val idToken = call.request.cookies["selvbetjening-idtoken"]
-                            ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
+                        ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                     val fødselsnummer = getSubject()
                     LOGGER.info { "fetching aktør from " + config.application.graphQlBaseUrl }
                     LOGGER.info { "graphql keylength: " + config.application.graphQlKey.length }
