@@ -32,7 +32,6 @@ import io.micrometer.core.instrument.Clock
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.CollectorRegistry
-import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.slf4j.event.Level
 import java.net.URI
