@@ -2,8 +2,10 @@ package no.nav.dagpenger.kalkulator
 
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.responseObject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.time.delay
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
 import java.time.Duration
@@ -21,13 +23,13 @@ class BehovStatusPoller(
     private fun pollInternal(statusUrl: String): BehovStatusPollResult {
 
         val (_, response, result) =
-                with(
-                        statusUrl
-                                .httpGet()
-                                .header("x-nav-apiKey" to apiGatewayKey)
-                                .apiKey(regelApiKey)
-                                .allowRedirects(false)
-                ) { responseObject<BehovStatusResponse>() }
+            with(
+                statusUrl
+                    .httpGet()
+                    .header("x-nav-apiKey" to apiGatewayKey)
+                    .apiKey(regelApiKey)
+                    .allowRedirects(false)
+            ) { responseObject<BehovStatusResponse>() }
 
         return try {
             BehovStatusPollResult(result.get().status, null)
@@ -35,12 +37,12 @@ class BehovStatusPoller(
             if (response.statusCode == 303) {
                 LOGGER.info("Caught 303: $response")
                 return BehovStatusPollResult(
-                        null,
-                        response.headers["Location"].first()
+                    null,
+                    response.headers["Location"].first()
                 )
             } else {
                 throw PollSubsumsjonStatusException(
-                        response.responseMessage, exception
+                    response.responseMessage, exception
                 )
             }
         }
@@ -48,9 +50,12 @@ class BehovStatusPoller(
 
     suspend fun pollStatus(statusUrl: String): String {
         val url = "$regelApiUrl$statusUrl"
+
         try {
-            return withTimeout(timeout.toMillis()) {
-                return@withTimeout pollWithDelay(url)
+            return withContext(Dispatchers.IO) {
+                withTimeout(timeout.toMillis()) {
+                    return@withTimeout pollWithDelay(url)
+                }
             }
         } catch (e: Exception) {
             when (e) {
