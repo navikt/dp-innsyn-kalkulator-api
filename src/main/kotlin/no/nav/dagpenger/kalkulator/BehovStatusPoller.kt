@@ -2,13 +2,13 @@ package no.nav.dagpenger.kalkulator
 
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.responseObject
+import java.time.Duration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.time.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
-import java.time.Duration
 
 private val LOGGER = KotlinLogging.logger {}
 

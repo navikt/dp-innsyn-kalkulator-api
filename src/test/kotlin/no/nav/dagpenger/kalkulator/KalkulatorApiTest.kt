@@ -1,6 +1,6 @@
 package no.nav.dagpenger.kalkulator
 
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -9,12 +9,12 @@ import io.ktor.server.testing.setBody
 import io.ktor.server.testing.withTestApplication
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Test
 
 class KalkulatorApiTest {
     private val jwkStub = JwtStub()
