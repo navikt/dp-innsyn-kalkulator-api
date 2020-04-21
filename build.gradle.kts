@@ -70,6 +70,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(Ktor.ktorTest)
     testImplementation(Junit5.api)
+    testImplementation(KoTest.assertions)
     testImplementation(KoTest.runner)
 
     testImplementation(Mockk.mockk)
