@@ -21,8 +21,10 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.auth.HttpAuthHeader
 import io.ktor.metrics.micrometer.MicrometerMetrics
 import io.ktor.request.path
+import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.get
+import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
@@ -184,6 +186,22 @@ fun Application.KalkulatorApi(
                 get {
                     call.respond(HttpStatusCode.OK, "Gyldig token!")
                 }
+            }
+        }
+        route("/arbeid/dagpenger/kalkulator-api/behov/reberegning") {
+
+            post {
+                val authenticated = call.request.headers["x-api-key"]?.let { it == config.application.forskuddApiKey } ?: false
+                if (!authenticated) {
+                    throw CookieNotSetException("Not authenticated")
+                }
+
+                val request = call.receive<Map<String, String>>()
+                val fnr = request["fnr"] ?: throw JsonDataException("missing request information")
+
+                val person = aktørIdKlient.fetchAktørIdGraphql(fnr)
+                val response = dagpengerKalkulator.kalkuler(person.aktoerId)
+                call.respond(HttpStatusCode.OK, response)
             }
         }
         naischecks()
