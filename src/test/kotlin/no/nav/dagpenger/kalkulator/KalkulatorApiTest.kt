@@ -236,6 +236,122 @@ class KalkulatorApiTest {
     }
 
     @Test
+    fun ` Skal ikke kunne reberegne behov uten api nøkkel `() {
+
+        withTestApplication({
+            KalkulatorApi(
+                jwkStub.stubbedJwkProvider(),
+                "test issuer",
+                aktørIdOppslagKlient,
+                dagpengeKalkulator
+            )
+        }) {
+            handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov/reberegning") {
+            }.apply {
+                assertEquals(HttpStatusCode.Unauthorized, response.status())
+            }
+        }
+    }
+
+    @Test
+    fun ` Skal ikke kunne reberegne behov uten fødselsnummer `() {
+
+        withTestApplication({
+            KalkulatorApi(
+                jwkStub.stubbedJwkProvider(),
+                "test issuer",
+                aktørIdOppslagKlient,
+                dagpengeKalkulator
+            )
+        }) {
+            handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov/reberegning") {
+                addHeader("x-api-key", "hunter2")
+                addHeader("Content-Type", "application/json")
+                setBody("{}")
+            }.apply {
+                assertEquals(HttpStatusCode.BadRequest, response.status())
+            }
+        }
+    }
+
+    @Test
+    fun ` Skal kunne reberegne behov når alle parametre er satt `() {
+
+        every {
+            aktørIdOppslagKlient.fetchAktørIdGraphql(any(), any())
+        } returns Person("1234")
+
+        every {
+            behovStarter.startBehov("1234")
+        } returns "htto://localhost/1234"
+
+        every {
+            runBlocking { behovStatusPoller.pollStatus("htto://localhost/1234") }
+        } returns "htto://localhost/1234"
+
+        every {
+            subsumsjonFetcher.getSubsumsjon("htto://localhost/1234")
+        } returns Subsumsjon(
+            behovId = "1234",
+            faktum = Faktum(
+                aktorId = "123",
+                vedtakId = -1337,
+                beregningsdato = LocalDate.now()
+            ),
+            grunnlagResultat = GrunnlagResultat(
+                subsumsjonsId = "grunnlagSubsumsjonId",
+                sporingsId = "",
+                regelIdentifikator = "",
+                avkortet = BigDecimal(20.5),
+                uavkortet = BigDecimal(10),
+                harAvkortet = true,
+                beregningsregel = "",
+                grunnlagInntektsPerioder = listOf()
+            ),
+            satsResultat = SatsResultat(
+                subsumsjonsId = "12",
+                sporingsId = "",
+                dagsats = 12,
+                ukesats = 123,
+                regelIdentifikator = "",
+                benyttet90ProsentRegel = false
+            ),
+            minsteinntektResultat = MinsteinntektResultat(
+                subsumsjonsId = "12",
+                sporingsId = "",
+                oppfyllerMinsteinntekt = true,
+                minsteinntektInntektsPerioder = emptyList(),
+                regelIdentifikator = ""
+            ),
+
+            periodeResultat = PeriodeResultat(
+                subsumsjonsId = "12",
+                sporingsId = "",
+                periodeAntallUker = 52,
+                regelIdentifikator = ""
+            ),
+            problem = null
+        )
+
+        withTestApplication({
+            KalkulatorApi(
+                jwkStub.stubbedJwkProvider(),
+                "test issuer",
+                aktørIdOppslagKlient,
+                dagpengeKalkulator
+            )
+        }) {
+            handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov/reberegning") {
+                addHeader("x-api-key", "hunter2")
+                addHeader("Content-Type", "application/json")
+                setBody("""{ "fnr": "123423" }""")
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+            }
+        }
+    }
+
+    @Test
     fun `Apiet burde har metrics endepunkt`() {
         withTestApplication({
             KalkulatorApi(

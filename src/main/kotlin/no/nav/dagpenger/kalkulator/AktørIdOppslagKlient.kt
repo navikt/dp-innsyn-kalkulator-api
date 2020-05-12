@@ -12,12 +12,12 @@ internal open class GraphQlQuery(val query: String, val variables: Any?)
 
 class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiGatewayKey: String, private val graphQlKey: String) {
 
-    fun fetchAktørIdGraphql(fnr: String, idToken: String): Person {
+    fun fetchAktørIdGraphql(fnr: String, idToken: String? = null): Person {
         val (_, response, result) = with(oppslagBaseUrl.httpPost()) {
             header("Content-Type" to "application/json")
             header("x-nav-apiKey" to apiGatewayKey)
             header("x-api-key" to graphQlKey)
-            header("ID_token" to idToken)
+            if (idToken != null) header("ID_token" to idToken)
             body(adapter.toJson(aktørIdQuery(fnr)))
             responseObject<GraphQlAktørIdResponse>()
         }

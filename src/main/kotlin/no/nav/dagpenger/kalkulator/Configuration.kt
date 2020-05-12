@@ -19,7 +19,8 @@ private val localProperties = ConfigurationMap(
         "API_GATEWAY_URL" to "http://localhost/",
         "regel.api.secret" to "supersecret",
         "regel.api.key" to "regelKey",
-        "GRAPH_QL_KEY" to "hunter2"
+        "GRAPH_QL_KEY" to "hunter2",
+        "forskudd.api.key" to "hunter2"
     )
 )
 private val devProperties = ConfigurationMap(
@@ -64,7 +65,8 @@ data class Configuration(
         val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
         val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/graphql/",
         val regelApiBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-regel-api",
-        val graphQlKey: String = config()[Key("GRAPH_QL_KEY", stringType)]
+        val graphQlKey: String = config()[Key("GRAPH_QL_KEY", stringType)],
+        val forskuddApiKey: String = config()[Key("forskudd.api.key", stringType)]
     )
 }
 
