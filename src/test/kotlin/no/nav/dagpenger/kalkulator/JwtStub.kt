@@ -40,8 +40,8 @@ class JwtStub(private val issuer: String = "test issuer") {
         override fun get(keyId: String?): Jwk {
             return Jwk(
                 keyId, "RSA", "RS256", "sig", listOf(), null, null, null, mapOf(
-                "e" to kotlinx.io.core.String(Base64.getEncoder().encode(publicKey.publicExponent.toByteArray())),
-                "n" to kotlinx.io.core.String(Base64.getEncoder().encode(publicKey.modulus.toByteArray()))
+                "e" to String(Base64.getEncoder().encode(publicKey.publicExponent.toByteArray())),
+                "n" to String(Base64.getEncoder().encode(publicKey.modulus.toByteArray()))
             )
             )
         }

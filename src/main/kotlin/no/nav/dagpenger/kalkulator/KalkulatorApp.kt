@@ -70,7 +70,7 @@ fun main() {
     }
 
     Runtime.getRuntime().addShutdownHook(Thread {
-        application.stop(10, 60, TimeUnit.SECONDS)
+        application.stop(10000, 60000)
     })
 }
 

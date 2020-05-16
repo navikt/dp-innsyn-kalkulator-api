@@ -1,7 +1,6 @@
 package no.nav.dagpenger.kalkulator
 
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.fuel.moshi.responseObject
 import java.time.Duration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
