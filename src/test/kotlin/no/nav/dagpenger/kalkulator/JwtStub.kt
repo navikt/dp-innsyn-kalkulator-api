@@ -39,10 +39,11 @@ class JwtStub(private val issuer: String = "test issuer") {
     class StubbedJwkProvider(private val publicKey: RSAPublicKey) : JwkProvider {
         override fun get(keyId: String?): Jwk {
             return Jwk(
-                keyId, "RSA", "RS256", "sig", listOf(), null, null, null, mapOf(
-                "e" to String(Base64.getEncoder().encode(publicKey.publicExponent.toByteArray())),
-                "n" to String(Base64.getEncoder().encode(publicKey.modulus.toByteArray()))
-            )
+                keyId, "RSA", "RS256", "sig", listOf(), null, null, null,
+                mapOf(
+                    "e" to String(Base64.getEncoder().encode(publicKey.publicExponent.toByteArray())),
+                    "n" to String(Base64.getEncoder().encode(publicKey.modulus.toByteArray()))
+                )
             )
         }
     }

@@ -16,15 +16,17 @@ class SubsumsjonFetcher(
         val jsonAdapter = moshiInstance.adapter(Subsumsjon::class.java)
 
         val (_, response, result) =
-                with(url
-                        .httpGet()
-                        .header("x-nav-apiKey" to apiGatewayKey)
-                        .apiKey(regelApiKey)
-                ) { responseObject(moshiDeserializerOf(jsonAdapter)) }
+            with(
+                url
+                    .httpGet()
+                    .header("x-nav-apiKey" to apiGatewayKey)
+                    .apiKey(regelApiKey)
+            ) { responseObject(moshiDeserializerOf(jsonAdapter)) }
 
         return when (result) {
             is Result.Failure -> throw SubsumsjonClientException(
-                    "Failed to fetch subsumsjon. Response message: ${response.responseMessage}. Error message: ${result.error.message}")
+                "Failed to fetch subsumsjon. Response message: ${response.responseMessage}. Error message: ${result.error.message}"
+            )
             is Result.Success -> result.get()
         }
     }

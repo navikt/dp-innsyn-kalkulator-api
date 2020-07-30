@@ -23,9 +23,9 @@ class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiG
 
         return when (result) {
             is Result.Failure -> throw GraphQlAktørIdException(
-                    response.statusCode,
-                    "Failed to fetch aktoer-id for naturlig-id. Response message $response",
-                    result.getException()
+                response.statusCode,
+                "Failed to fetch aktoer-id for naturlig-id. Response message $response",
+                result.getException()
             )
             is Result.Success -> result.get().data.person
         }
@@ -33,14 +33,15 @@ class AktørIdOppslagKlient(private val oppslagBaseUrl: String, private val apiG
 }
 
 internal data class aktørIdQuery(val fnr: String) : GraphQlQuery(
-        query = """ 
+    query =
+        """ 
             query {
                 person(id: "$fnr", idType: NATURLIG_IDENT) {
                 aktoerId
     }
 }
-            """.trimIndent(),
-        variables = null
+        """.trimIndent(),
+    variables = null
 )
 
 data class Data(val person: Person)
@@ -52,4 +53,4 @@ data class Person(
 data class GraphQlAktørIdResponse(val data: Data, val errors: List<String>?)
 
 class GraphQlAktørIdException(val statusCode: Int, override val message: String, override val cause: Throwable) :
-        RuntimeException(message, cause)
+    RuntimeException(message, cause)
