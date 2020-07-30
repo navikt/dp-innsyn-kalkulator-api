@@ -9,12 +9,12 @@ import io.ktor.server.testing.setBody
 import io.ktor.server.testing.withTestApplication
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Test
 
 class KalkulatorApiTest {
     private val jwkStub = JwtStub()
@@ -93,7 +93,7 @@ class KalkulatorApiTest {
                 harAvkortet = true,
                 beregningsregel = "",
                 grunnlagInntektsPerioder = listOf()
-                ),
+            ),
             satsResultat = SatsResultat(
                 subsumsjonsId = "12",
                 sporingsId = "",

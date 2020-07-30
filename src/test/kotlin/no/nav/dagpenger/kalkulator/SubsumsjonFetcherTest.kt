@@ -37,16 +37,16 @@ class SubsumsjonFetcherTest {
     fun `Should get subsumsjon`() {
 
         val responseBodyJson = SubsumsjonFetcherTest::class.java
-                .getResource("/example-subsumsjon-payload.json").readText()
+            .getResource("/example-subsumsjon-payload.json").readText()
 
         val equalToPattern = EqualToPattern("regelApiKey")
         WireMock.stubFor(
-                WireMock.get(WireMock.urlEqualTo("//subsumsjon/112233"))
-                        .withHeader("X-API-KEY", equalToPattern)
-                        .willReturn(
-                                WireMock.aResponse()
-                                        .withBody(responseBodyJson)
-                        )
+            WireMock.get(WireMock.urlEqualTo("//subsumsjon/112233"))
+                .withHeader("X-API-KEY", equalToPattern)
+                .willReturn(
+                    WireMock.aResponse()
+                        .withBody(responseBodyJson)
+                )
         )
 
         val client = SubsumsjonFetcher(server.url(""), equalToPattern.value, config.application.apiGatewayKey)

@@ -34,11 +34,11 @@ import io.micrometer.core.instrument.Clock
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.CollectorRegistry
+import mu.KotlinLogging
+import org.slf4j.event.Level
 import java.net.URI
 import java.net.URL
 import java.util.concurrent.TimeUnit
-import mu.KotlinLogging
-import org.slf4j.event.Level
 
 private val LOGGER = KotlinLogging.logger {}
 val config = Configuration()
@@ -69,9 +69,11 @@ fun main() {
         it.start(wait = false)
     }
 
-    Runtime.getRuntime().addShutdownHook(Thread {
-        application.stop(10000, 60000)
-    })
+    Runtime.getRuntime().addShutdownHook(
+        Thread {
+            application.stop(10000, 60000)
+        }
+    )
 }
 
 fun Application.KalkulatorApi(

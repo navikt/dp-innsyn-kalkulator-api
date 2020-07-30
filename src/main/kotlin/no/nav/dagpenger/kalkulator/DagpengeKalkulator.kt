@@ -1,8 +1,8 @@
 package no.nav.dagpenger.kalkulator
 
 import io.prometheus.client.Counter
-import java.math.BigDecimal
 import mu.KotlinLogging
+import java.math.BigDecimal
 
 private val LOGGER = KotlinLogging.logger {}
 

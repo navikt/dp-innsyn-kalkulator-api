@@ -14,12 +14,12 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 val moshiInstance: Moshi = Moshi.Builder()
-        .add(YearMonthJsonAdapter())
-        .add(LocalDateJsonAdapter())
-        .add(URIJsonAdapter())
-        .add(KotlinJsonAdapterFactory())
-        .add(BigDecimalJsonAdapter())
-        .build()!!
+    .add(YearMonthJsonAdapter())
+    .add(LocalDateJsonAdapter())
+    .add(URIJsonAdapter())
+    .add(KotlinJsonAdapterFactory())
+    .add(BigDecimalJsonAdapter())
+    .build()!!
 
 class YearMonthJsonAdapter {
     @ToJson

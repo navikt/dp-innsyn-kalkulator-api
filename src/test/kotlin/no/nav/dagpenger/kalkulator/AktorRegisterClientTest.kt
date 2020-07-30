@@ -4,12 +4,12 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.matching.RegexPattern
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class AktorRegisterClientTest {
 
@@ -39,11 +39,11 @@ class AktorRegisterClientTest {
     @Test
     fun `Client returns aktorid from jwk`() {
         val body = AktorRegisterClientTest::class.java.getResource("/example-aktoerid-payload.json")
-                .readText()
+            .readText()
         val oppslagClient = AktørIdOppslagKlient(server.url(""), "key", "key")
         WireMock.stubFor(
-                WireMock.post(WireMock.urlEqualTo("/"))
-                        .willReturn(WireMock.aResponse().withBody(body))
+            WireMock.post(WireMock.urlEqualTo("/"))
+                .willReturn(WireMock.aResponse().withBody(body))
         )
 
         val responseBruker = oppslagClient.fetchAktørIdGraphql("12345678910", "tøken")
@@ -54,11 +54,11 @@ class AktorRegisterClientTest {
     fun `håndterer 4xx-feil`() {
 
         WireMock.stubFor(
-                WireMock.post(WireMock.urlEqualTo("/"))
-                        .withHeader("Authorization", RegexPattern("Bearer\\s[\\d|a-f]{8}-([\\d|a-f]{4}-){3}[\\d|a-f]{12}"))
-                        .willReturn(
-                                WireMock.notFound()
-                        )
+            WireMock.post(WireMock.urlEqualTo("/"))
+                .withHeader("Authorization", RegexPattern("Bearer\\s[\\d|a-f]{8}-([\\d|a-f]{4}-){3}[\\d|a-f]{12}"))
+                .willReturn(
+                    WireMock.notFound()
+                )
         )
 
         val oppslagClient = AktørIdOppslagKlient(server.url(""), "key", "key")
