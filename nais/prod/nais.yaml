@@ -1,15 +1,28 @@
-apiVersion: "nais.io/v1alpha1"
-kind: "Application"
+# Example https://github.com/nais/naiserator/blob/master/examples/nais-max.yaml
+apiVersion: nais.io/v1alpha1
+kind: Application
 metadata:
-  name: dp-kalkulator-api
+  name: {{app}}
+  namespace: {{namespace}}
+  labels:
+    team: {{team}}
+    app: {{app}}
 spec:
-  ingresses:
-    - "https://www.nav.no/arbeid/dagpenger/kalkulator-api/"
-    - "https://dp-kalkulator-api.nais.oera.no/"
-  sessionAffinity: ClientIP # Sticky Session for ingress controller to prevent 404 on rollout
-  env:
-    - name: API_GATEWAY_URL
-      value: https://api-gw.oera.no/dp-reverse-proxy/
+  image: {{image}}
+  port: 8099
+  liveness:
+    path: /isAlive
+    initialDelay: 20
+    timeout: 1
+    periodSeconds: 5
+    failureThreshold: 10
+  readiness:
+    path: /isReady
+    initialDelay: 20
+    timeout: 1
+  prometheus:
+    enabled: true
+    path: /metrics
   replicas:
     min: 4
     max: 15
@@ -21,8 +34,16 @@ spec:
     requests:
       cpu: 300m
       memory: 512Mi
+  webproxy: true
+  ingresses:
+    - "https://www.nav.no/arbeid/dagpenger/kalkulator-api/"
+    - "https://dp-kalkulator-api.nais.oera.no/"
+  sessionAffinity: ClientIP # Sticky Session for ingress controller to prevent 404 on rollout
+  env:
+    - name: API_GATEWAY_URL
+      value: https://api-gw.oera.no/dp-reverse-proxy/
   vault:
+    enabled: true
     paths:
       - kvPath: "kv/prod/sbs/dp-kalkulator-api/default"
         mountPath: "/var/run/secrets/nais.io/vault/"
-

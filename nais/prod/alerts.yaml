@@ -1,9 +1,0 @@
-apiVersion: "nais.io/v1"
-kind: "Alert"
-metadata:
-  name: dp-kalkulator-api
-spec:
-  receivers:
-    slack:
-      channel: '#team-dagpenger-alert'
-      prependText: '<!here> | '
