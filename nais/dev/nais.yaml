@@ -14,8 +14,8 @@ spec:
     path: /isAlive
     initialDelay: 20
     timeout: 1
-    periodSeconds: 5     # How often (in seconds) to perform the probe. Default to 10 seconds
-    failureThreshold: 10 # when a Pod starts and the probe fails,
+    periodSeconds: 5
+    failureThreshold: 10
   readiness:
     path: /isReady
     initialDelay: 20
