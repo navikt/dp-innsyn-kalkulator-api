@@ -51,7 +51,8 @@ class BehovStarterTest {
                         "beregningsdato": "${LocalDate.now()}"
                     }
                         """.trimIndent(),
-                        true, true
+                        true,
+                        true
                     )
                 )
                 .willReturn(
