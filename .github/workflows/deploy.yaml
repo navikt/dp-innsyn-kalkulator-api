@@ -58,6 +58,22 @@ jobs:
           VAR: alerts_slack_channel=#team-dagpenger-alert-non-prod
           PRINT_PAYLOAD: true
 
+  deploy-dev-gcp:
+    name: Deploy to dev-gcp
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        name: Checkout code
+      - uses: nais/deploy/actions/deploy@master
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: nais/nais.yaml,nais/alerts.yaml
+          VARS: nais/dev-gcp/vars.yaml
+          PRINT_PAYLOAD: true
+
   deploy-prod:
     name: Deploy to Prod
     needs: [build, deploy-preprod]
@@ -73,4 +89,20 @@ jobs:
           RESOURCE: nais/prod/nais.yaml,nais/alerts.yaml
           VARS: nais/vars.yaml
           VAR: alerts_slack_channel=#team-dagpenger-alert
+          PRINT_PAYLOAD: true
+
+  deploy-prod-gcp:
+    name: Deploy to Prod-gcp
+    needs: [ build, deploy-dev-gcp ]
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        name: Checkout code
+      - uses: nais/deploy/actions/deploy@master
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: nais/nais.yaml,nais/alerts.yaml
+          VARS: nais/prod-gcp/vars.yaml
           PRINT_PAYLOAD: true
