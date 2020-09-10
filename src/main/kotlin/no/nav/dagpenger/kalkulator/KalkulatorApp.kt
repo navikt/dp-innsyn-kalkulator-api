@@ -170,7 +170,7 @@ fun Application.KalkulatorApi(
     }
     routing {
         authenticate {
-            route("/arbeid/dagpenger/kalkulator-api/behov") {
+            route("${config.application.basePath}/behov") {
                 get {
                     val idToken = call.request.cookies["selvbetjening-idtoken"]
                         ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
@@ -184,13 +184,13 @@ fun Application.KalkulatorApi(
                     call.respond(HttpStatusCode.OK, response)
                 }
             }
-            route("/arbeid/dagpenger/kalkulator-api/auth") {
+            route("${config.application.basePath}/auth") {
                 get {
                     call.respond(HttpStatusCode.OK, "Gyldig token!")
                 }
             }
         }
-        route("/arbeid/dagpenger/kalkulator-api/behov/reberegning") {
+        route("${config.application.basePath}/behov/reberegning") {
 
             post {
                 val authenticated = call.request.headers["x-api-key"]?.let { it == config.application.forskuddApiKey } ?: false
