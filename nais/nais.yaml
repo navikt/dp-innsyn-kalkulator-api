@@ -42,3 +42,5 @@ spec:
   env:
     - name: API_GATEWAY_URL
       value: {{API_GATEWAY_URL}}
+    - name: APP_BASEPATH
+      value: /arbeid/dagpenger/api/kalkulator
