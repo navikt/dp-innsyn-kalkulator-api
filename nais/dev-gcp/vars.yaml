@@ -11,4 +11,4 @@ accesspolicies: |
           - host: login.microsoftonline.com
 ingressess: |
   ingresses:
-    - https://arbeid.dev.nav.no/arbeid/dagpenger/kalkulator-api
+    - https://arbeid.dev.nav.no/arbeid/dagpenger/api/kalkulator
