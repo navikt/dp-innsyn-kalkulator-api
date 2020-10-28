@@ -101,7 +101,7 @@ fun Application.KalkulatorApi(
 
     install(Authentication) {
         jwt {
-            verifier(jwkProvider)
+            verifier(jwkProvider, jwtIssuer)
             realm = "dp-kalkulator-api"
             authHeader {
                 val cookie = it.request.cookies["selvbetjening-idtoken"]
