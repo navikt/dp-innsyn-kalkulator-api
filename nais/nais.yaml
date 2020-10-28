@@ -38,6 +38,7 @@ spec:
   sessionAffinity: ClientIP # Sticky Session for ingress controller to prevent 404 on rollout
   envFrom:
     - secret: dp-kalkulator-api-config
+    - configmap: loginservice-idporten
   {{accesspolicies}}
   env:
     - name: API_GATEWAY_URL
