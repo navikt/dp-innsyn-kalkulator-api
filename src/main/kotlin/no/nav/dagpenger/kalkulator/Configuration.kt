@@ -25,8 +25,8 @@ private val localProperties = ConfigurationMap(
 )
 private val devProperties = ConfigurationMap(
     mapOf(
-        "jwks.url" to "https://login.microsoftonline.com/navtestb2c.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_idporten_ver1",
-        "jwks.issuer" to "https://login.microsoftonline.com/d38f25aa-eab8-4c50-9f28-ebf92c1256f2/v2.0/",
+        "jwks.url" to System.getenv("LOGINSERVICE_IDPORTEN_DISCOVERY_URL"),
+        "jwks.issuer" to System.getenv("LOGINSERVICE_IDPORTEN_AUDIENCE"),
         "application.profile" to "DEV",
         "application.httpPort" to "8099",
         "API_GATEWAY_URL" to "https://api-gw-q1.oera.no/dp-reverse-proxy/"
