@@ -44,16 +44,8 @@ private val LOGGER = KotlinLogging.logger {}
 val config = Configuration()
 
 fun main() {
-    var jwksUrl: String
-    var jwksIssuer: String
-
-    if (config.application.idportenDiscoveryUrl.contains("b2clogin.com")) {
-        jwksUrl = config.application.jwksUrlNy
-        jwksIssuer = config.application.jwksIssuerNy
-    } else {
-        jwksUrl = config.application.jwksUrl
-        jwksIssuer = config.application.jwksIssuer
-    }
+    val jwksUrl: String = if (nyIdporten()) config.application.jwksUrlNy else config.application.jwksUrl
+    val jwksIssuer: String = if (nyIdporten()) config.application.jwksIssuerNy else config.application.jwksIssuer
 
     val jwkProvider = JwkProviderBuilder(URL(jwksUrl))
         .cached(10, 24, TimeUnit.HOURS)
@@ -86,6 +78,8 @@ fun main() {
         }
     )
 }
+
+private fun nyIdporten() = config.application.idportenDiscoveryUrl.contains("b2clogin.com")
 
 fun Application.KalkulatorApi(
     jwkProvider: JwkProvider,
