@@ -44,7 +44,18 @@ private val LOGGER = KotlinLogging.logger {}
 val config = Configuration()
 
 fun main() {
-    val jwkProvider = JwkProviderBuilder(URL(config.application.jwksUrl))
+    var jwksUrl: String
+    var jwksIssuer: String
+
+    if (config.application.idportenDiscoveryUrl.contains("b2clogin.com")) {
+        jwksUrl = config.application.jwksUrlNy
+        jwksIssuer = config.application.jwksIssuerNy
+    } else {
+        jwksUrl = config.application.jwksUrl
+        jwksIssuer = config.application.jwksIssuer
+    }
+
+    val jwkProvider = JwkProviderBuilder(URL(jwksUrl))
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
@@ -63,7 +74,7 @@ fun main() {
     val dagpengeKalkulator = DagpengeKalkulator(behovStarter, behovStatusPoller, subsumsjonFetcher)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {
-        KalkulatorApi(jwkProvider, config.application.jwksIssuer, aktørIdOppslag, dagpengeKalkulator)
+        KalkulatorApi(jwkProvider, jwksIssuer, aktørIdOppslag, dagpengeKalkulator)
         LOGGER.debug("Starting application")
     }.also {
         it.start(wait = false)
@@ -193,7 +204,8 @@ fun Application.KalkulatorApi(
         route("${config.application.basePath}/behov/reberegning") {
 
             post {
-                val authenticated = call.request.headers["x-api-key"]?.let { it == config.application.forskuddApiKey } ?: false
+                val authenticated =
+                    call.request.headers["x-api-key"]?.let { it == config.application.forskuddApiKey } ?: false
                 if (!authenticated) {
                     throw CookieNotSetException("Not authenticated")
                 }
