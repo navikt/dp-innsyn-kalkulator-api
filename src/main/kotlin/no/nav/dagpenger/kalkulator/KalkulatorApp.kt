@@ -34,6 +34,8 @@ import io.micrometer.core.instrument.Clock
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.CollectorRegistry
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import org.slf4j.event.Level
 import java.net.URI
@@ -177,16 +179,18 @@ fun Application.KalkulatorApi(
         authenticate {
             route("${config.application.basePath}/behov") {
                 get {
-                    val idToken = call.request.cookies["selvbetjening-idtoken"]
-                        ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
-                    val fødselsnummer = getSubject()
-                    LOGGER.info { "fetching aktør from " + config.application.graphQlBaseUrl }
-                    LOGGER.info { "graphql keylength: " + config.application.graphQlKey.length }
-                    val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
+                    withContext(IO) {
+                        val idToken = call.request.cookies["selvbetjening-idtoken"]
+                            ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
+                        val fødselsnummer = getSubject()
+                        LOGGER.info { "fetching aktør from " + config.application.graphQlBaseUrl }
+                        LOGGER.info { "graphql keylength: " + config.application.graphQlKey.length }
+                        val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
 
-                    val response = dagpengerKalkulator.kalkuler(person.aktoerId)
+                        val response = dagpengerKalkulator.kalkuler(person.aktoerId)
 
-                    call.respond(HttpStatusCode.OK, response)
+                        call.respond(HttpStatusCode.OK, response)
+                    }
                 }
             }
             route("${config.application.basePath}/auth") {
@@ -198,18 +202,20 @@ fun Application.KalkulatorApi(
         route("${config.application.basePath}/behov/reberegning") {
 
             post {
-                val authenticated =
-                    call.request.headers["x-api-key"]?.let { it == config.application.forskuddApiKey } ?: false
-                if (!authenticated) {
-                    throw CookieNotSetException("Not authenticated")
+                withContext(IO) {
+                    val authenticated =
+                        call.request.headers["x-api-key"]?.let { it == config.application.forskuddApiKey } ?: false
+                    if (!authenticated) {
+                        throw CookieNotSetException("Not authenticated")
+                    }
+
+                    val request = call.receive<Map<String, String>>()
+                    val fnr = request["fnr"] ?: throw JsonDataException("missing request information")
+
+                    val person = aktørIdKlient.fetchAktørIdGraphql(fnr)
+                    val response = dagpengerKalkulator.kalkuler(person.aktoerId)
+                    call.respond(HttpStatusCode.OK, response)
                 }
-
-                val request = call.receive<Map<String, String>>()
-                val fnr = request["fnr"] ?: throw JsonDataException("missing request information")
-
-                val person = aktørIdKlient.fetchAktørIdGraphql(fnr)
-                val response = dagpengerKalkulator.kalkuler(person.aktoerId)
-                call.respond(HttpStatusCode.OK, response)
             }
         }
         naischecks()
