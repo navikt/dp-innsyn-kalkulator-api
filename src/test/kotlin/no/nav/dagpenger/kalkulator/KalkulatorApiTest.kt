@@ -9,6 +9,7 @@ import io.ktor.server.testing.setBody
 import io.ktor.server.testing.withTestApplication
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -38,6 +39,11 @@ class KalkulatorApiTest {
             )
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
+            }.apply {
+                assertNotNull(response.status())
+            }
+
+            handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov?kontekst=veiledning") {
             }.apply {
                 assertNotNull(response.status())
             }
@@ -147,6 +153,45 @@ class KalkulatorApiTest {
                 behovResponse["subsumsjonId"] shouldBe "grunnlagSubsumsjonId"
             }
         }
+    }
+
+    @Test
+    fun `videresender regelkontekst fra query-parameter`() {
+        val regelkontekst = "veiledning"
+
+        every {
+            aktørIdOppslagKlient.fetchAktørIdGraphql(any(), any())
+        } returns Person("1234")
+
+        every {
+            behovStarter.startBehov("1234", regelkontekst)
+        } returns "htto://localhost/1234"
+
+        every {
+            behovStarter.startBehov("")
+        } returns "htto://localhost/1234"
+
+        withTestApplication({
+            KalkulatorApi(
+                jwkStub.stubbedJwkProvider(),
+                "test issuer",
+                aktørIdOppslagKlient,
+                dagpengeKalkulator
+            )
+        }) {
+            handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov?regelkontekst=$regelkontekst") {
+                addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
+                addHeader(HttpHeaders.ContentType, "application/json")
+                setBody(
+                    """
+                        {
+                            "beregningsdato": "2019-06-05"
+                        }
+                    """.trimIndent()
+                )
+            }
+        }
+        verify { behovStarter.startBehov("1234", regelkontekst) }
     }
 
     @Test

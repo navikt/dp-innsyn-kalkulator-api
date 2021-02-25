@@ -180,6 +180,7 @@ fun Application.KalkulatorApi(
             route("${config.application.basePath}/behov") {
                 get {
                     withContext(IO) {
+                        val kontekst = call.request.queryParameters["regelkontekst"]
                         val idToken = call.request.cookies["selvbetjening-idtoken"]
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                         val fødselsnummer = getSubject()
@@ -187,7 +188,7 @@ fun Application.KalkulatorApi(
                         LOGGER.info { "graphql keylength: " + config.application.graphQlKey.length }
                         val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
 
-                        val response = dagpengerKalkulator.kalkuler(person.aktoerId)
+                        val response = dagpengerKalkulator.kalkuler(person.aktoerId, kontekst)
 
                         call.respond(HttpStatusCode.OK, response)
                     }

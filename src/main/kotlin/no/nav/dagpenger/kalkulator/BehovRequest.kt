@@ -11,5 +11,11 @@ data class BehovRequest(
     val bruktInntektsPeriode: LocalDate? = null,
     val manueltGrunnlag: Int? = null,
     val antallBarn: Int? = null,
+    val regelkontekst: RegelKontekst,
     val inntektsId: String? = null
+)
+
+data class RegelKontekst(
+    val type: String,
+    val id: String
 )
