@@ -69,12 +69,13 @@ class KalkulatorApiTest {
 
     @Test
     fun `Skal kunne kalkulere dagpenge sats og periode, samt inngangsvilkår minste arbeidsinntekt og grunnlag avkortet`() {
+        val regelkontekst = "veiledning"
         every {
             aktørIdOppslagKlient.fetchAktørIdGraphql(any(), any())
         } returns Person("1234")
 
         every {
-            behovStarter.startBehov("1234")
+            behovStarter.startBehov("1234", regelkontekst)
         } returns "htto://localhost/1234"
 
         every {
@@ -133,7 +134,7 @@ class KalkulatorApiTest {
                 dagpengeKalkulator
             )
         }) {
-            handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
+            handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov?regelkontekst=$regelkontekst") {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
                 addHeader(HttpHeaders.ContentType, "application/json")
                 setBody(
@@ -168,7 +169,7 @@ class KalkulatorApiTest {
         } returns "htto://localhost/1234"
 
         every {
-            behovStarter.startBehov("")
+            behovStarter.startBehov("", "corona")
         } returns "htto://localhost/1234"
 
         withTestApplication({
@@ -219,7 +220,7 @@ class KalkulatorApiTest {
         } returns Person("1234")
 
         every {
-            behovStarter.startBehov("1234")
+            behovStarter.startBehov("1234", any())
         } returns "htto://localhost/1234"
 
         every {
@@ -263,7 +264,7 @@ class KalkulatorApiTest {
                 dagpengeKalkulator
             )
         }) {
-            handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
+            handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov?regelkontekst=corona") {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
                 addHeader(HttpHeaders.ContentType, "application/json")
                 setBody(
@@ -327,7 +328,7 @@ class KalkulatorApiTest {
         } returns Person("1234")
 
         every {
-            behovStarter.startBehov("1234")
+            behovStarter.startBehov("1234", any())
         } returns "htto://localhost/1234"
 
         every {

@@ -181,6 +181,7 @@ fun Application.KalkulatorApi(
                 get {
                     withContext(IO) {
                         val kontekst = call.request.queryParameters["regelkontekst"]
+                        requireNotNull(kontekst) { "Regelkontekst må settes" }
                         val idToken = call.request.cookies["selvbetjening-idtoken"]
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                         val fødselsnummer = getSubject()
@@ -214,7 +215,7 @@ fun Application.KalkulatorApi(
                     val fnr = request["fnr"] ?: throw JsonDataException("missing request information")
 
                     val person = aktørIdKlient.fetchAktørIdGraphql(fnr)
-                    val response = dagpengerKalkulator.kalkuler(person.aktoerId)
+                    val response = dagpengerKalkulator.kalkuler(person.aktoerId, "corona")
                     call.respond(HttpStatusCode.OK, response)
                 }
             }

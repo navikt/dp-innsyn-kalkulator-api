@@ -64,7 +64,7 @@ class BehovStarterTest {
 
         val client = BehovStarter(server.url(""), equalToPattern.value, "test")
 
-        val response = client.startBehov("001")
+        val response = client.startBehov("001", "corona")
         Assertions.assertEquals("/behov/status/123", response)
     }
 

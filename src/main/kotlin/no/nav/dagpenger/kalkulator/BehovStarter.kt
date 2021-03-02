@@ -19,11 +19,11 @@ class BehovStarter(
 ) {
     private val jsonAdapter = moshiInstance.adapter(BehovRequest::class.java)
 
-    fun startBehov(aktørId: String, regelkontekst: String? = null): String {
-        val kontekst = finnRegelkontekst(regelkontekst).also { kontekstCounter.labels(it).inc() }
+    fun startBehov(aktørId: String, regelkontekst: String): String {
+        kontekstCounter.labels(regelkontekst).inc()
 
         val behovUrl = "$regelApiUrl/behov"
-        val json = jsonAdapter.toJson(createBehovRequest(aktørId, kontekst))
+        val json = jsonAdapter.toJson(createBehovRequest(aktørId, regelkontekst))
 
         val (_, response, result) =
             with(
@@ -42,11 +42,6 @@ class BehovStarter(
             is Result.Success ->
                 response.headers["Location"].first()
         }
-    }
-
-    private fun finnRegelkontekst(regelkontekst: String?): String {
-        val forskuddRegelkontekst = "corona"
-        return regelkontekst ?: forskuddRegelkontekst
     }
 }
 
