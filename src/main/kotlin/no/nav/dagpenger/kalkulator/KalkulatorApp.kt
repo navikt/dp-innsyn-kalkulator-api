@@ -182,6 +182,8 @@ fun Application.KalkulatorApi(
                     withContext(IO) {
                         val kontekst = call.request.queryParameters["regelkontekst"]
                         requireNotNull(kontekst) { "Regelkontekst må settes" }
+                        val eksternId: String? = call.request.queryParameters["ekstern_id"]
+//                        requireNotNull(eksternId) { "Regelkontekst må settes" } //todo legg inn når corona-soknad-api sender eksternId
                         val idToken = call.request.cookies["selvbetjening-idtoken"]
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                         val fødselsnummer = getSubject()

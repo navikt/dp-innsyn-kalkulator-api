@@ -26,15 +26,13 @@ class BehovStarter(
         val json = jsonAdapter.toJson(createBehovRequest(aktørId, regelkontekst))
 
         val (_, response, result) =
-            with(
-                behovUrl.httpPost()
-                    .apiKey(regelApiKey)
-                    .header("x-nav-apiKey" to apiGatewayKey)
-                    .header(mapOf("Content-Type" to "application/json"))
-                    .body(json)
-            ) {
-                responseObject<BehovStatusResponse>()
-            }
+            behovUrl.httpPost()
+                .apiKey(regelApiKey)
+                .header("x-nav-apiKey" to apiGatewayKey)
+                .header(mapOf("Content-Type" to "application/json"))
+                .body(json)
+                .response()
+
         return when (result) {
             is Result.Failure -> throw RegelApiBehovHttpClientException(
                 "Failed to run behov. Response message ${response.responseMessage}. Error message: ${result.error.message}"

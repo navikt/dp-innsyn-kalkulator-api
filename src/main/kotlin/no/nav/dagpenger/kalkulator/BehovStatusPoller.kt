@@ -20,32 +20,35 @@ class BehovStatusPoller(
     private val delayDuration = Duration.ofMillis(100)
 
     private fun pollInternal(statusUrl: String): BehovStatusPollResult {
+        val (_, response, result) = statusUrl.httpGet()
+            .header("x-nav-apiKey" to apiGatewayKey)
+            .apiKey(regelApiKey)
+            .allowRedirects(false)
+            .responseString()
 
-        val (_, response, result) =
-            with(
-                statusUrl
-                    .httpGet()
-                    .header("x-nav-apiKey" to apiGatewayKey)
-                    .apiKey(regelApiKey)
-                    .allowRedirects(false)
-            ) { responseObject<BehovStatusResponse>() }
-
-        return try {
-            BehovStatusPollResult(result.get().status, null)
-        } catch (exception: Exception) {
-            if (response.statusCode == 303) {
-                LOGGER.info("Caught 303: $response")
-                return BehovStatusPollResult(
-                    null,
-                    response.headers["Location"].first()
-                )
-            } else {
+        return result.fold(
+            success = {
+                when (response.statusCode) {
+                    303 -> BehovStatusPollResult(
+                        pending = false,
+                        location = response.headers["Location"].first()
+                    )
+                    else -> {
+                        BehovStatusPollResult(
+                            pending = true,
+                            location = null
+                        )
+                    }
+                }
+            },
+            failure = {
+                LOGGER.error("Failed polling $statusUrl")
                 throw PollSubsumsjonStatusException(
                     response.responseMessage,
-                    exception
+                    it.exception
                 )
             }
-        }
+        )
     }
 
     suspend fun pollStatus(statusUrl: String): String {
@@ -77,10 +80,10 @@ class BehovStatusPoller(
 }
 
 private data class BehovStatusPollResult(
-    val status: BehovStatus?,
+    private val pending: Boolean,
     val location: String?
 ) {
-    fun isPending() = status == BehovStatus.PENDING
+    fun isPending() = pending
 }
 
 class PollSubsumsjonStatusException(
