@@ -113,3 +113,7 @@ tasks.named("jar") {
 tasks.withType<Wrapper> {
     gradleVersion = "6.0.1"
 }
+
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    transform(com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer::class.java)
+}
