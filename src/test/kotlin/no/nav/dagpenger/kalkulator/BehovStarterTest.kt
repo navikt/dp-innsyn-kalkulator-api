@@ -47,7 +47,6 @@ class BehovStarterTest {
                         """
                     {
                         "aktorId": "001",
-                        "vedtakId": -1337,
                         "beregningsdato": "${LocalDate.now()}"
                     }
                         """.trimIndent(),

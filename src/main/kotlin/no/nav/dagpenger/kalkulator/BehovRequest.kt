@@ -4,7 +4,6 @@ import java.time.LocalDate
 
 data class BehovRequest(
     val aktorId: String,
-    val vedtakId: Int,
     val beregningsdato: LocalDate,
     val harAvtjentVerneplikt: Boolean? = null,
     val oppfyllerKravTilFangstOgFisk: Boolean? = null,
@@ -17,5 +16,4 @@ data class BehovRequest(
 
 data class RegelKontekst(
     val type: String,
-    val id: String
 )

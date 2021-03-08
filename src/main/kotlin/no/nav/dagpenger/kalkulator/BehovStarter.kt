@@ -46,11 +46,9 @@ class BehovStarter(
 class RegelApiBehovHttpClientException(override val message: String) : RuntimeException(message)
 
 private fun createBehovRequest(aktørId: String, regelkontekstType: String): BehovRequest {
-    val vedtakId = -1337
     return BehovRequest(
         aktørId,
-        vedtakId,
         LocalDate.now(),
-        regelkontekst = RegelKontekst(type = regelkontekstType, id = vedtakId.toString())
-    ) // TODO: Når regel-api håndterer at vi kan fjerne vedtakid må den vekk herfra
+        regelkontekst = RegelKontekst(type = regelkontekstType)
+    )
 }

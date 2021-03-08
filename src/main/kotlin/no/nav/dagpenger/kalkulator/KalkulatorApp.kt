@@ -153,8 +153,7 @@ fun Application.KalkulatorApi(
         }
         // todo: fix this errorhandling?
         exception<RegelApiBehovHttpClientException> { cause ->
-            LOGGER.info("RegelApiBehovClientException! - Har ikke fått subsumsjonslokalsjon tross startet behov", cause)
-            LOGGER.warn("Couldn't get Subsumsjon: " + cause.message, cause)
+            LOGGER.error("Couldn't get Subsumsjon: " + cause.message, cause)
             val status = HttpStatusCode.BadGateway
             val problem = Problem(
                 title = "Feil fra regel-api",
@@ -164,8 +163,7 @@ fun Application.KalkulatorApi(
             call.respond(status, problem)
         }
         exception<IncompleteResultException> { cause ->
-            LOGGER.info("IncompleteResultException! - Ikke kontakt med skatt?", cause)
-            LOGGER.warn("IncompleteResultException: " + cause.message, cause)
+            LOGGER.error("IncompleteResultException: " + cause.message, cause)
             val status = HttpStatusCode.GatewayTimeout
             val problem = Problem(
                 title = "Feil fra API, fikk ikke beregnet inntekt",
@@ -182,13 +180,9 @@ fun Application.KalkulatorApi(
                     withContext(IO) {
                         val kontekst = call.request.queryParameters["regelkontekst"]
                         requireNotNull(kontekst) { "Regelkontekst må settes" }
-                        val eksternId: String? = call.request.queryParameters["ekstern_id"]
-//                        requireNotNull(eksternId) { "Regelkontekst må settes" } //todo legg inn når corona-soknad-api sender eksternId
                         val idToken = call.request.cookies["selvbetjening-idtoken"]
                             ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                         val fødselsnummer = getSubject()
-                        LOGGER.info { "fetching aktør from " + config.application.graphQlBaseUrl }
-                        LOGGER.info { "graphql keylength: " + config.application.graphQlKey.length }
                         val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
 
                         val response = dagpengerKalkulator.kalkuler(person.aktoerId, kontekst)
