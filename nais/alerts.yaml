@@ -15,8 +15,8 @@ spec:
 
     - action: Sjekk loggene til \{{ $labels.log_app }} i \{{ $labels.log_namespace }}, for å se hvorfor det er så mye feil
       alert: høy feilrate i logger
-      expr: (100 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="{{app}}",log_level="Error"}[3m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="{{app}}"}[3m]))) > 90
-      for: 3m
+      expr: rate(logd_messages_total{log_app="{{app}}",log_level="Error"}[5m]) > 0
+      for: 5m
 
     - action: Sjekk \{{ $labels.app }} i \{{ $labels.kubernetes_namespace }} sine selftest for å se hva som er galt
       alert: feil i selftest
