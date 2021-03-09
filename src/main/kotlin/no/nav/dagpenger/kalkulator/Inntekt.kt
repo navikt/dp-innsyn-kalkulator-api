@@ -4,7 +4,7 @@ import java.math.BigDecimal
 
 data class Inntekt(
     val inntekt: BigDecimal,
-    val periode: Int, // todo: enum?
+    val periode: Int,
     val inntektsPeriode: InntektsPeriode,
     val inneholderFangstOgFisk: Boolean,
     val andel: BigDecimal? = null

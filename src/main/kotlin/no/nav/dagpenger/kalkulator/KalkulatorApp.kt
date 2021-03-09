@@ -151,7 +151,6 @@ fun Application.KalkulatorApi(
             )
             call.respond(status, problem)
         }
-        // todo: fix this errorhandling?
         exception<RegelApiBehovHttpClientException> { cause ->
             LOGGER.error("Couldn't get Subsumsjon: " + cause.message, cause)
             val status = HttpStatusCode.BadGateway
