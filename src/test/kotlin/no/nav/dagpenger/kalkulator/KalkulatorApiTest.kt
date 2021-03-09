@@ -88,7 +88,6 @@ class KalkulatorApiTest {
             behovId = "1234",
             faktum = Faktum(
                 aktorId = "123",
-                vedtakId = -1337,
                 beregningsdato = LocalDate.now()
             ),
             grunnlagResultat = GrunnlagResultat(
@@ -233,7 +232,6 @@ class KalkulatorApiTest {
             behovId = "1234",
             faktum = Faktum(
                 aktorId = "123",
-                vedtakId = -1337,
                 beregningsdato = LocalDate.now()
             ),
             grunnlagResultat = null,
@@ -341,7 +339,6 @@ class KalkulatorApiTest {
             behovId = "1234",
             faktum = Faktum(
                 aktorId = "123",
-                vedtakId = -1337,
                 beregningsdato = LocalDate.now()
             ),
             grunnlagResultat = GrunnlagResultat(
