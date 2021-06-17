@@ -8,6 +8,9 @@ metadata:
     team: {{team}}
     app: {{app}}
 spec:
+  azure:
+    application:
+      enabled: true
   image: {{image}}
   port: 8099
   liveness:
