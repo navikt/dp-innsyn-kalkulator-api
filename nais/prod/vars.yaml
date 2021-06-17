@@ -9,6 +9,7 @@ accesspolicies: |
         external:
           - host: api-gw.oera.no
           - host: login.microsoftonline.com
+          - host: dp-proxy.prod-fss-pub.nais.io
 ingressess: |
   ingresses:
     - https://www.nav.no/arbeid/dagpenger/api/kalkulator

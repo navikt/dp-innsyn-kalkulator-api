@@ -10,6 +10,7 @@ accesspolicies: |
           - host: api-gw-q1.oera.no
           - host: login.microsoftonline.com
           - host: navtestb2c.b2clogin.com
+          - host: dp-proxy.dev-fss-pub.nais.io
 ingressess: |
   ingresses:
     - https://arbeid.dev.nav.no/arbeid/dagpenger/api/kalkulator
