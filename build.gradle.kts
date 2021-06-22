@@ -51,6 +51,7 @@ dependencies {
 
     implementation(Dagpenger.Biblioteker.stsKlient)
     implementation(Dagpenger.Biblioteker.ktorUtils)
+    implementation("com.github.navikt.dp-biblioteker:aad-klient:2021.04.09-14.32.088c6dc10b69")
     implementation(Konfig.konfig)
 
     implementation(Moshi.moshi)

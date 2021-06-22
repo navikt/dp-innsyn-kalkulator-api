@@ -1,7 +1,12 @@
 {
   "data": {
-      "person": {
-        "aktoerId": "12345"
-      }
+    "hentIdenter": {
+      "identer": [
+        {
+          "ident": "111111111",
+          "gruppe": "AKTORID"
+        }
+      ]
+    }
   }
 }
