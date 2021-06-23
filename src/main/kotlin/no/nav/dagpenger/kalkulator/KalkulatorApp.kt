@@ -54,10 +54,9 @@ fun main() {
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
 
-    val aktørIdOppslag = AktørIdOppslagKlient(
-        config.application.graphQlBaseUrl,
-        config.application.apiGatewayKey,
-        config.application.graphQlKey
+    val aktørIdOppslag = PDLKlient(
+        config.application.pdlApiBaseUrl,
+        config.application.tokenProvider()
     )
     val behovStarter =
         BehovStarter(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
@@ -83,10 +82,10 @@ fun main() {
 
 private fun nyIdporten() = config.application.idportenDiscoveryUrl.contains("b2clogin.com")
 
-fun Application.KalkulatorApi(
+internal fun Application.KalkulatorApi(
     jwkProvider: JwkProvider,
     jwtIssuer: String,
-    aktørIdKlient: AktørIdOppslagKlient,
+    aktørIdKlient: PDLKlient,
     dagpengerKalkulator: DagpengeKalkulator
 ) {
     install(ContentNegotiation) {
@@ -179,12 +178,10 @@ fun Application.KalkulatorApi(
                     withContext(IO) {
                         val kontekst = call.request.queryParameters["regelkontekst"]
                         requireNotNull(kontekst) { "Regelkontekst må settes" }
-                        val idToken = call.request.cookies["selvbetjening-idtoken"]
-                            ?: throw CookieNotSetException("Cookie with name selvbetjening-idtoken not found")
                         val fødselsnummer = getSubject()
-                        val person = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer, idToken)
+                        val aktoerId = aktørIdKlient.fetchAktørIdGraphql(fødselsnummer)
 
-                        val response = dagpengerKalkulator.kalkuler(person.aktoerId, kontekst)
+                        val response = dagpengerKalkulator.kalkuler(aktoerId, kontekst)
 
                         call.respond(HttpStatusCode.OK, response)
                     }
@@ -209,8 +206,8 @@ fun Application.KalkulatorApi(
                     val request = call.receive<Map<String, String>>()
                     val fnr = request["fnr"] ?: throw JsonDataException("missing request information")
 
-                    val person = aktørIdKlient.fetchAktørIdGraphql(fnr)
-                    val response = dagpengerKalkulator.kalkuler(person.aktoerId, "corona")
+                    val aktoerId = aktørIdKlient.fetchAktørIdGraphql(fnr)
+                    val response = dagpengerKalkulator.kalkuler(aktoerId, "corona")
                     call.respond(HttpStatusCode.OK, response)
                 }
             }

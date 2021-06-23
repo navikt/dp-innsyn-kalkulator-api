@@ -7,6 +7,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 import io.ktor.server.testing.withTestApplication
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -17,12 +18,12 @@ import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class KalkulatorApiTest {
+internal class KalkulatorApiTest {
     private val jwkStub = JwtStub()
     private val token = jwkStub.createTokenFor("brukerMcBrukerson")
     private val unauthorizedToken = "tull"
 
-    private val aktørIdOppslagKlient: AktørIdOppslagKlient = mockk()
+    private val aktørIdOppslagKlient: PDLKlient = mockk()
     private val behovStarter: BehovStarter = mockk()
     private val behovStatusPoller: BehovStatusPoller = mockk()
     private val subsumsjonFetcher: SubsumsjonFetcher = mockk()
@@ -70,9 +71,9 @@ class KalkulatorApiTest {
     @Test
     fun `Skal kunne kalkulere dagpenge sats og periode, samt inngangsvilkår minste arbeidsinntekt og grunnlag avkortet`() {
         val regelkontekst = "veiledning"
-        every {
-            aktørIdOppslagKlient.fetchAktørIdGraphql(any(), any())
-        } returns Person("1234")
+        coEvery {
+            aktørIdOppslagKlient.fetchAktørIdGraphql(any())
+        } returns "1234"
 
         every {
             behovStarter.startBehov("1234", regelkontekst)
@@ -159,9 +160,9 @@ class KalkulatorApiTest {
     fun `videresender regelkontekst fra query-parameter`() {
         val regelkontekst = "veiledning"
 
-        every {
-            aktørIdOppslagKlient.fetchAktørIdGraphql(any(), any())
-        } returns Person("1234")
+        coEvery {
+            aktørIdOppslagKlient.fetchAktørIdGraphql(any())
+        } returns "1234"
 
         every {
             behovStarter.startBehov("1234", regelkontekst)
@@ -214,9 +215,9 @@ class KalkulatorApiTest {
 
     @Test
     fun `Returnerer 504 hvis Subsumsjonen ikke er komplett`() {
-        every {
-            aktørIdOppslagKlient.fetchAktørIdGraphql(any(), any())
-        } returns Person("1234")
+        coEvery {
+            aktørIdOppslagKlient.fetchAktørIdGraphql(any())
+        } returns "1234"
 
         every {
             behovStarter.startBehov("1234", any())
@@ -321,9 +322,9 @@ class KalkulatorApiTest {
     @Test
     fun ` Skal kunne reberegne behov når alle parametre er satt `() {
 
-        every {
-            aktørIdOppslagKlient.fetchAktørIdGraphql(any(), any())
-        } returns Person("1234")
+        coEvery {
+            aktørIdOppslagKlient.fetchAktørIdGraphql(any())
+        } returns "1234"
 
         every {
             behovStarter.startBehov("1234", any())
