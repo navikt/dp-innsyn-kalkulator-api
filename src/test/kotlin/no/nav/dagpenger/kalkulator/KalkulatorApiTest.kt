@@ -1,6 +1,7 @@
 package no.nav.dagpenger.kalkulator
 
 import io.kotest.matchers.shouldBe
+import io.ktor.application.Application
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -11,6 +12,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.prometheus.client.CollectorRegistry
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -32,12 +34,7 @@ internal class KalkulatorApiTest {
     @Test
     fun `Startbehov returns a response`() {
         withTestApplication({
-            KalkulatorApi(
-                jwkStub.stubbedJwkProvider(),
-                "test issuer",
-                aktørIdOppslagKlient,
-                dagpengeKalkulator
-            )
+            mockedApi()
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
             }.apply {
@@ -54,12 +51,7 @@ internal class KalkulatorApiTest {
     @Test
     fun `Startbehov returns a response with real token`() {
         withTestApplication({
-            KalkulatorApi(
-                jwkStub.stubbedJwkProvider(),
-                "test issuer",
-                aktørIdOppslagKlient,
-                dagpengeKalkulator
-            )
+            mockedApi()
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
             }.apply {
@@ -127,12 +119,7 @@ internal class KalkulatorApiTest {
         )
 
         withTestApplication({
-            KalkulatorApi(
-                jwkStub.stubbedJwkProvider(),
-                "test issuer",
-                aktørIdOppslagKlient,
-                dagpengeKalkulator
-            )
+            mockedApi()
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov?regelkontekst=$regelkontekst") {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
@@ -173,12 +160,7 @@ internal class KalkulatorApiTest {
         } returns "htto://localhost/1234"
 
         withTestApplication({
-            KalkulatorApi(
-                jwkStub.stubbedJwkProvider(),
-                "test issuer",
-                aktørIdOppslagKlient,
-                dagpengeKalkulator
-            )
+            mockedApi()
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov?regelkontekst=$regelkontekst") {
                 addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$token")
@@ -198,12 +180,7 @@ internal class KalkulatorApiTest {
     @Test
     fun `Api returns a 401 if user is unauthenticated`() {
         withTestApplication({
-            KalkulatorApi(
-                jwkStub.stubbedJwkProvider(),
-                "test issuer",
-                aktørIdOppslagKlient,
-                dagpengeKalkulator
-            )
+            mockedApi()
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
                 addHeader(HttpHeaders.Authorization, "Bearer $unauthorizedToken")
@@ -284,12 +261,7 @@ internal class KalkulatorApiTest {
     fun ` Skal ikke kunne reberegne behov uten api nøkkel `() {
 
         withTestApplication({
-            KalkulatorApi(
-                jwkStub.stubbedJwkProvider(),
-                "test issuer",
-                aktørIdOppslagKlient,
-                dagpengeKalkulator
-            )
+            mockedApi()
         }) {
             handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov/reberegning") {
             }.apply {
@@ -302,12 +274,7 @@ internal class KalkulatorApiTest {
     fun ` Skal ikke kunne reberegne behov uten fødselsnummer `() {
 
         withTestApplication({
-            KalkulatorApi(
-                jwkStub.stubbedJwkProvider(),
-                "test issuer",
-                aktørIdOppslagKlient,
-                dagpengeKalkulator
-            )
+            mockedApi()
         }) {
             handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov/reberegning") {
                 addHeader("x-api-key", "hunter2")
@@ -378,12 +345,7 @@ internal class KalkulatorApiTest {
         )
 
         withTestApplication({
-            KalkulatorApi(
-                jwkStub.stubbedJwkProvider(),
-                "test issuer",
-                aktørIdOppslagKlient,
-                dagpengeKalkulator
-            )
+            mockedApi()
         }) {
             handleRequest(HttpMethod.Post, "/arbeid/dagpenger/kalkulator-api/behov/reberegning") {
                 addHeader("x-api-key", "hunter2")
@@ -398,17 +360,22 @@ internal class KalkulatorApiTest {
     @Test
     fun `Apiet burde har metrics endepunkt`() {
         withTestApplication({
-            KalkulatorApi(
-                jwkStub.stubbedJwkProvider(),
-                "test issuer",
-                aktørIdOppslagKlient,
-                dagpengeKalkulator
-            )
+            mockedApi()
         }) {
             handleRequest(HttpMethod.Get, "/metrics") {
             }.apply {
                 assertEquals(HttpStatusCode.OK, response.status())
             }
         }
+    }
+
+    private fun Application.mockedApi() {
+        KalkulatorApi(
+            jwkStub.stubbedJwkProvider(),
+            "test issuer",
+            aktørIdOppslagKlient,
+            dagpengeKalkulator,
+            collectorRegistry = CollectorRegistry(true)
+        )
     }
 }

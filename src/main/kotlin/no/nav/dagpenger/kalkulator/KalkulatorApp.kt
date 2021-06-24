@@ -86,7 +86,8 @@ internal fun Application.KalkulatorApi(
     jwkProvider: JwkProvider,
     jwtIssuer: String,
     aktørIdKlient: PDLKlient,
-    dagpengerKalkulator: DagpengeKalkulator
+    dagpengerKalkulator: DagpengeKalkulator,
+    collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
 ) {
     install(ContentNegotiation) {
         moshi(moshiInstance)
@@ -102,7 +103,7 @@ internal fun Application.KalkulatorApi(
     }
 
     install(MicrometerMetrics) {
-        registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT, CollectorRegistry.defaultRegistry, Clock.SYSTEM)
+        registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT, collectorRegistry, Clock.SYSTEM)
     }
 
     install(Authentication) {
