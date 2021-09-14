@@ -2,7 +2,6 @@ app: dp-kalkulator-api
 namespace: teamdagpenger
 team: teamdagpenger
 API_GATEWAY_URL: "https://api-gw.oera.no/dp-reverse-proxy/"
-alerts_slack_channel: "#team-dagpenger-alert"
 accesspolicies: |
   accessPolicy:
       outbound:
