@@ -27,8 +27,6 @@ class BehovStatusPoller(
             .allowRedirects(false)
             .responseString()
 
-        LOGGER.info { "Got ${response.statusCode} from $statusUrl" }
-
         return result.fold(
             success = {
                 when (response.statusCode) {
