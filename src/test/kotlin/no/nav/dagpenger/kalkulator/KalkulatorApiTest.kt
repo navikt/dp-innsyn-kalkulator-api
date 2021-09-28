@@ -9,9 +9,8 @@ import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 import io.ktor.server.testing.withTestApplication
 import io.mockk.coEvery
-import io.mockk.every
+import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
 import io.prometheus.client.CollectorRegistry
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
@@ -67,15 +66,15 @@ internal class KalkulatorApiTest {
             aktørIdOppslagKlient.fetchAktørIdGraphql(any())
         } returns "1234"
 
-        every {
+        coEvery {
             behovStarter.startBehov("1234", regelkontekst)
         } returns "htto://localhost/1234"
 
-        every {
-            runBlocking { behovStatusPoller.pollStatus("htto://localhost/1234") }
+        coEvery {
+            behovStatusPoller.pollStatus("htto://localhost/1234")
         } returns "htto://localhost/1234"
 
-        every {
+        coEvery {
             subsumsjonFetcher.getSubsumsjon("htto://localhost/1234")
         } returns Subsumsjon(
             behovId = "1234",
@@ -151,11 +150,11 @@ internal class KalkulatorApiTest {
             aktørIdOppslagKlient.fetchAktørIdGraphql(any())
         } returns "1234"
 
-        every {
+        coEvery {
             behovStarter.startBehov("1234", regelkontekst)
         } returns "htto://localhost/1234"
 
-        every {
+        coEvery {
             behovStarter.startBehov("", "corona")
         } returns "htto://localhost/1234"
 
@@ -174,7 +173,7 @@ internal class KalkulatorApiTest {
                 )
             }
         }
-        verify { behovStarter.startBehov("1234", regelkontekst) }
+        coVerify { behovStarter.startBehov("1234", regelkontekst) }
     }
 
     @Test
@@ -196,15 +195,15 @@ internal class KalkulatorApiTest {
             aktørIdOppslagKlient.fetchAktørIdGraphql(any())
         } returns "1234"
 
-        every {
+        coEvery {
             behovStarter.startBehov("1234", any())
         } returns "htto://localhost/1234"
 
-        every {
-            runBlocking { behovStatusPoller.pollStatus("htto://localhost/1234") }
+        coEvery {
+            behovStatusPoller.pollStatus("htto://localhost/1234")
         } returns "htto://localhost/1234"
 
-        every {
+        coEvery {
             subsumsjonFetcher.getSubsumsjon("htto://localhost/1234")
         } returns Subsumsjon(
             behovId = "1234",
@@ -293,15 +292,15 @@ internal class KalkulatorApiTest {
             aktørIdOppslagKlient.fetchAktørIdGraphql(any())
         } returns "1234"
 
-        every {
+        coEvery {
             behovStarter.startBehov("1234", any())
         } returns "htto://localhost/1234"
 
-        every {
+        coEvery {
             runBlocking { behovStatusPoller.pollStatus("htto://localhost/1234") }
         } returns "htto://localhost/1234"
 
-        every {
+        coEvery {
             subsumsjonFetcher.getSubsumsjon("htto://localhost/1234")
         } returns Subsumsjon(
             behovId = "1234",

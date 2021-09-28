@@ -3,14 +3,15 @@ package no.nav.dagpenger.kalkulator
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.moshi.moshiDeserializerOf
 import com.github.kittinunf.result.Result
+import io.ktor.http.HttpHeaders
+import no.nav.dagpenger.aad.api.ClientCredentialsClient
 
 class SubsumsjonFetcher(
     private val regelApiUrl: String,
-    private val regelApiKey: String,
-    private val apiGatewayKey: String
+    private val tokenProvider: ClientCredentialsClient,
 ) {
 
-    fun getSubsumsjon(subsumsjonLocation: String): Subsumsjon {
+    suspend fun getSubsumsjon(subsumsjonLocation: String): Subsumsjon {
         val url = "$regelApiUrl$subsumsjonLocation"
 
         val jsonAdapter = moshiInstance.adapter(Subsumsjon::class.java)
@@ -19,8 +20,7 @@ class SubsumsjonFetcher(
             with(
                 url
                     .httpGet()
-                    .header("x-nav-apiKey" to apiGatewayKey)
-                    .apiKey(regelApiKey)
+                    .header(HttpHeaders.Authorization, "Bearer ${tokenProvider.getAccessToken()}")
             ) { responseObject(moshiDeserializerOf(jsonAdapter)) }
 
         return when (result) {

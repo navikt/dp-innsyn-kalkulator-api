@@ -5,6 +5,8 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.github.tomakehurst.wiremock.matching.EqualToPattern
+import kotlinx.coroutines.runBlocking
+import no.nav.dagpenger.aad.api.ClientCredentialsClient
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
@@ -13,6 +15,10 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class BehovStarterTest {
+
+    private val tokenProviderMock = object : ClientCredentialsClient {
+        override suspend fun getAccessToken(): String = "testToken"
+    }
 
     companion object {
         val server: WireMockServer = WireMockServer(WireMockConfiguration.options().dynamicPort())
@@ -38,10 +44,10 @@ class BehovStarterTest {
     @Test
     fun ` Should get url to behov status `() {
 
-        val equalToPattern = EqualToPattern("regelApiKey")
+        val equalToPattern = EqualToPattern("Bearer testToken")
         WireMock.stubFor(
             WireMock.post(WireMock.urlEqualTo("//behov"))
-                .withHeader("X-API-KEY", equalToPattern)
+                .withHeader("Authorization", equalToPattern)
                 .withRequestBody(
                     EqualToJsonPattern(
                         """
@@ -61,9 +67,9 @@ class BehovStarterTest {
                 )
         )
 
-        val client = BehovStarter(server.url(""), equalToPattern.value, "test")
+        val client = BehovStarter(server.url(""), tokenProviderMock)
 
-        val response = client.startBehov("001", "corona")
+        val response = runBlocking { client.startBehov("001", "corona") }
         Assertions.assertEquals("/behov/status/123", response)
     }
 
