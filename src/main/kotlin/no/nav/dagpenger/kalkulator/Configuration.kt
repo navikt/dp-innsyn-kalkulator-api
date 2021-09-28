@@ -76,7 +76,6 @@ data class Configuration(
         val name: String = "dp-kalkulator-api",
         val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
         val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
-        val graphQlBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-graphql/graphql/",
         val regelApiBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-regel-api",
         val pdlApiBaseUrl: String = config()[Key("PDL_API_URL", stringType)],
         val graphQlKey: String = config()[Key("GRAPH_QL_KEY", stringType)],
