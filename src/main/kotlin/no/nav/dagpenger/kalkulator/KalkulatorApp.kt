@@ -59,11 +59,11 @@ fun main() {
         config.application.tokenProvider()
     )
     val behovStarter =
-        BehovStarter(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+        BehovStarter(config.application.dpProxyUrl, config.application.dpProxyTokenProvider())
     val behovStatusPoller =
-        BehovStatusPoller(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+        BehovStatusPoller(config.application.dpProxyUrl, config.application.dpProxyTokenProvider())
     val subsumsjonFetcher =
-        SubsumsjonFetcher(config.application.regelApiBaseUrl, config.auth.regelApiKey, config.application.apiGatewayKey)
+        SubsumsjonFetcher(config.application.dpProxyUrl, config.application.dpProxyTokenProvider())
     val dagpengeKalkulator = DagpengeKalkulator(behovStarter, behovStatusPoller, subsumsjonFetcher)
 
     val application = embeddedServer(Netty, port = config.application.httpPort) {

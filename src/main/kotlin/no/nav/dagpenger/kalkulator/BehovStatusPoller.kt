@@ -1,37 +1,40 @@
 package no.nav.dagpenger.kalkulator
 
 import com.github.kittinunf.fuel.httpGet
+import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.time.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
+import no.nav.dagpenger.aad.api.ClientCredentialsClient
 import java.time.Duration
 
 private val LOGGER = KotlinLogging.logger {}
 
 class BehovStatusPoller(
     private val regelApiUrl: String,
-    private val regelApiKey: String,
-    private val apiGatewayKey: String,
+    private val tokenProvider: ClientCredentialsClient,
     private val timeout: Duration = Duration.ofSeconds(20)
 ) {
     private val delayDuration = Duration.ofMillis(100)
 
-    private fun pollInternal(statusUrl: String): BehovStatusPollResult {
+    private suspend fun pollInternal(statusUrl: String): BehovStatusPollResult {
         val (_, response, result) = statusUrl.httpGet()
-            .header("x-nav-apiKey" to apiGatewayKey)
-            .apiKey(regelApiKey)
+            .header(HttpHeaders.Authorization, "Bearer ${tokenProvider.getAccessToken()}")
+            .header(mapOf("Content-Type" to "application/json"))
             .allowRedirects(false)
             .responseString()
+
+        LOGGER.info { "Got ${response.statusCode} from $statusUrl" }
 
         return result.fold(
             success = {
                 when (response.statusCode) {
                     303 -> BehovStatusPollResult(
                         pending = false,
-                        location = response.headers["Location"].first()
+                        location = response.headers["Location"].first().replaceFirst("/v1/", "/")
                     )
                     else -> {
                         BehovStatusPollResult(

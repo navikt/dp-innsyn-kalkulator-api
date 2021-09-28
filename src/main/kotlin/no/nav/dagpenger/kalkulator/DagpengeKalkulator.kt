@@ -13,13 +13,13 @@ private val resultatCounter = Counter
     .labelNames("resultat")
     .register()
 
-class DagpengeKalkulator(
+internal class DagpengeKalkulator(
     private val behovStarter: BehovStarter,
     private val behovStatusPoller: BehovStatusPoller,
     private val subsumsjonFetcher: SubsumsjonFetcher
 ) {
     suspend fun kalkuler(aktørId: String, regelkontekst: String): KalkulasjonsResult {
-        LOGGER.info { "starting behov, trying " + config.application.regelApiBaseUrl + "/behov" }
+        LOGGER.info { "starting behov, trying " + config.application.dpProxyUrl + "/behov" }
         val pollLocation = behovStarter.startBehov(aktørId, regelkontekst)
         LOGGER.info("Location: $pollLocation")
 

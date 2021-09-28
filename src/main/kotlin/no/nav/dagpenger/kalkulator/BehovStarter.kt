@@ -2,7 +2,9 @@ package no.nav.dagpenger.kalkulator
 
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
+import io.ktor.http.HttpHeaders
 import io.prometheus.client.Counter
+import no.nav.dagpenger.aad.api.ClientCredentialsClient
 import java.time.LocalDate
 
 private val kontekstCounter = Counter
@@ -12,14 +14,13 @@ private val kontekstCounter = Counter
     .labelNames("kontekst")
     .register()
 
-class BehovStarter(
+internal class BehovStarter(
     private val regelApiUrl: String,
-    private val regelApiKey: String,
-    private val apiGatewayKey: String
+    private val tokenProvider: ClientCredentialsClient,
 ) {
     private val jsonAdapter = moshiInstance.adapter(BehovRequest::class.java)
 
-    fun startBehov(aktørId: String, regelkontekst: String): String {
+    suspend fun startBehov(aktørId: String, regelkontekst: String): String {
         kontekstCounter.labels(regelkontekst).inc()
 
         val behovUrl = "$regelApiUrl/behov"
@@ -27,8 +28,7 @@ class BehovStarter(
 
         val (_, response, result) =
             behovUrl.httpPost()
-                .apiKey(regelApiKey)
-                .header("x-nav-apiKey" to apiGatewayKey)
+                .header(HttpHeaders.Authorization, "Bearer ${tokenProvider.getAccessToken()}")
                 .header(mapOf("Content-Type" to "application/json"))
                 .body(json)
                 .response()
@@ -38,7 +38,7 @@ class BehovStarter(
                 "Failed to run behov. Response message ${response.responseMessage}. Error message: ${result.error.message}"
             )
             is Result.Success ->
-                response.headers["Location"].first()
+                response.headers["Location"].first().replaceFirst("/v1/", "/")
         }
     }
 }

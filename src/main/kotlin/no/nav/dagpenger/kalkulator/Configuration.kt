@@ -14,9 +14,10 @@ private val localProperties = ConfigurationMap(
     mapOf(
         "API_GATEWAY_API_KEY" to "hunter2",
         "API_GATEWAY_URL" to "http://localhost/",
-        "GRAPH_QL_KEY" to "hunter2",
         "PDL_API_SCOPE" to "api://dev-fss.pdl.pdl-api/.default",
         "PDL_API_URL" to "https://pdl-api.dev-fss-pub.nais.io/graphql",
+        "DP_PROXY_SCOPE" to "api://dev-fss.teamdagpenger.dp-proxy/.default",
+        "DP_PROXY_URL" to "https://dp-proxy.dev-fss-pub.nais.io",
         "application.httpPort" to "8099",
         "application.profile" to "LOCAL",
         "forskudd.api.key" to "hunter2",
@@ -33,6 +34,8 @@ private val devProperties = ConfigurationMap(
     mapOf(
         "PDL_API_SCOPE" to "api://dev-fss.pdl.pdl-api/.default",
         "PDL_API_URL" to "https://pdl-api.dev-fss-pub.nais.io/graphql",
+        "DP_PROXY_SCOPE" to "api://dev-fss.teamdagpenger.dp-proxy/.default",
+        "DP_PROXY_URL" to "https://dp-proxy.dev-fss-pub.nais.io",
         "application.httpPort" to "8099",
         "application.profile" to "DEV",
         "jwks.issuer" to "https://login.microsoftonline.com/d38f25aa-eab8-4c50-9f28-ebf92c1256f2/v2.0/",
@@ -45,6 +48,8 @@ private val prodProperties = ConfigurationMap(
     mapOf(
         "PDL_API_SCOPE" to "api://prod-fss.pdl.pdl-api/.default",
         "PDL_API_URL" to "https://pdl-api.prod-fss-pub.nais.io/graphql",
+        "DP_PROXY_SCOPE" to "api://prod-fss.teamdagpenger.dp-proxy/.default",
+        "DP_PROXY_URL" to "https://dp-proxy.prod-fss-pub.nais.io",
         "application.httpPort" to "8099",
         "application.profile" to "PROD",
         "jwks.issuer" to "https://login.microsoftonline.com/8b7dfc8b-b52e-4741-bde4-d83ea366f94f/v2.0/",
@@ -74,16 +79,21 @@ data class Configuration(
         val jwksUrlNy: String = config()[Key("jwks.url.ny", stringType)],
         val jwksIssuerNy: String = config()[Key("jwks.issuer.ny", stringType)],
         val name: String = "dp-kalkulator-api",
-        val apiGatewayBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)],
-        val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
-        val regelApiBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-regel-api",
+
         val pdlApiBaseUrl: String = config()[Key("PDL_API_URL", stringType)],
         val forskuddApiKey: String = config()[Key("forskudd.api.key", stringType)],
-        val basePath: String = config().getOrElse(Key("app.basepath", stringType), "/arbeid/dagpenger/kalkulator-api")
+        val basePath: String = config().getOrElse(Key("app.basepath", stringType), "/arbeid/dagpenger/kalkulator-api"),
+        val dpProxyUrl: String = config()[Key("DP_PROXY_URL", stringType)] + "/proxy/v1/regelapi",
     ) {
         fun tokenProvider() = ClientCredentialsClient(config()) {
             scope {
                 add(config()[Key("PDL_API_SCOPE", stringType)])
+            }
+        }
+
+        fun dpProxyTokenProvider() = ClientCredentialsClient(config()) {
+            scope {
+                add(config()[Key("DP_PROXY_SCOPE", stringType)])
             }
         }
     }
