@@ -78,7 +78,6 @@ data class Configuration(
         val apiGatewayKey: String = config()[Key("API_GATEWAY_API_KEY", stringType)],
         val regelApiBaseUrl: String = config()[Key("API_GATEWAY_URL", stringType)] + "dp-regel-api",
         val pdlApiBaseUrl: String = config()[Key("PDL_API_URL", stringType)],
-        val graphQlKey: String = config()[Key("GRAPH_QL_KEY", stringType)],
         val forskuddApiKey: String = config()[Key("forskudd.api.key", stringType)],
         val basePath: String = config().getOrElse(Key("app.basepath", stringType), "/arbeid/dagpenger/kalkulator-api")
     ) {
