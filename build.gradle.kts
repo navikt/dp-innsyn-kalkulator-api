@@ -46,7 +46,7 @@ dependencies {
     implementation(Log4j2.api)
     implementation(Log4j2.core)
     implementation(Log4j2.slf4j)
-    implementation(Log4j2.Logstash.logstashLayout)
+    implementation(Log4j2.library("layout-template-json"))
     implementation(Kotlin.Logging.kotlinLogging)
 
     implementation(Dagpenger.Biblioteker.stsKlient)
