@@ -94,7 +94,7 @@ internal fun Application.KalkulatorApi(
     }
     install(CallLogging) {
         level = Level.INFO
-
+        disableDefaultColors()
         filter { call ->
             !call.request.path().startsWith("/isAlive") &&
                 !call.request.path().startsWith("/isReady") &&
