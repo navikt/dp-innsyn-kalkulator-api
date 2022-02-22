@@ -3,6 +3,7 @@ package no.nav.dagpenger.kalkulator
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwk.JwkProviderBuilder
 import com.auth0.jwt.exceptions.JWTDecodeException
+import com.auth0.jwt.interfaces.Payload
 import com.ryanharter.ktor.moshi.moshi
 import com.squareup.moshi.JsonDataException
 import io.ktor.application.Application
@@ -116,7 +117,10 @@ internal fun Application.KalkulatorApi(
                 HttpAuthHeader.Single("Bearer", cookie)
             }
             validate { credentials ->
-                JWTPrincipal(credentials.payload)
+                when {
+                    credentials.payload.getSubjectFromPidOrSub() != null -> JWTPrincipal(credentials.payload)
+                    else -> null
+                }
             }
         }
     }
@@ -221,12 +225,16 @@ internal fun Application.KalkulatorApi(
 private fun PipelineContext<Unit, ApplicationCall>.getSubject(): String {
     return runCatching {
         call.authentication.principal?.let {
-            (it as JWTPrincipal).payload.subject
+            (it as JWTPrincipal).payload.getSubjectFromPidOrSub()
         } ?: throw JWTDecodeException("Unable to get subject from JWT")
     }.getOrElse {
         LOGGER.error(it) { "Unable to get subject from authentication" }
         return@getOrElse "UNKNOWN"
     }
+}
+
+private fun Payload.getSubjectFromPidOrSub(): String? {
+    return this.getClaim("pid").asString() ?: this.getClaim("sub").asString()
 }
 
 class CookieNotSetException(override val message: String?) : RuntimeException(message)

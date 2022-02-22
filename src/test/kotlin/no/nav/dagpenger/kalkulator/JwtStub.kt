@@ -4,6 +4,7 @@ import com.auth0.jwk.Jwk
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.impl.PublicClaims
 import java.security.KeyPairGenerator
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
@@ -23,14 +24,16 @@ class JwtStub(private val issuer: String = "test issuer") {
         publicKey = keyPair.public as RSAPublicKey
     }
 
-    fun createTokenFor(subject: String): String {
+    fun createTokenFor(claim: String, subject: String): String {
         val algorithm = Algorithm.RSA256(publicKey, privateKey)
 
         return JWT.create()
             .withIssuer(issuer)
-            .withSubject(subject)
+            .withClaim(claim, subject)
             .sign(algorithm)
     }
+
+    fun createTokenFor(subject: String): String = createTokenFor(PublicClaims.SUBJECT, subject)
 
     fun stubbedJwkProvider(): StubbedJwkProvider {
         return StubbedJwkProvider(publicKey)

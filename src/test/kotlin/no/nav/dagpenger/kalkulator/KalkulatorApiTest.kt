@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
 internal class KalkulatorApiTest {
@@ -182,7 +183,32 @@ internal class KalkulatorApiTest {
             mockedApi()
         }) {
             handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
-                addHeader(HttpHeaders.Authorization, "Bearer $unauthorizedToken")
+                addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=$unauthorizedToken")
+            }.apply {
+                assertEquals(HttpStatusCode.Unauthorized, response.status())
+            }
+        }
+    }
+
+    @Test
+    fun `Handle both cookie with pid and sub`() {
+        withTestApplication({
+            mockedApi()
+        }) {
+            handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
+                addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=${jwkStub.createTokenFor("sub", "bruker")}")
+            }.apply {
+                assertNotEquals(HttpStatusCode.Unauthorized, response.status())
+            }
+
+            handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
+                addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=${jwkStub.createTokenFor("pid", "bruker")}")
+            }.apply {
+                assertNotEquals(HttpStatusCode.Unauthorized, response.status())
+            }
+
+            handleRequest(HttpMethod.Get, "/arbeid/dagpenger/kalkulator-api/behov") {
+                addHeader(HttpHeaders.Cookie, "selvbetjening-idtoken=${jwkStub.createTokenFor("hubba", "bruker")}")
             }.apply {
                 assertEquals(HttpStatusCode.Unauthorized, response.status())
             }
