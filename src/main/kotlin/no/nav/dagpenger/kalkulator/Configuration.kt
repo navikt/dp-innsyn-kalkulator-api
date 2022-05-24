@@ -38,10 +38,10 @@ private val devProperties = ConfigurationMap(
         "DP_PROXY_URL" to "https://dp-proxy.dev-fss-pub.nais.io",
         "application.httpPort" to "8099",
         "application.profile" to "DEV",
-        "jwks.issuer" to "https://login.microsoftonline.com/d38f25aa-eab8-4c50-9f28-ebf92c1256f2/v2.0/",
-        "jwks.issuer.ny" to "https://navtestb2c.b2clogin.com/d38f25aa-eab8-4c50-9f28-ebf92c1256f2/v2.0/",
-        "jwks.url" to "https://login.microsoftonline.com/navtestb2c.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_idporten_ver1",
-        "jwks.url.ny" to "https://navtestb2c.b2clogin.com/navtestb2c.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_idporten_ver1",
+        "jwks.issuer" to "https://oidc-ver2.difi.no/idporten-oidc-provider/",
+        "jwks.issuer.ny" to "https://oidc-ver2.difi.no/idporten-oidc-provider/",
+        "jwks.url" to "https://oidc-ver2.difi.no/idporten-oidc-provider/jwk",
+        "jwks.url.ny" to "https://oidc-ver2.difi.no/idporten-oidc-provider/jwk",
     )
 )
 private val prodProperties = ConfigurationMap(
@@ -52,10 +52,10 @@ private val prodProperties = ConfigurationMap(
         "DP_PROXY_URL" to "https://dp-proxy.prod-fss-pub.nais.io",
         "application.httpPort" to "8099",
         "application.profile" to "PROD",
-        "jwks.issuer" to "https://login.microsoftonline.com/8b7dfc8b-b52e-4741-bde4-d83ea366f94f/v2.0/",
-        "jwks.issuer.ny" to "https://navnob2c.b2clogin.com/8b7dfc8b-b52e-4741-bde4-d83ea366f94f/v2.0/",
-        "jwks.url" to "https://login.microsoftonline.com/navnob2c.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_idporten",
-        "jwks.url.ny" to "https://navnob2c.b2clogin.com/navnob2c.onmicrosoft.com/discovery/v2.0/keys?p=b2c_1a_idporten",
+        "jwks.issuer" to "https://oidc.difi.no/idporten-oidc-provider/",
+        "jwks.issuer.ny" to "https://oidc.difi.no/idporten-oidc-provider/",
+        "jwks.url" to "https://oidc.difi.no/idporten-oidc-provider/jwk",
+        "jwks.url.ny" to "https://oidc.difi.no/idporten-oidc-provider/jwk",
     )
 )
 
