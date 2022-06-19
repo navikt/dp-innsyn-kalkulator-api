@@ -164,7 +164,7 @@ object Ktor {
 }
 
 object Log4j2 {
-    const val version = "2.17.0"
+    const val version = "2.17.1"
     const val api = "org.apache.logging.log4j:log4j-api:$version"
     const val core = "org.apache.logging.log4j:log4j-core:$version"
     const val slf4j = "org.apache.logging.log4j:log4j-slf4j-impl:$version"
